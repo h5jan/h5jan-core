@@ -2,8 +2,8 @@ h5jan
 =====
 
 ## What is it
-h5jan is a Java API for writing an hdf5 pandas dataframe. It is also useful for
-saving and loading Eclipse January datasets. There is some connectivity with 
+h5jan is a Java(TM) API for writing an [HDF5](https://www.hdfgroup.org) [pandas](https://pandas.pydata.org/) dataframe. It is also useful for
+saving and loading [Eclipse January](https://github.com/eclipse/january) datasets. There is some connectivity with 
 tablesaw tables as well, these may be converted to dataframes and saved to 
 pandas h5 format.
 
@@ -14,6 +14,16 @@ multi-threaded APIs. Then if a parallel execution of python process such as
 machine learning run are required, h5jan allows you to write h5 dataframes to redis
 keys for example and have them picked up when the python process runs, for instance
 when Kubernetes Jobs are fired off.
+
+## Repackaging
+This project is only possible by repackaging some code released on github using an EPL license.
+Unfortunately you cannot use this code in its current locations over several bundles in [DAWN Science](https://github.com/DawnScience)
+which are not repackaged for reuse in a normal gradle/maven manner (they are OSGi bundles).
+
+h5jan uses those libraries and adds a data frame library on top.
+
+## Taking Part
+Drop a message as to why you want to be part of the project or submit a merge request.
 
 How to use h5jan from a Gradle Build
 ====================================
