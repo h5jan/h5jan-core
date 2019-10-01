@@ -1,4 +1,4 @@
-h5jan ![](https://github.com/h5jan/h5jan-core/blob/master/eclipsesci.png)
+![](https://github.com/h5jan/h5jan-core/blob/master/eclipsesci.png) h5jan
 =====
 
 ## What is it
@@ -27,6 +27,8 @@ Drop a message as to why you want to be part of the project or submit a merge re
 
 We support the [Eclipse Science](https://science.eclipse.org/) working group.<br>
 ![Eclipse Science](https://github.com/h5jan/h5jan-core/blob/master/eclipsesci.png)
+NOTE: This project *has not* been proposed as an eclipse science project yet, however
+it is made up of code from the dawnsci project and depends on January. 
 
  \* Eclipse January has a page on the [Eclipse Foundation](https://www.eclipse.org/january/) web site.
 
