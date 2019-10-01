@@ -3,8 +3,8 @@
 
 ## What is it
 h5jan is a Java(TM) API for writing an [HDF5](https://www.hdfgroup.org) [pandas](https://pandas.pydata.org/) dataframe. It is also useful for
-saving and loading [Eclipse January*](https://github.com/eclipse/january) datasets. There is some connectivity with 
-tablesaw tables as well, these may be converted to dataframes and saved to 
+saving and loading [Eclipse January*](https://github.com/eclipse/january) datasets. There is some connectivity possible with 
+[tablesaw](https://github.com/jtablesaw/tablesaw) tables as well, these may be converted to dataframes and saved to 
 pandas h5 format.
 
 Why are these things useful we hear you ask? Well it means that numpy-like data structures can be built in Java and
