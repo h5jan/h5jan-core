@@ -3,7 +3,7 @@ h5jan
 
 ## What is it
 h5jan is a Java(TM) API for writing an [HDF5](https://www.hdfgroup.org) [pandas](https://pandas.pydata.org/) dataframe. It is also useful for
-saving and loading [Eclipse January](https://github.com/eclipse/january) datasets. There is some connectivity with 
+saving and loading [Eclipse January*](https://github.com/eclipse/january) datasets. There is some connectivity with 
 tablesaw tables as well, these may be converted to dataframes and saved to 
 pandas h5 format.
 
@@ -28,6 +28,7 @@ Drop a message as to why you want to be part of the project or submit a merge re
 We support the [Eclipse Science](https://science.eclipse.org/) working group.<br>
 ![Eclipse Science](https://github.com/h5jan/h5jan-core/blob/master/eclipsesci.png)
 
+ \* Eclipse January has a page on the [Eclipse Foundation](https://www.eclipse.org/january/) web site.
 
 How to use h5jan from a Gradle Build
 ====================================
