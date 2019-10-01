@@ -1,4 +1,4 @@
-h5jan
+h5jan ![](https://github.com/h5jan/h5jan-core/blob/master/eclipsesci.png)
 =====
 
 ## What is it
