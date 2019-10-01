@@ -25,7 +25,7 @@ h5jan uses those libraries and adds a data frame library on top.
 ## Taking Part
 Drop a message as to why you want to be part of the project or submit a merge request.
 
-We support the [Eclipse Science](https://science.eclipse.org/) working group.
+We support the [Eclipse Science](https://science.eclipse.org/) working group.<br>
 ![Eclipse Science](https://github.com/h5jan/h5jan-core/blob/master/eclipsesci.png)
 
 
