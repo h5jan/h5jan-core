@@ -1,0 +1,20 @@
+Compression libraries
+---------------------
+zlib (zlib.net, 1.2.11)
+lz4 (https://github.com/lz4/lz4, 1.8.3)
+liblzf (http://oldhome.schmorp.de/marc/liblzf.html, 3.6)
+c-blosc (v1.16.3) (with zstd 1.3.8, lzf, lz4, zlib - not snappy)
+
+HDF5 library, Java bindings and classes
+---------------------------------------
+hdf5 (https://portal.hdfgroup.org/display/support/HDF5+1.10.5)
+
+Filters
+-------
+lz4 (https://github.com/nexusformat/HDF5-External-Filter-Plugins, 0.1.0, 6b47894c8763805ff39154fb583e36c3ad50a421)
+lzf, bitshuffle (https://github.com/kiyo-masui/bitshuffle, 0.3.4, 9ffba9de83036a91d345fa2f62fcaedf55f54c5f)
+blosc, (https://github.com/Blosc/hdf5-blosc.git, 1.0.0, bd8ee59708f366ac561153858735165d3a543b18)
+
+All updated to use newer versions of compression libraries.
+
+(Note 32-bit OS no longer supported.)

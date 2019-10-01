@@ -33,7 +33,7 @@ is in your repositories{} block
 
 2. Add dependency 
 ~~~~ 
-compile "org.eclipse.january:h5:0.1.0" 
+compile "org.eclipse.january:h5jan-core:0.1.0" 
 ~~~~ 
 to your file.
 

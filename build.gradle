@@ -1,0 +1,177 @@
+
+plugins {
+    id "com.webcohesion.enunciate" version "2.9.1"
+}
+
+apply plugin: 'java'
+apply plugin: "jacoco"
+apply plugin: 'java-library'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'findbugs'
+apply plugin: 'pmd'
+apply plugin: 'checkstyle'
+apply plugin: "com.webcohesion.enunciate"
+
+// We aspire one day to be part of Eclipse January.
+// Currently this package is an extension to January and
+// not part of the core project
+group 'org.eclipse.january'
+
+ext {
+    if (!project.hasProperty('version')) {
+		version = "0.1.0"
+    }
+    if (!project.hasProperty('release')) {
+        release = 'master'
+    }
+}
+
+jar {
+    baseName = 'h5jan-core'
+    version = version
+
+    from("build/docs/"){
+        into("generated/docs/")
+    }
+    from("src/main/java"){
+        include("**/*.properties")
+    }
+    manifest {
+     	attributes(
+	      'Main-Class': 'org.eclipse.january.h5jan.Exercise'
+      	)
+    }
+    
+ }
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+javadoc {
+    source = sourceSets.main.allJava
+    classpath = configurations.compile
+}
+
+checkstyle {
+    toolVersion = "6.12.1"
+}
+
+tasks.withType(Checkstyle).each { checkstyleTask ->
+    checkstyleTask
+    checkstyleTask.doLast {
+        reports.all { report ->
+            def outputFile = report.destination
+
+
+            if (checkstyleTask == checkstyleMain && outputFile.exists() && outputFile.text.contains("<error ")) {
+                throw new GradleException("There were checkstyle warnings! For more info check $outputFile")
+            }
+        }
+    }
+}
+
+task sourcesJar ( type: Jar, dependsOn: classes ) {
+	classifier 'sources'
+	from sourceSets.main.allJava
+}
+
+jacoco {
+    toolVersion = "0.7.6.201602180812"
+    reportsDir = file("$buildDir/reports/coverage")
+}
+
+jacocoTestReport {
+    group = "Reporting"
+    reports {
+        xml.enabled false
+        csv.enabled false
+    }
+}
+
+tasks.withType(JacocoCoverageVerification) {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.8
+            }
+        }
+    }
+}
+check.dependsOn jacocoTestCoverageVerification
+
+defaultTasks 'compileJava', 'enunciate', 'javadoc', 'checkstyleMain', 'jar', 'compileTestJava', 'processTestResources', 'testClasses', 'findbugsMain', 'pmdMain', 'check', 'test'
+description = "h5Jan Package"
+
+repositories {
+    mavenCentral()
+    maven {
+        // gradle
+        url "https://plugins.gradle.org/m2/"
+    }
+}
+
+
+tasks.enunciate {
+    File enunciateDistDir = file("build/docs/api")
+    configFileName = "config/enunciate/enunciate.xml"
+    doFirst {
+        enunciateDistDir.deleteDir()
+        enunciateDistDir.mkdirs()
+    }
+    export("docs", enunciateDistDir)
+}
+
+findbugs {
+    ignoreFailures = true
+    sourceSets = [sourceSets.main]
+    reportsDir = file("$project.buildDir/reports/findbugs")
+    effort = "max"
+}
+
+pmd {
+    ignoreFailures = true
+}
+
+/**
+ The Suites are for local testing, gradle can file other unit tests
+ see https://docs.gradle.org/current/dsl/org.gradle.api.tasks.testing.Test.html
+ 
+ We change directory to run the tests from where junit relative paths also
+ work in eclipse.
+ 
+ **/
+test {
+    testLogging.showStandardStreams = true
+    exclude '**/*Suite*'
+}
+
+
+dependencies {
+
+    // Datasets
+    implementation 'org.eclipse.january:org.eclipse.january:2.1.5'
+    implementation 'org.eclipse.january:org.eclipse.january.asserts:2.1.5'
+    
+    // Tablesaw
+    implementation group: 'tech.tablesaw', name: 'tablesaw-core', version: '0.34.1'
+	
+	// Command Line Parsing
+	implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
+	implementation  'commons-io:commons-io:2.6'
+	
+	// https://mvnrepository.com/artifact/tec.units/indriya/1.0  Units  BSD License
+	implementation group: 'tec.units', name: 'indriya', version: '1.0'
+	
+	// https://mvnrepository.com/artifact/si.uom/si-units
+	implementation group: 'si.uom', name: 'si-units', version: '2.0.1'
+	
+	// Logging
+	compile 'org.slf4j:slf4j-api:1.7.25'
+	compile 'ch.qos.logback:logback-core:1.2.3'
+	compile 'ch.qos.logback:logback-classic:1.2.3'
+
+	// Test
+	testCompile 'junit:junit:4.12'
+	testCompile group: 'org.hamcrest', name: 'hamcrest-library', version: '1.3'
+}

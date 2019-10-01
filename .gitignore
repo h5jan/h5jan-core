@@ -1,0 +1,64 @@
+.gradle
+build/
+**.class
+bin/
+test-scratch/
+out/
+logs/
+!lib/
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Ignore the proxy properties
+gradle.properties 
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+
+# Cache of project
+.gradletasknamecache
+
+# # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
+# gradle/wrapper/gradle-wrapper.properties
+
+awc.iml
+awc.ipr
+awc.iws
+awc_main.iml
+awc_test.iml
+
+
+.classpath
+.project
+.settings/
+.metadata/
+.*.html
+
+.idea/
+jenkins.gdsl
+
+access-local.log
+access.log
+
+### Python ###
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+.hypothesis/
+
+MANIFEST
+pinned.txt
+setup.cfg

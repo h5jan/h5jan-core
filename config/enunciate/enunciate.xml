@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<enunciate
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://enunciate.webcohesion.com/schemas/enunciate-2.9.0.xsd">
+  <description>
+    <![CDATA[
+      <h1>Database Connector API</h1>
+      <p>REST API that connects to a databse and exposes the data via rest endpoints. <a href="https://git.openearth.community/incubator/gemasis-dc">Go to the repository</a></p>
+    ]]>
+  </description>
+  <application root="/msp" />
+    <modules>
+        <jackson1 disabled="true"/>
+        <jaxrs>
+            <application path="/msp"/>
+            <custom-system-parameter-annotation qualifiedName="javax.ws.rs.HeaderParam" />
+        </jaxrs>
+    </modules>
+</enunciate>
+
