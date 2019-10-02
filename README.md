@@ -21,13 +21,13 @@ as dataframes or numpy arrays in python using h5py and pandas.
 
 ## Examples
 ```
-
+// Read a slice
 try(NxsFile nfile = NxsFile.open("i05-4859.nxs")) {
 
-	// Data read in
+	// Data *not* read in
 	ILazyDataset lz = nfile.getDataset("/entry1/instrument/analyser/data");
 	
-	// Read in a slice and squeeze it into an image.
+	// Read in a slice and squeeze it into an image. *Data now in memory*
 	IDataset    mem = lz.getSlice(new Slice(), new Slice(100, 600), new Slice(200, 700));
 	mem.squeeze();
 }
