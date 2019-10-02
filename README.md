@@ -2,18 +2,38 @@
 =====
 
 ## What is it
-h5jan is a Java(TM) API for writing an [HDF5](https://www.hdfgroup.org) [pandas](https://pandas.pydata.org/) dataframe. It is also useful for
-saving and loading [Eclipse January*](https://github.com/eclipse/january) datasets. There is some connectivity possible with 
-[tablesaw](https://github.com/jtablesaw/tablesaw) tables as well, these may be converted to dataframes and saved to 
-pandas h5 format.
+h5jan is a Java(TM) API for reading and writing [Eclipse January*](https://github.com/eclipse/january) datasets.
+
+It allows the reading and writing of:
+1. <b>Datasets</b> to/from HDF5 files.
+2. <b>Lazy datasets</b> to/from HDF5 files and working with slices. (Larger data than will fit in memory).
+
+The HDF5 files written use the [NeXus](https://en.wikipedia.org/wiki/Nexus_file)  format for writing multi-dimensional data.
+Nexus files are commonly used in Bioinformatics and other scientific scenarios.
+They can easily be read in python using h5py and used to build data frames.
 
 Why are these things useful we hear you ask? Well it means that numpy-like data structures can be built in Java and
 saved as HDF5. That then means that you can use Java in the middleware or middle
 microservice, here it shines with tools like Spring Boot available and its many 
 multi-threaded APIs. Then if a parallel execution of python process such as 
-machine learning run are required, h5jan allows you to write h5 dataframes to redis
-keys for example and have them picked up when the python process runs, for instance
-when Kubernetes Jobs are fired off.
+machine learning run are required, h5jan allows you to write h5 files which can be loaded
+as dataframes or numpy arrays in python using h5py and pandas.
+
+## Examples
+```
+
+try(NxsFile nfile = NxsFile.open("i05-4859.nxs")) {
+
+	// Data read in
+	ILazyDataset lz = nfile.getDataset("/entry1/instrument/analyser/data");
+	
+	// Read in a slice and squeeze it into an image.
+	IDataset    mem = lz.getSlice(new Slice(), new Slice(100, 600), new Slice(200, 700));
+	mem.squeeze();
+}
+
+```
+
 
 ## Repackaging
 This project is only possible by repackaging some code released on github using an EPL license.
