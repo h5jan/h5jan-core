@@ -231,9 +231,3 @@ You can change the log levels for an installed Docker image, by using the \_JAVA
  
         -DROOT_LOG_LEVEL=DEBUG -DSTDOUT_LOG_LEVEL=DEBUG -DHAL_LOG_LEVEL=DEBUG -DFILE_LOG_LEVEL=DEBUG
  
-
-
-Running Locally
----------------
-The class "Application" contains a main method to run the application.
-
