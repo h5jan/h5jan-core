@@ -32,8 +32,38 @@ try(NxsFile nfile = NxsFile.open("i05-4859.nxs")) {
 	mem.squeeze();
 }
 
-```
+// Write nD data to block not holding it in memory
+try(NxsFile nfile = NxsFile.open("my_example.nxs")) {
 
+	// We create a place to put our data
+	ILazyWriteableDataset data = new LazyWriteableDataset("data", Dataset.FLOAT64, new int[] { 10, 1024, 1024 }, null, null, null);
+
+	// We have all the data in memory, it might be large at this point!
+	nfile.createData("/entry1/acme/experiment1/", data, true);
+		
+	// Make an image to write
+	IDataset random = Random.rand(1, 1024, 1024);
+		
+	// Write one image, others may follow
+	data.setSlice(new IMonitor.Stub(), random, new SliceND(random.getShape(), new Slice(0,1), new Slice(0,1024), new Slice(0,1024)));
+}
+
+    // Write stream of images in above example.
+	for (int i = 0; i < 10; i++) {
+		// Make an image to write
+		IDataset random = Random.rand(1, 1024, 1024);
+			
+		// Write one image, others may follow. We use the int args for adding the randoms here.
+		data.setSlice(new IMonitor.Stub(), random, SliceND.createSlice(data, new int[] {i,0,0}, new int[] {i+1,1024,1024}, new int[] {1,1,1}));
+			
+		// Optionally flush
+		nfile.flush();
+	}
+
+
+```
+When the nxs file is opened in [DAWN](http://www.dawnsci.org) you get:
+![stack](https://github.com/h5jan/h5jan-core/blob/master/dawn.png)
 
 ## Repackaging
 This project is only possible by repackaging some code released on github using an EPL license.

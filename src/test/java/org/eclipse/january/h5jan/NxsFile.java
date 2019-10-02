@@ -1,5 +1,7 @@
 package org.eclipse.january.h5jan;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 
 import org.eclipse.dawnsci.analysis.api.tree.Attribute;
@@ -14,6 +16,8 @@ import org.eclipse.january.dataset.IDataset;
 import org.eclipse.january.dataset.ILazyDataset;
 import org.eclipse.january.dataset.ILazyWriteableDataset;
 
+import hdf.hdf5lib.H5;
+
 /**
  * A simple delegate class which wraps the Dawnsci classes
  * for easy reading and writing of datasets.
@@ -26,14 +30,22 @@ import org.eclipse.january.dataset.ILazyWriteableDataset;
  *
  */
 public class NxsFile implements AutoCloseable{
+	
+	// We load the libraries so that the Junit
+	// tests give good time comparisons. It is *not* required.
+	static {
+		H5.loadH5Lib(); // Not required in other code!
+	}
 
 	/**
 	 * Create a new H5 file (overwriting any existing one)
 	 * @param path
 	 * @return Nexus formatted H5 file
 	 * @throws NexusException
+	 * @throws IOException 
 	 */
-	public static NxsFile create(String path) throws NexusException {
+	public static NxsFile create(String path) throws NexusException, IOException {
+		createPath(path);
 		return new NxsFile(NexusFileHDF5.createNexusFile(path));
 	}
 
@@ -43,11 +55,21 @@ public class NxsFile implements AutoCloseable{
 	 * @param enableSWMR
 	 * @return Nexus file
 	 * @throws NexusException
+	 * @throws IOException 
 	 */
-	public static NxsFile create(String path, boolean enableSWMR) throws NexusException {
+	public static NxsFile create(String path, boolean enableSWMR) throws NexusException, IOException {
+		createPath(path);
 		return new NxsFile(NexusFileHDF5.createNexusFile(path, enableSWMR));
 	}
 	
+
+	private static void createPath(String path) throws IOException {
+		File file = new File(path);
+		if (!file.exists()) {
+			file.getParentFile().mkdirs();
+			file.createNewFile();
+		}
+	}
 
 	/**
 	 * Open an existing Nexus file to modify

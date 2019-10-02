@@ -38,12 +38,6 @@ import hdf.hdf5lib.H5;
  */
 @FixMethodOrder
 public class DatasetReadExample {
-	
-	// We load the libraries so that the Junit
-	// tests give good time comparisons.
-	static {
-		H5.loadH5Lib(); // Not required in our code!
-	}
 
 	private NxsFile nfile;
 	
