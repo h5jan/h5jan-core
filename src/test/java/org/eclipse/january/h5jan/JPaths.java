@@ -5,7 +5,7 @@
  * are private intellectual property.
  *
  *******************************************************************************/
-package org.eclipse.january.h5;
+package org.eclipse.january.h5jan;
 
 import java.io.IOException;
 import java.nio.file.Files;

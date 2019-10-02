@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.eclipse.january.h5.JPaths;
+import org.eclipse.january.h5jan.JPaths;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
