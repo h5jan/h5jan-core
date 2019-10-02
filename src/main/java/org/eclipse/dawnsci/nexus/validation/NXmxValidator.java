@@ -10,27 +10,39 @@
  *******************************************************************************/
 
 package org.eclipse.dawnsci.nexus.validation;
-import static org.eclipse.dawnsci.nexus.validation.NexusDataType.*;
-import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.*;
+import static org.eclipse.dawnsci.nexus.validation.NexusDataType.NX_BOOLEAN;
+import static org.eclipse.dawnsci.nexus.validation.NexusDataType.NX_CHAR;
+import static org.eclipse.dawnsci.nexus.validation.NexusDataType.NX_DATE_TIME;
+import static org.eclipse.dawnsci.nexus.validation.NexusDataType.NX_FLOAT;
+import static org.eclipse.dawnsci.nexus.validation.NexusDataType.NX_INT;
+import static org.eclipse.dawnsci.nexus.validation.NexusDataType.NX_NUMBER;
+import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_ANY;
+import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_ENERGY;
+import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_FLUX;
+import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_FREQUENCY;
+import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_LENGTH;
+import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_TEMPERATURE;
+import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_TIME;
+import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_UNITLESS;
+import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_WAVELENGTH;
 
 import java.util.Map;
 
-import org.eclipse.january.dataset.IDataset;
 import org.eclipse.dawnsci.analysis.api.tree.Attribute;
-
-import org.eclipse.dawnsci.nexus.NXroot;
-import org.eclipse.dawnsci.nexus.NXsubentry;
+import org.eclipse.dawnsci.nexus.NXattenuator;
+import org.eclipse.dawnsci.nexus.NXbeam;
+import org.eclipse.dawnsci.nexus.NXcollection;
+import org.eclipse.dawnsci.nexus.NXdata;
+import org.eclipse.dawnsci.nexus.NXdetector;
+import org.eclipse.dawnsci.nexus.NXdetector_group;
+import org.eclipse.dawnsci.nexus.NXdetector_module;
 import org.eclipse.dawnsci.nexus.NXentry;
 import org.eclipse.dawnsci.nexus.NXinstrument;
-import org.eclipse.dawnsci.nexus.NXattenuator;
-import org.eclipse.dawnsci.nexus.NXdetector_group;
-import org.eclipse.dawnsci.nexus.NXdetector;
-import org.eclipse.dawnsci.nexus.NXtransformations;
-import org.eclipse.dawnsci.nexus.NXcollection;
-import org.eclipse.dawnsci.nexus.NXdetector_module;
+import org.eclipse.dawnsci.nexus.NXroot;
 import org.eclipse.dawnsci.nexus.NXsample;
-import org.eclipse.dawnsci.nexus.NXbeam;
-import org.eclipse.dawnsci.nexus.NXdata;
+import org.eclipse.dawnsci.nexus.NXsubentry;
+import org.eclipse.dawnsci.nexus.NXtransformations;
+import org.eclipse.january.dataset.IDataset;
 
 /**
  * Validator for the application definition 'NXmx'.

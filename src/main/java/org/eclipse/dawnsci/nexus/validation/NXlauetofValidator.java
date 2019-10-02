@@ -10,20 +10,24 @@
  *******************************************************************************/
 
 package org.eclipse.dawnsci.nexus.validation;
-import static org.eclipse.dawnsci.nexus.validation.NexusDataType.*;
-import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.*;
+import static org.eclipse.dawnsci.nexus.validation.NexusDataType.NX_FLOAT;
+import static org.eclipse.dawnsci.nexus.validation.NexusDataType.NX_INT;
+import static org.eclipse.dawnsci.nexus.validation.NexusDataType.NX_POSINT;
+import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_ANGLE;
+import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_ANY;
+import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_LENGTH;
+import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_TIME_OF_FLIGHT;
 
-import org.eclipse.january.dataset.IDataset;
 import org.eclipse.dawnsci.analysis.api.tree.Attribute;
-
-import org.eclipse.dawnsci.nexus.NXroot;
-import org.eclipse.dawnsci.nexus.NXsubentry;
+import org.eclipse.dawnsci.nexus.NXdata;
+import org.eclipse.dawnsci.nexus.NXdetector;
 import org.eclipse.dawnsci.nexus.NXentry;
 import org.eclipse.dawnsci.nexus.NXinstrument;
-import org.eclipse.dawnsci.nexus.NXdetector;
-import org.eclipse.dawnsci.nexus.NXsample;
 import org.eclipse.dawnsci.nexus.NXmonitor;
-import org.eclipse.dawnsci.nexus.NXdata;
+import org.eclipse.dawnsci.nexus.NXroot;
+import org.eclipse.dawnsci.nexus.NXsample;
+import org.eclipse.dawnsci.nexus.NXsubentry;
+import org.eclipse.january.dataset.IDataset;
 
 /**
  * Validator for the application definition 'NXlauetof'.

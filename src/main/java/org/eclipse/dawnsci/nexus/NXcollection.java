@@ -11,9 +11,6 @@
 
 package org.eclipse.dawnsci.nexus;
 
-import org.eclipse.dawnsci.analysis.api.tree.DataNode;
-
-
 /**
  * An unvalidated set of terms, such as the description of a beam line.
  * Use :ref:`NXcollection` to gather together any set of terms.

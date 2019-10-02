@@ -11,14 +11,14 @@
 
 package org.eclipse.dawnsci.nexus.impl;
 
-import java.util.Date;
-import java.util.Set;
 import java.util.EnumSet;
 import java.util.Map;
-import org.eclipse.dawnsci.analysis.api.tree.DataNode;
+import java.util.Set;
 
-
-import org.eclipse.dawnsci.nexus.*;
+import org.eclipse.dawnsci.nexus.NXentry;
+import org.eclipse.dawnsci.nexus.NXobject;
+import org.eclipse.dawnsci.nexus.NXroot;
+import org.eclipse.dawnsci.nexus.NexusBaseClass;
 
 /**
  * Definition of the root NeXus group.

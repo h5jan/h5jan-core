@@ -11,13 +11,15 @@
 
 package org.eclipse.dawnsci.nexus.impl;
 
-import java.util.Set;
 import java.util.EnumSet;
+import java.util.Set;
+
 import org.eclipse.dawnsci.analysis.api.tree.DataNode;
-
+import org.eclipse.dawnsci.nexus.NXdata;
+import org.eclipse.dawnsci.nexus.NXobject;
+import org.eclipse.dawnsci.nexus.NXsample_component;
+import org.eclipse.dawnsci.nexus.NexusBaseClass;
 import org.eclipse.january.dataset.IDataset;
-
-import org.eclipse.dawnsci.nexus.*;
 
 /**
  * One group like this per component can be recorded For a sample consisting of multiple components.

@@ -14,7 +14,6 @@ package org.eclipse.dawnsci.nexus;
 import org.eclipse.dawnsci.nexus.builder.AbstractNexusObjectProvider;
 import org.eclipse.dawnsci.nexus.builder.CustomNexusEntryModification;
 import org.eclipse.dawnsci.nexus.builder.NexusObjectProvider;
-import org.eclipse.january.dataset.IDataset;
 import org.eclipse.january.dataset.LazyDataset;
 
 /**

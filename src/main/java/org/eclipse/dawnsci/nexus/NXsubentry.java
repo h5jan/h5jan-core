@@ -15,7 +15,6 @@ import java.util.Date;
 import java.util.Map;
 
 import org.eclipse.dawnsci.analysis.api.tree.DataNode;
-
 import org.eclipse.january.dataset.IDataset;
 
 /**

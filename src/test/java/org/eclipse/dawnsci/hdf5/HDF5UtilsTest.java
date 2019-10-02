@@ -9,17 +9,16 @@
 
 package org.eclipse.dawnsci.hdf5;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 
+import org.eclipse.dawnsci.hdf5.nexus.NexusFileHDF5;
 import org.eclipse.january.asserts.TestUtils;
 import org.eclipse.january.dataset.ByteDataset;
 import org.eclipse.january.dataset.Dataset;
-import org.eclipse.dawnsci.hdf5.HDF5Utils;
-import org.eclipse.dawnsci.hdf5.nexus.NexusFileHDF5;
 import org.eclipse.january.dataset.DatasetFactory;
 import org.eclipse.january.dataset.FloatDataset;
 import org.eclipse.january.dataset.ShortDataset;

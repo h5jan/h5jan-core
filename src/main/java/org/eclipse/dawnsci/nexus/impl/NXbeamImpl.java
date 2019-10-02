@@ -11,15 +11,16 @@
 
 package org.eclipse.dawnsci.nexus.impl;
 
-import java.util.Set;
 import java.util.EnumSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.dawnsci.analysis.api.tree.DataNode;
-
+import org.eclipse.dawnsci.nexus.NXbeam;
+import org.eclipse.dawnsci.nexus.NXdata;
+import org.eclipse.dawnsci.nexus.NXobject;
+import org.eclipse.dawnsci.nexus.NexusBaseClass;
 import org.eclipse.january.dataset.IDataset;
-
-import org.eclipse.dawnsci.nexus.*;
 
 /**
  * Properties of the neutron or X-ray beam at a given location.

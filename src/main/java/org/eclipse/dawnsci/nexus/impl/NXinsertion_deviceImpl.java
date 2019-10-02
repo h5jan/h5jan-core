@@ -11,15 +11,17 @@
 
 package org.eclipse.dawnsci.nexus.impl;
 
-import java.util.Set;
 import java.util.EnumSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.dawnsci.analysis.api.tree.DataNode;
-
+import org.eclipse.dawnsci.nexus.NXdata;
+import org.eclipse.dawnsci.nexus.NXgeometry;
+import org.eclipse.dawnsci.nexus.NXinsertion_device;
+import org.eclipse.dawnsci.nexus.NXobject;
+import org.eclipse.dawnsci.nexus.NexusBaseClass;
 import org.eclipse.january.dataset.IDataset;
-
-import org.eclipse.dawnsci.nexus.*;
 
 /**
  * An insertion device, as used in a synchrotron light source.

@@ -32,7 +32,6 @@ import org.eclipse.dawnsci.nexus.builder.NexusFileBuilder;
 import org.eclipse.dawnsci.nexus.builder.NexusScanFile;
 import org.eclipse.dawnsci.nexus.test.util.NexusTestUtils;
 import org.eclipse.january.dataset.ILazyDataset;
-import org.eclipse.january.h5.JPaths;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

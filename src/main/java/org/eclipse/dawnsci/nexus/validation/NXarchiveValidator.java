@@ -10,21 +10,27 @@
  *******************************************************************************/
 
 package org.eclipse.dawnsci.nexus.validation;
-import static org.eclipse.dawnsci.nexus.validation.NexusDataType.*;
-import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.*;
+import static org.eclipse.dawnsci.nexus.validation.NexusDataType.NX_CHAR;
+import static org.eclipse.dawnsci.nexus.validation.NexusDataType.NX_DATE_TIME;
+import static org.eclipse.dawnsci.nexus.validation.NexusDataType.NX_FLOAT;
+import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_CURRENT;
+import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_PRESSURE;
+import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_TEMPERATURE;
+import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_TIME;
+import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_UNITLESS;
+import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_VOLTAGE;
 
 import java.util.Map;
 
-import org.eclipse.january.dataset.IDataset;
 import org.eclipse.dawnsci.analysis.api.tree.Attribute;
-
-import org.eclipse.dawnsci.nexus.NXroot;
-import org.eclipse.dawnsci.nexus.NXsubentry;
 import org.eclipse.dawnsci.nexus.NXentry;
-import org.eclipse.dawnsci.nexus.NXuser;
 import org.eclipse.dawnsci.nexus.NXinstrument;
-import org.eclipse.dawnsci.nexus.NXsource;
+import org.eclipse.dawnsci.nexus.NXroot;
 import org.eclipse.dawnsci.nexus.NXsample;
+import org.eclipse.dawnsci.nexus.NXsource;
+import org.eclipse.dawnsci.nexus.NXsubentry;
+import org.eclipse.dawnsci.nexus.NXuser;
+import org.eclipse.january.dataset.IDataset;
 
 /**
  * Validator for the application definition 'NXarchive'.
