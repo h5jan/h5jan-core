@@ -96,6 +96,8 @@ This guide assumes that you are familiar with gradle and have a build.gradle fil
 
 Steps
 -----
+Still working publishing to maven central. If it does not work then binaries are on github release.
+
 1. Make sure  
 ~~~~ 
 mavenCentral()
@@ -129,8 +131,8 @@ Build
 
 Run `gradlew` (`gradlew.bat` on Windows) from the root directory.
 
-        $ git clone git@git.openearth.community:GeoToolbox/codeanalysis.git
-        $ cd codeanalysis
+        $ git clone git@github.com:h5jan/h5jan-core.git
+        $ cd h5jan-core
         $ ./gradlew
         :compileJava UP-TO-DATE
         :processResources UP-TO-DATE
