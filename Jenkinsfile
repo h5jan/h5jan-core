@@ -11,11 +11,10 @@ pipeline {
     }
 
     options {
-        // Colorize the console log
-        //ansiColor("xterm")
-        // Tell GitLab about the build stages we're about to run
-        gitLabConnection('git.openearth.io-geotoolbox')
-        gitlabBuilds(builds: ['Prep', 'Build'])
+        // Tell Git about the build stages we're about to run
+        // gitLabConnection('TODO')
+        // gitlabBuilds(builds: ['Prep', 'Build'])
+        
         // Add timestamps to console log
         timestamps()
     }
@@ -23,10 +22,6 @@ pipeline {
     tools {
         jdk 'jdk8'
         gradle 'gradle4'
-    }
-
-    environment {
-      REGISTRY ='geotoolbox-docker.repo.openearth.community'
     }
     
     stages {
@@ -62,12 +57,12 @@ pipeline {
                 parallel (
                     // Run on default agent
                     "linux": {
-                   		withCredentials([usernamePassword(credentialsId: 'repo.openearth.io-geotoolbox-ci', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                   		//withCredentials([usernamePassword(credentialsId: 'TODO', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
 	                        gitlabCommitStatus(name: 'Build') {
 	                            sh "gradle clean -PmakeRelease=${env.makeRelease} -Partifactory_user=${USERNAME} -Partifactory_password=${PASSWORD}"
 	                            sh "gradle -i -PmakeRelease=${env.makeRelease} -Partifactory_user=${USERNAME} -Partifactory_password=${PASSWORD}"
 	                        }
-                        }
+                        //}
                     }
                 )
             }
@@ -84,9 +79,10 @@ pipeline {
 								} else {
 									echo "Tagging and pushing to Git"
 	          						sh("git tag -a ${env.tagVersion} -m 'version ${env.tagVersion}'")
-          							sshagent(['git.openearth.io-geotoolbox']) {
-	              						sh("git push --tags")
-          							}
+          							// TODO FIXME
+          							//sshagent(['TODO']) {
+	              					//	sh("git push --tags")
+          							//}
 								}
 							}
 						}						
@@ -101,11 +97,10 @@ pipeline {
 	                if (env.BRANCH_NAME.equals("master")) {
                     	gitlabCommitStatus(name: 'Deliver') {
 	                    
-                        	// TODO This is not functional, the build does not push to the artifactory
-                        	// unless you manually do a gradle publish at the moment.
-                    		withCredentials([usernamePassword(credentialsId: 'repo.openearth.io-geotoolbox-ci', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                        	// TODO Fix credentials
+                    		//withCredentials([usernamePassword(credentialsId: 'TODO', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                              	sh "gradle publish -Pdo_publishing=true -Partifactory_user=${USERNAME} -Partifactory_password=${PASSWORD} -PmakeRelease=${env.makeRelease}"						
-                        	}
+                        	//}
                     	}
                 	} else{
 	                    gitlabCommitStatus(name: 'Deliver') {

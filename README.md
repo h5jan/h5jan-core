@@ -31,6 +31,11 @@ NOTE: This project *has not* been proposed as an eclipse science project yet, ho
 it is made up of code from the dawnsci project and depends on January. 
 
  \* Eclipse January has a page on the [Eclipse Foundation](https://www.eclipse.org/january/) web site.
+ 
+## Setting PATH and LD_LIBRARY_PATH
+
+You can set PATH on windows or LD_LIBRARY_PATH on linux to set the path to load the HDF5 libaries for our OS.
+These are included in the lib folder. The code attempts to use [System.load(File)](https://stackoverflow.com/questions/2937406/how-to-bundle-a-native-library-and-a-jni-library-inside-a-jar) to find the libraries in the jar.
 
 How to use h5jan from a Gradle Build
 ====================================

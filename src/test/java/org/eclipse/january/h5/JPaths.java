@@ -45,7 +45,7 @@ public class JPaths {
 	 */
 	public static final Path getTestResource(String testPath) {
 		Path res = getHome().resolve("src/test/resources");
-		return res.resolve(testPath).normalize();
+		return res.resolve(testPath);
 	}
 
 
@@ -56,7 +56,8 @@ public class JPaths {
 	 * @throws IOException if path cannot be found
 	 */
 	public static final Path getHome() {
-        return search("H5JAN_DIR", Arrays.asList("h5Jan/", "h5Jan.git/"), FOUR_BACK, true);
+		Path home = search("H5JAN_DIR", Arrays.asList("h5jan-core/", "h5jan-core.git/", "h5jan/", "h5jan.git/"), FOUR_BACK, true);
+		return home.normalize();
 	}
 
 	/**

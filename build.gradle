@@ -19,17 +19,21 @@ apply plugin: "com.webcohesion.enunciate"
 group 'org.eclipse.january'
 
 ext {
-    if (!project.hasProperty('version')) {
-		version = "0.1.0"
+	baseVersion = "0.1.0"
+    if (project.hasProperty('version')) {
+		baseVersionNum = version
     }
-    if (!project.hasProperty('release')) {
-        release = 'master'
-    }
+
+	fullVersion = baseVersion + "-SNAPSHOT"
+    if (project.hasProperty("makeRelease")) {
+		fullVersion = baseVersion
+	}
+    
 }
 
 jar {
     baseName = 'h5jan-core'
-    version = version
+    version = fullVersion
 
     from("build/docs/"){
         into("generated/docs/")
@@ -37,6 +41,10 @@ jar {
     from("src/main/java"){
         include("**/*.properties")
     }
+    from(".") {
+     	include("lib/**")
+    }
+    
     manifest {
      	attributes(
 	      'Main-Class': 'org.eclipse.january.h5jan.Exercise'
@@ -100,8 +108,8 @@ tasks.withType(JacocoCoverageVerification) {
 }
 check.dependsOn jacocoTestCoverageVerification
 
-defaultTasks 'compileJava', 'enunciate', 'javadoc', 'checkstyleMain', 'jar', 'compileTestJava', 'processTestResources', 'testClasses', 'findbugsMain', 'pmdMain', 'check', 'test'
-description = "h5Jan Package"
+defaultTasks 'compileJava', 'enunciate', 'jar', 'compileTestJava', 'processTestResources', 'testClasses', 'findbugsMain', 'pmdMain', 'test'
+description = "h5jan"
 
 repositories {
     mavenCentral()
@@ -159,6 +167,12 @@ dependencies {
 	// Command Line Parsing
 	implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
 	implementation  'commons-io:commons-io:2.6'
+	
+	// https://mvnrepository.com/artifact/org.apache.commons/commons-configuration2
+	compile group: 'org.apache.commons', name: 'commons-configuration2', version: '2.6'
+	
+	// https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils
+    compile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
 	
 	// https://mvnrepository.com/artifact/tec.units/indriya/1.0  Units  BSD License
 	implementation group: 'tec.units', name: 'indriya', version: '1.0'

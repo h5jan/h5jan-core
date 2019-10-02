@@ -15,13 +15,27 @@
 package hdf.hdf5lib;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.builder.fluent.Configurations;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -247,6 +261,7 @@ public class H5 implements java.io.Serializable {
     }
 
     public static void loadH5Lib() {
+    	
         // Make sure that the library is loaded only once
         if (isLibraryLoaded)
             return;
@@ -300,6 +315,12 @@ public class H5 implements java.io.Serializable {
 
         // else load standard library
         if (!isLibraryLoaded) {
+        	try {
+				extract();
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("Cannot extract from jar, set PATH or LD_LIBRARY_PATH to include HDF libraries please.");
+			}
             String osName = System.getProperty("os.name");
             String libNameFormat = osName.startsWith("Mac OS X") ? "%s.103" : "%s"; // need to do this to minimise build differences
 
@@ -406,7 +427,112 @@ public class H5 implements java.io.Serializable {
 		}
 	}
 
-    // ////////////////////////////////////////////////////////////
+    /**
+     * Method designed to extract libraries from file.
+     * @return true if loaded.
+     * @throws IOException - if cannot find file. 
+     */
+    private static void extract() throws Exception {
+    	List<File> libraries = extractFiles();
+    	String dir = libraries.get(0).getParentFile().getAbsolutePath();
+    	addLibraryPath(dir);
+    }
+    
+    public static void addLibraryPath(String pathToAdd) throws Exception {
+    	System.setProperty( "java.library.path", pathToAdd+File.pathSeparator+System.getProperty("java.library.path"));
+        Field fieldSysPath = ClassLoader.class.getDeclaredField("sys_paths");
+        try {
+	        fieldSysPath.setAccessible( true );
+	        fieldSysPath.set( null, null );
+        } finally {
+        	fieldSysPath.setAccessible( false );
+        }
+	}
+
+	/**
+     * Hard coded file names to use from jar file.
+     * @return list of hard coded library files.
+     */
+	private static List<File> extractFiles() throws Exception {
+		
+		String osName = System.getProperty("os.name").toLowerCase();
+		if(osName.contains("windows")) {
+			return extractNames("win32", "names.properties");
+			
+		} else if (osName.contains("mac")) {
+			return extractNames("macosx", "names.properties");
+		} else {
+			return extractNames("linux", "names.properties");
+		}
+	}
+	
+	private static List<File> extractNames(String osName, String nameFile) throws ConfigurationException {
+    	
+		Configuration conf = getConfiguration("lib/"+osName+"/"+nameFile);
+    	List<String> names = Arrays.asList(conf.getString("names").split(","));
+    	return extract(osName, names);
+	}
+
+	private static List<File> extract(String osName, List<String> names) {
+		return names.stream()
+				.map(name->"lib/"+osName+"/"+name.trim())
+				.map(path->H5.getFile(path))
+				.collect(Collectors.toList());
+	}
+	
+    private static File getFile(String path) {
+    	
+    	final File extract = new File(System.getProperty("java.io.tmpdir")+"/h5jan/"+path);
+    	if (extract.exists()) return extract;
+    	
+    	InputStream in = getStream(path);
+    	if (in==null) return null;
+    	
+    	extract.getParentFile().mkdirs();
+    	try {
+    		ReadableByteChannel readChannel = Channels.newChannel(in);
+    		try (FileOutputStream fileOS = new FileOutputStream(extract)) {
+    			FileChannel writeChannel = fileOS.getChannel();
+    			writeChannel.transferFrom(readChannel, 0, Long.MAX_VALUE);
+    		}
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    	}
+    	return extract;
+	}
+
+	private static InputStream getStream(String path) {
+    	URL url  = H5.class.getResource(path);
+    	try {
+	    	if (url!=null) {
+	    		return url.openStream();
+	    	} else {
+	    		return new FileInputStream(new File(path)); // Might work for tests depening on where run from.
+	    	}
+    	} catch (Exception ne) {
+    		ne.printStackTrace();
+    		return null;
+    	}
+	}
+	
+	private static Configuration getConfiguration(String path) {
+		
+		Configurations configs = new Configurations();
+    	URL url  = H5.class.getResource(path);
+    	try {
+	    	if (url!=null) {
+	    		return configs.properties(url);
+	    	} else {
+	    		return configs.properties(new File(path)); // Might work for tests depening on where run from.
+	    	}
+    	} catch (Exception ne) {
+    		ne.printStackTrace();
+    		return null;
+    	}
+	}
+
+
+	// ////////////////////////////////////////////////////////////
     // //
     // H5: General Library Functions //
     // //

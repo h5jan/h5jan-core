@@ -25,7 +25,8 @@ package hdf.hdf5lib;
  * <b>See also:</b> hdf.hdf5lib.HDF5Library
  */
 public class HDF5Constants {
-    static {
+    
+	static {
         H5.loadH5Lib();
     }
 
