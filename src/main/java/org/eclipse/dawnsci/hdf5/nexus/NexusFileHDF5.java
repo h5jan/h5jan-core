@@ -1790,5 +1790,10 @@ public class NexusFileHDF5 implements NexusFile {
 	public void setCacheDataset(boolean cacheDataset) {
 		file.setDatasetIDsCaching(cacheDataset);
 	}
+	
+	@Override
+	public Tree getTree() {
+		return this.tree;
+	}
 
 }

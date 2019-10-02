@@ -16,6 +16,7 @@ import org.eclipse.dawnsci.analysis.api.tree.Attribute;
 import org.eclipse.dawnsci.analysis.api.tree.DataNode;
 import org.eclipse.dawnsci.analysis.api.tree.GroupNode;
 import org.eclipse.dawnsci.analysis.api.tree.Node;
+import org.eclipse.dawnsci.analysis.api.tree.Tree;
 import org.eclipse.january.dataset.IDataset;
 import org.eclipse.january.dataset.ILazyWriteableDataset;
 
@@ -391,4 +392,10 @@ public interface NexusFile extends AutoCloseable {
 	 */
 	public Node getNode(String path) throws NexusException;
 
+	/**
+	 * Get the complete tree of data.
+	 * @return tree or null if none exists.
+	 * @throws NexusException
+	 */
+	public Tree getTree() throws NexusException;
 }
