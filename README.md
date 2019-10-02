@@ -20,7 +20,7 @@ machine learning run are required, h5jan allows you to write h5 files which can 
 as dataframes or numpy arrays in python using h5py and pandas.
 
 ## Examples
-```
+```java
 // Read a slice
 try(NxsFile nfile = NxsFile.open("i05-4859.nxs")) {
 
