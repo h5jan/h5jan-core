@@ -116,10 +116,10 @@ data slicing can be created - where that solves your problems of coure!
 ```
 
 ## Additional Examples
-The [other examples]() are run as part of the unit tests.
+The [other examples](https://github.com/h5jan/h5jan-core/tree/master/src/test/java/org/eclipse/january/h5jan/examples) are run as part of the unit tests.
 
 When the nxs file is opened in [DAWN](http://www.dawnsci.org) you get:
-![stack](https://github.com/h5jan/h5jan-core/tree/master/src/test/java/org/eclipse/january/h5jan/examples)
+![stack](https://github.com/h5jan/h5jan-core/blob/master/dawn.png)
 
 ## Repackaging
 This project is only possible by repackaging some code released on github using an EPL license.
