@@ -24,50 +24,88 @@ of holding large datasets in memory on vendor cloud and paying the cost, relativ
 data slicing can be created - where that solves your problems of coure!
 
 ## Examples
+### Dataset Examples
 ```java
-// Read a slice
-try(NxsFile nfile = NxsFile.open("i05-4859.nxs")) {
 
-	// Data *not* read in
-	ILazyDataset lz = nfile.getDataset("/entry1/instrument/analyser/data");
+	// Read a slice
+	try(NxsFile nfile = NxsFile.open("i05-4859.h5")) {
 	
-	// Read in a slice and squeeze it into an image. *Data now in memory*
-	IDataset    mem = lz.getSlice(new Slice(), new Slice(100, 600), new Slice(200, 700));
-	mem.squeeze();
-}
-
-// Write nD data to block not holding it in memory
-try(NxsFile nfile = NxsFile.open("my_example.nxs")) {
-
-	// We create a place to put our data
-	ILazyWriteableDataset data = new LazyWriteableDataset("data", Dataset.FLOAT64, new int[] { 10, 1024, 1024 }, null, null, null);
-
-	// We have all the data in memory, it might be large at this point!
-	nfile.createData("/entry1/acme/experiment1/", data, true);
+		// Data *not* read in
+		ILazyDataset lz = nfile.getDataset("/entry1/instrument/analyser/data");
 		
-	// Make an image to write
-	IDataset random = Random.rand(1, 1024, 1024);
-		
-	// Write one image, others may follow
-	data.setSlice(new IMonitor.Stub(), random, new SliceND(random.getShape(), new Slice(0,1), new Slice(0,1024), new Slice(0,1024)));
-}
+		// Read in a slice and squeeze it into an image. *Data now in memory*
+		IDataset    mem = lz.getSlice(new Slice(), new Slice(100, 600), new Slice(200, 700));
+		mem.squeeze();
+	}
 
-// Write stream of images in above example.
-for (int i = 0; i < 10; i++) {
-	// Make an image to write
-	IDataset random = Random.rand(1, 1024, 1024);
+	// Write nD data to block not holding it in memory
+	try(NxsFile nfile = NxsFile.open("my_example.h5")) {
+	
+		// We create a place to put our data
+		ILazyWriteableDataset data = new LazyWriteableDataset("data", Dataset.FLOAT64, new int[] { 10, 1024, 1024 }, null, null, null);
+	
+		// We have all the data in memory, it might be large at this point!
+		nfile.createData("/entry1/acme/experiment1/", data, true);
 			
-	// Write one image, others may follow. We use the int args for adding the randoms here.
-	data.setSlice(new IMonitor.Stub(), random, SliceND.createSlice(data, new int[] {i,0,0}, new int[] {i+1,1024,1024}, new int[] {1,1,1}));
+		// Make an image to write
+		IDataset random = Random.rand(1, 1024, 1024);
 			
-	// Optionally flush
-	nfile.flush();
-}
+		// Write one image, others may follow
+		data.setSlice(new IMonitor.Stub(), random, new SliceND(random.getShape(), new Slice(0,1), new Slice(0,1024), new Slice(0,1024)));
+	}
+
+	// Write stream of images in above example.
+	for (int i = 0; i < 10; i++) {
+		// Make an image to write
+		IDataset random = Random.rand(1, 1024, 1024);
+				
+		// Write one image, others may follow. We use the int args for adding the randoms here.
+		data.setSlice(new IMonitor.Stub(), random, SliceND.createSlice(data, new int[] {i,0,0}, new int[] {i+1,1024,1024}, new int[] {1,1,1}));
+				
+		// Optionally flush
+		nfile.flush();
+	}
 
 ```
 
+### DataFrame Examples
+```java
+
+	// Write in memory
+	// We create a place to put our data
+	IDataset someData = Random.rand(256, 3);
+	someData.setName("fred");
+		
+	// Make a test frame
+	DataFrame frame = new DataFrame(someData, 1, Arrays.asList("a", "b", "c"), Dataset.FLOAT32);
+		
+	// Save to HDF5
+	frame.to_hdf("test-scratch/write_example/inmem_data_frame.h5", "/entry1/myData");
+
+
+	// Write as slices, not all frame in memory at one time.
+	// We create a place to put our data
+	ILazyWriteableDataset data = DataFrame.create("data", Dataset.FLOAT32, new int[] { 256 });
+		
+	// Make a test frame
+	DataFrame frame = new DataFrame(data, Dataset.FLOAT32);
+		
+	// Save to HDF5, columns can be large, these are not it's a test
+	try (Appender app = frame.open_hdf("test-scratch/write_example/lazy_data_frame.h5", "/entry1/myData")) {
+			
+		// Add the columns incrementally without them all being in memory
+		for (int i = 0; i < 10; i++) {
+			app.append("slice_"+i, Random.rand(256));
+		}
+	}
+
+```
+
+## Additional Examples
+The [other examples]() are run as part of the unit tests.
+
 When the nxs file is opened in [DAWN](http://www.dawnsci.org) you get:
-![stack](https://github.com/h5jan/h5jan-core/blob/master/dawn.png)
+![stack](https://github.com/h5jan/h5jan-core/tree/master/src/test/java/org/eclipse/january/h5jan/examples)
 
 ## Repackaging
 This project is only possible by repackaging some code released on github using an EPL license.

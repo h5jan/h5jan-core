@@ -158,8 +158,8 @@ test {
 dependencies {
 
     // Datasets
-    implementation 'org.eclipse.january:org.eclipse.january:2.1.5'
-    implementation 'org.eclipse.january:org.eclipse.january.asserts:2.1.5'
+    implementation 'org.eclipse.january:org.eclipse.january:2.3.0'
+    implementation 'org.eclipse.january:org.eclipse.january.asserts:2.3.0'
     
     // Tablesaw
     implementation group: 'tech.tablesaw', name: 'tablesaw-core', version: '0.34.1'
