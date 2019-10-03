@@ -2,22 +2,26 @@
 =====
 
 ## What is it
-h5jan is a Java(TM) API for reading and writing [Eclipse January*](https://github.com/eclipse/january) datasets.
+h5jan is a Java(TM) API for reading and writing [Eclipse January*](https://github.com/eclipse/january) datasets ot HDF5.
+It happens to write the HDF5 in the [NeXus](http://lns00.psi.ch/NeXus/) format which is a self describing binary data format
+which is easily readable from Python as DataFrames.
 
 It allows the reading and writing of:
 1. <b>Datasets</b> to/from HDF5 files.
 2. <b>Lazy datasets</b> to/from HDF5 files and working with slices. (Larger data than will fit in memory).
 
-The HDF5 files written use the [NeXus](https://en.wikipedia.org/wiki/Nexus_file)  format for writing multi-dimensional data.
-Nexus files are commonly used in Bioinformatics and other scientific scenarios.
-They can easily be read in python using h5py and used to build data frames.
-
-Why are these things useful we hear you ask? Well it means that numpy-like data structures can be built in Java and
+Why are these things useful we hear you ask? Well it means that binary data structures can be built in Java and
 saved as HDF5. That then means that you can use Java in the middleware or middle
 microservice, here it shines with tools like Spring Boot available and its many 
 multi-threaded APIs. Then if a parallel execution of python process such as 
 machine learning run are required, h5jan allows you to write h5 files which can be loaded
 as dataframes or numpy arrays in python using h5py and pandas.
+
+Not only that but the reading and writing API are based around slicable lazy data. This allows code to be
+written which interacts with very large datasets without loading all the data into memory. You can write 
+on the fly using ILazyWritableDataset and read slices as required for data analysis. This means that instead
+of holding large datasets in memory on vendor cloud and paying the cost, relatively cheap solutions around
+data slicing can be created - where that solves your problems of coure!
 
 ## Examples
 ```java
@@ -48,20 +52,20 @@ try(NxsFile nfile = NxsFile.open("my_example.nxs")) {
 	data.setSlice(new IMonitor.Stub(), random, new SliceND(random.getShape(), new Slice(0,1), new Slice(0,1024), new Slice(0,1024)));
 }
 
-    // Write stream of images in above example.
-	for (int i = 0; i < 10; i++) {
-		// Make an image to write
-		IDataset random = Random.rand(1, 1024, 1024);
+// Write stream of images in above example.
+for (int i = 0; i < 10; i++) {
+	// Make an image to write
+	IDataset random = Random.rand(1, 1024, 1024);
 			
-		// Write one image, others may follow. We use the int args for adding the randoms here.
-		data.setSlice(new IMonitor.Stub(), random, SliceND.createSlice(data, new int[] {i,0,0}, new int[] {i+1,1024,1024}, new int[] {1,1,1}));
+	// Write one image, others may follow. We use the int args for adding the randoms here.
+	data.setSlice(new IMonitor.Stub(), random, SliceND.createSlice(data, new int[] {i,0,0}, new int[] {i+1,1024,1024}, new int[] {1,1,1}));
 			
-		// Optionally flush
-		nfile.flush();
-	}
-
+	// Optionally flush
+	nfile.flush();
+}
 
 ```
+
 When the nxs file is opened in [DAWN](http://www.dawnsci.org) you get:
 ![stack](https://github.com/h5jan/h5jan-core/blob/master/dawn.png)
 
@@ -231,3 +235,5 @@ You can change the log levels for an installed Docker image, by using the \_JAVA
  
         -DROOT_LOG_LEVEL=DEBUG -DSTDOUT_LOG_LEVEL=DEBUG -DHAL_LOG_LEVEL=DEBUG -DFILE_LOG_LEVEL=DEBUG
  
+## License
+See [LICENSE](https://github.com/h5jan/h5jan-core/blob/master/LICENSE.MD)
