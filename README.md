@@ -25,6 +25,7 @@ data slicing can be created - where that solves your problems of coure!
 
 ## Examples
 ### Dataset Examples
+#### Read
 ```java
 
 	// Read a slice
@@ -37,6 +38,9 @@ data slicing can be created - where that solves your problems of coure!
 		IDataset    mem = lz.getSlice(new Slice(), new Slice(100, 600), new Slice(200, 700));
 		mem.squeeze();
 	}
+```
+#### Write nD array
+```java
 
 	// Write nD data to block not holding it in memory
 	try(NxsFile nfile = NxsFile.open("my_example.h5")) {
@@ -53,6 +57,10 @@ data slicing can be created - where that solves your problems of coure!
 		// Write one image, others may follow
 		data.setSlice(new IMonitor.Stub(), random, new SliceND(random.getShape(), new Slice(0,1), new Slice(0,1024), new Slice(0,1024)));
 	}
+```
+
+#### Write stream of images
+```java
 
 	// Write stream of images in above example.
 	for (int i = 0; i < 10; i++) {
@@ -69,6 +77,9 @@ data slicing can be created - where that solves your problems of coure!
 ```
 
 ### DataFrame Examples
+
+#### Write DataFrame
+
 ```java
 
 	// Write in memory
@@ -81,7 +92,10 @@ data slicing can be created - where that solves your problems of coure!
 		
 	// Save to HDF5
 	frame.to_hdf("test-scratch/write_example/inmem_data_frame.h5", "/entry1/myData");
+```
 
+#### Write Data Frame as Slices - save memory!
+```java
 
 	// Write as slices, not all frame in memory at one time.
 	// We create a place to put our data
