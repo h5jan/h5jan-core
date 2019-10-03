@@ -118,7 +118,7 @@ data slicing can be created - where that solves your problems of coure!
 ## Additional Examples
 The [other examples](https://github.com/h5jan/h5jan-core/tree/master/src/test/java/org/eclipse/january/h5jan/examples) are run as part of the unit tests.
 
-When the nxs file is opened in [DAWN](http://www.dawnsci.org) you get:
+When the image stack nxs file is opened in [DAWN](http://www.dawnsci.org) you get:
 ![stack](https://github.com/h5jan/h5jan-core/blob/master/dawn.png)
 
 ## Repackaging
