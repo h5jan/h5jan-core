@@ -20,6 +20,7 @@ import org.eclipse.dawnsci.nexus.NexusException;
 import org.eclipse.january.DatasetException;
 import org.eclipse.january.IMonitor;
 import org.eclipse.january.dataset.IDataset;
+import org.eclipse.january.dataset.ILazyDataset;
 import org.eclipse.january.dataset.ILazyWriteableDataset;
 import org.eclipse.january.dataset.SliceND;
 
@@ -56,22 +57,9 @@ class AppenderImpl implements Appender {
 		names.add(name);
 		
 		int i = names.size()-1; // The index we are on
-		int [] shape = new int[slice.getShape().length+1];
-		System.arraycopy(slice.getShape(), 0, shape, 0, slice.getShape().length);
-		shape[shape.length-1] = 1;
-		slice.resize(shape);
 		
-		int[] from = new int[shape.length];
-		from[from.length-1] = i;
-		
-		int[] to = new int[shape.length];
-		System.arraycopy(shape, 0, to, 0, to.length);
-		to[to.length-1] = i+1;
-		
-		int[]step = new int[shape.length];
-		Arrays.fill(step, 1);
-
-		data.setSlice(monitor, slice, SliceND.createSlice(data, from, to, step));
+		DatasetFrame.addDimension(slice);
+		data.setSlice(monitor, slice, DatasetFrame.orient(data,i,slice.getShape()));
 	}
 
 	public void close() throws Exception {

@@ -15,9 +15,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.january.DatasetException;
-import org.eclipse.january.dataset.AggregateDataset;
+import org.eclipse.january.dataset.Dataset;
+import org.eclipse.january.dataset.DatasetFactory;
 import org.eclipse.january.dataset.IDataset;
 import org.eclipse.january.dataset.ILazyDataset;
+import org.eclipse.january.dataset.SliceND;
 
 /**
  * Dataset Frame is a holder of the kind of data needed by DataFrame
@@ -40,18 +42,28 @@ class DatasetFrame {
 		this.name = name;
 	}
 	
-	public DatasetFrame(String name, int dtype, IDataset... columns) throws DatasetException {
+	public DatasetFrame(String name, int dtype, Dataset... columns) throws DatasetException {
 		this(name);
 		int[] shape = checkSameShape(columns);
 		int[] full  = new int[shape.length+1];
 		System.arraycopy(shape, 0, full, 0, shape.length);
 		full[full.length-1] = columns.length;
-		this.dtype = dtype;
-		this.data = new AggregateDataset(true, columns);
+		
+		Dataset tdata = DatasetFactory.zeros(columns[0].getClass(), full);
+		tdata.setName(name);
+		
+		this.name = name;
 		this.names = new ArrayList<String>();
 		for (int i = 0; i < columns.length; i++) {
+			
+			if (columns[i].getName() == null) {
+				throw new IllegalArgumentException("All columns must have a name please!");
+			}
 			names.add(columns[i].getName());
+			DatasetFrame.addDimension(columns[i]);
+			tdata.setSlice(columns[i], orient(tdata, i, full));
 		}
+		this.data = tdata;
 	}
 
 
@@ -183,5 +195,25 @@ class DatasetFrame {
 		return true;
 	}
 
+	
+	public static SliceND orient(ILazyDataset data, int i, int[]shape) {
+		int[] from = new int[shape.length];
+		from[from.length-1] = i;
+		
+		int[] to = new int[shape.length];
+		System.arraycopy(shape, 0, to, 0, to.length);
+		to[to.length-1] = i+1;
+		
+		int[]step = new int[shape.length];
+		Arrays.fill(step, 1);
+		
+		return SliceND.createSlice(data, from, to, step);
+	}
 
+	public static void addDimension(IDataset slice) {
+		int [] shape = new int[slice.getShape().length+1];
+		System.arraycopy(slice.getShape(), 0, shape, 0, slice.getShape().length);
+		shape[shape.length-1] = 1;
+		slice.resize(shape);
+	}
 }

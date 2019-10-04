@@ -23,7 +23,6 @@ import org.junit.runners.MethodSorters;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) // We write some files then futher test them.
 public class DataFrameExample {
-
 	
 	/**
 	 * All data in memory, write it out.
@@ -31,7 +30,7 @@ public class DataFrameExample {
 	 * @throws Exception
 	 */
 	@Test
-	public void awriteInMemoryDataFrame() throws Exception {
+	public void awriteInMemoryDataFrame1() throws Exception {
 		
 		// We create a place to put our data
 		IDataset someData = Random.rand(256, 3);
@@ -42,6 +41,26 @@ public class DataFrameExample {
 		
 		// Save to HDF5
 		frame.to_hdf("test-scratch/write_example/inmem_data_frame.h5", "/entry1/myData");
+	}
+	
+	/**
+	 * All data in memory, write it out.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void awriteInMemoryDataFrame2() throws Exception {
+		
+		Dataset[] sets = new Dataset[3];
+		for (int i = 0; i < sets.length; i++) {
+			sets[i] = Random.rand(256);
+			sets[i].setName("slice_"+i);
+ 		}
+		// Make a test frame
+		DataFrame frame = new DataFrame("some_columns", Dataset.FLOAT32, sets);
+		
+		// Save to HDF5
+		frame.to_hdf("test-scratch/write_example/inmem_data_frame_inc.h5", "/entry1/myData");
 	}
 	
 	/**
@@ -95,9 +114,15 @@ public class DataFrameExample {
 	public void readFrames() throws Exception {
 		
 		DataFrame frame = new DataFrame();
+
 		frame.read_hdf("test-scratch/write_example/inmem_data_frame.h5");
 		assertArrayEquals(new int[] {256, 3}, frame.getData().getShape());
 		assertEquals(Arrays.asList("a", "b", "c"), frame.getNames());
+		assertEquals(frame, readWriteTmp(frame));
+		
+		frame.read_hdf("test-scratch/write_example/inmem_data_frame_inc.h5");
+		assertArrayEquals(new int[] {256, 3}, frame.getData().getShape());
+		assertEquals(Arrays.asList("slice_0", "slice_1", "slice_2"), frame.getNames());
 		assertEquals(frame, readWriteTmp(frame));
 		
 		frame.read_hdf("test-scratch/write_example/lazy_data_frame-2d.h5");

@@ -25,7 +25,6 @@ import org.eclipse.january.dataset.IDataset;
 import org.eclipse.january.dataset.ILazyDataset;
 import org.eclipse.january.dataset.ILazyWriteableDataset;
 import org.eclipse.january.dataset.LazyWriteableDataset;
-import org.eclipse.january.dataset.StringDataset;
 import org.eclipse.january.dataset.StringDatasetBase;
 
 /**
@@ -59,7 +58,7 @@ public class DataFrame extends DatasetFrame {
 		super(name);
 	}
 	
-	public DataFrame(String name, int dtype, IDataset... columns) throws DatasetException {
+	public DataFrame(String name, int dtype, Dataset... columns) throws DatasetException {
 		super(name, dtype, columns);
 	}
 
