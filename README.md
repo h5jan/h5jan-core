@@ -24,6 +24,57 @@ of holding large datasets in memory on vendor cloud and paying the cost, relativ
 data slicing can be created - where that solves your problems of coure!
 
 ## Examples
+
+### DataFrame Examples
+#### Write DataFrame
+
+```java
+
+	// Write in memory
+	// We create a place to put our data
+	IDataset someData = Random.rand(256, 3);
+	someData.setName("fred");
+		
+	// Make a test frame
+	DataFrame frame = new DataFrame(someData, 1, Arrays.asList("a", "b", "c"), Dataset.FLOAT32);
+		
+	// Save to HDF5
+	frame.to_hdf("test-scratch/write_example/inmem_data_frame.h5", "/entry1/myData");
+```
+
+### Reading DataFrame in Python
+```python
+
+	# Make a reader
+	reader = DataFrameReader()
+	# Read the frame
+	print(reader.read('test-scratch/write_example/lazy_data_frame-2d.h5'))
+	
+```
+The python class DataFrameReader is not yet available on pypi
+it is here: [DataFrameReader](https://github.com/h5jan/h5jan-core/blob/master/read_example.py)
+
+#### Write Data Frame as Slices - save memory!
+```java
+
+	// Write as slices, not all frame in memory at one time.
+	// We create a place to put our data
+	ILazyWriteableDataset data = DataFrame.create("data", Dataset.FLOAT32, new int[] { 256 });
+		
+	// Make a test frame
+	DataFrame frame = new DataFrame(data, Dataset.FLOAT32);
+		
+	// Save to HDF5, columns can be large, these are not it's a test
+	try (Appender app = frame.open_hdf("test-scratch/write_example/lazy_data_frame.h5", "/entry1/myData")) {
+			
+		// Add the columns incrementally without them all being in memory
+		for (int i = 0; i < 10; i++) {
+			app.append("slice_"+i, Random.rand(256));
+		}
+	}
+
+```
+
 ### Dataset Examples
 #### Read
 ```java
@@ -72,45 +123,6 @@ data slicing can be created - where that solves your problems of coure!
 				
 		// Optionally flush
 		nfile.flush();
-	}
-
-```
-
-### DataFrame Examples
-
-#### Write DataFrame
-
-```java
-
-	// Write in memory
-	// We create a place to put our data
-	IDataset someData = Random.rand(256, 3);
-	someData.setName("fred");
-		
-	// Make a test frame
-	DataFrame frame = new DataFrame(someData, 1, Arrays.asList("a", "b", "c"), Dataset.FLOAT32);
-		
-	// Save to HDF5
-	frame.to_hdf("test-scratch/write_example/inmem_data_frame.h5", "/entry1/myData");
-```
-
-#### Write Data Frame as Slices - save memory!
-```java
-
-	// Write as slices, not all frame in memory at one time.
-	// We create a place to put our data
-	ILazyWriteableDataset data = DataFrame.create("data", Dataset.FLOAT32, new int[] { 256 });
-		
-	// Make a test frame
-	DataFrame frame = new DataFrame(data, Dataset.FLOAT32);
-		
-	// Save to HDF5, columns can be large, these are not it's a test
-	try (Appender app = frame.open_hdf("test-scratch/write_example/lazy_data_frame.h5", "/entry1/myData")) {
-			
-		// Add the columns incrementally without them all being in memory
-		for (int i = 0; i < 10; i++) {
-			app.append("slice_"+i, Random.rand(256));
-		}
 	}
 
 ```
