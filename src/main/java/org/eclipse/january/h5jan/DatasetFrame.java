@@ -27,12 +27,16 @@ import org.eclipse.january.dataset.ILazyDataset;
 class DatasetFrame {
 	
 	protected String 		name;
-	protected int   		dtype;
+	protected int   		dtype=-1; // NONE
 	protected ILazyDataset 	data;
 	protected int 			index=0;
 	protected List<String> 	names;
 
+	public DatasetFrame() {
+	}
+
 	public DatasetFrame(String name) {
+		this();
 		this.name = name;
 	}
 	

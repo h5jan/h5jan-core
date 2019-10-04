@@ -44,7 +44,7 @@ public class DatasetReadExample {
 	@Before
 	public void read() throws Exception {
 		Path file = JPaths.getTestResource("i05-4859.nxs");
-		nfile = NxsFile.open(file.toString());
+		nfile = NxsFile.reference(file.toString());
 	}
 	
 	@After

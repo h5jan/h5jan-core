@@ -12,16 +12,21 @@ package org.eclipse.january.h5jan;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.dawnsci.analysis.api.tree.GroupNode;
 import org.eclipse.dawnsci.analysis.tree.impl.AttributeImpl;
 import org.eclipse.dawnsci.nexus.NexusException;
 import org.eclipse.january.DatasetException;
+import org.eclipse.january.dataset.Dataset;
 import org.eclipse.january.dataset.DatasetUtils;
 import org.eclipse.january.dataset.IDataset;
 import org.eclipse.january.dataset.ILazyDataset;
 import org.eclipse.january.dataset.ILazyWriteableDataset;
 import org.eclipse.january.dataset.LazyWriteableDataset;
+import org.eclipse.january.dataset.StringDataset;
+import org.eclipse.january.dataset.StringDatasetBase;
 
 /**
  * A data frame of January datasets which
@@ -40,8 +45,16 @@ import org.eclipse.january.dataset.LazyWriteableDataset;
  */
 public class DataFrame extends DatasetFrame {
 	
-	private boolean open = false;
+	final static String COL_NAMES = "column_names";
+	final static String PATH 	  = "path";
+	final static String DATA_PATH = "data";
 	
+	private volatile boolean open = false;
+	
+	public DataFrame() {
+		super();
+	}
+
 	public DataFrame(String name) {
 		super(name);
 	}
@@ -66,7 +79,7 @@ public class DataFrame extends DatasetFrame {
 	 * @throws DatasetException
 	 */
 	@SuppressWarnings("deprecation")
-	public void to_hdf(String filePath, String h5Path) throws NexusException, IOException, DatasetException {
+	public DataFrame to_hdf(String filePath, String h5Path) throws NexusException, IOException, DatasetException {
 		
 		if (data.getShape()[data.getRank()-1]!=names.size()) {
 			throw new IllegalArgumentException("The names must match the last dimension of data!");
@@ -74,12 +87,18 @@ public class DataFrame extends DatasetFrame {
 		try(NxsFile nfile = NxsFile.create(filePath)) {
 			
 			IDataset toWrite = this.data.getSlice();
-			toWrite = DatasetUtils.cast(toWrite, this.dtype); // Does nothing if it can.
+			if (dtype>-1) {
+				toWrite = DatasetUtils.cast(toWrite, this.dtype); // Does nothing if it can.
+			}
+			toWrite.setName(data.getName());
 			
 			// We have all the data in memory, it might be large at this point!
 			nfile.createData(h5Path, toWrite, true);
-			nfile.addAttribute(h5Path, new AttributeImpl("column_names", names));
+			nfile.addAttribute(h5Path, new AttributeImpl(COL_NAMES, names));
+			nfile.addAttribute("/", new AttributeImpl(PATH, h5Path));
+			nfile.addAttribute("/", new AttributeImpl(DATA_PATH, h5Path+"/"+data.getName()));
 		}
+		return this;
 	}
 
 	/**
@@ -103,6 +122,32 @@ public class DataFrame extends DatasetFrame {
 		this.open = true;
 		
 		return new AppenderImpl(names, filePath, h5Path, (ILazyWriteableDataset)data, ()->this.open=false);
+	}
+	
+	/**
+	 * Read a dataframe as LazyDatasets from the file.
+	 * @param filePath
+	 * @throws NexusException
+	 * @throws IOException
+	 * @throws DatasetException 
+	 */
+	public DataFrame read_hdf(String filePath) throws NexusException, IOException, DatasetException {
+		try(NxsFile nfile = NxsFile.reference(filePath)) {
+			
+			GroupNode node = nfile.getGroup("/", false);
+			String path = node.getAttribute(DataFrame.PATH).getValue().getString();
+			String dataPath = node.getAttribute(DataFrame.DATA_PATH).getValue().getString();
+			
+			GroupNode gdata = nfile.getGroup(path, false);
+			IDataset inames = gdata.getAttribute(COL_NAMES).getValue();
+			String[] snames = (String[])((StringDatasetBase)inames).getBuffer();
+			
+			// Assign fields of DataFrame that we know.
+			this.names = new ArrayList<String>(Arrays.asList(snames));
+			this.data = nfile.getDataset(dataPath);
+			this.name = this.data.getName();
+		}
+		return this;
 	}
 
 	public String getName() {

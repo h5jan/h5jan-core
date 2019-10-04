@@ -45,6 +45,9 @@ class AppenderImpl implements Appender {
 		this.h5Path = h5Path;
 		this.hFile 	= NxsFile.create(filePath);
 		this.hFile.createData(h5Path, data, true);
+		hFile.addAttribute("/", new AttributeImpl(DataFrame.PATH, h5Path));
+		hFile.addAttribute("/", new AttributeImpl(DataFrame.DATA_PATH, h5Path+"/"+data.getName()));
+
 		this.data 	= data;
 		this.closer = closer;
 	}

@@ -1,15 +1,27 @@
 package org.eclipse.january.h5jan.examples;
 
-import java.util.Arrays;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import org.eclipse.dawnsci.nexus.NexusException;
+import org.eclipse.january.DatasetException;
 import org.eclipse.january.dataset.Dataset;
 import org.eclipse.january.dataset.IDataset;
 import org.eclipse.january.dataset.ILazyWriteableDataset;
 import org.eclipse.january.dataset.Random;
 import org.eclipse.january.h5jan.Appender;
 import org.eclipse.january.h5jan.DataFrame;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING) // We write some files then futher test them.
 public class DataFrameExample {
 
 	
@@ -19,7 +31,7 @@ public class DataFrameExample {
 	 * @throws Exception
 	 */
 	@Test
-	public void writeInMemoryDataFrame() throws Exception {
+	public void awriteInMemoryDataFrame() throws Exception {
 		
 		// We create a place to put our data
 		IDataset someData = Random.rand(256, 3);
@@ -37,7 +49,7 @@ public class DataFrameExample {
 	 * @throws Exception
 	 */
 	@Test
-	public void writeLazyDataFrame2D() throws Exception {
+	public void awriteLazyDataFrame2D() throws Exception {
 		
 		// We create a place to put our data
 		ILazyWriteableDataset data = DataFrame.create("data", Dataset.FLOAT32, new int[] { 256 });
@@ -61,7 +73,7 @@ public class DataFrameExample {
 	 * @throws Exception
 	 */
 	@Test
-	public void writeLazyDataFrame3D() throws Exception {
+	public void awriteLazyDataFrame3D() throws Exception {
 		
 		// We create a place to put our data
 		ILazyWriteableDataset data = DataFrame.create("data", Dataset.FLOAT32, new int[] { 256, 256 });
@@ -79,4 +91,29 @@ public class DataFrameExample {
 		}
 	}
 
+	@Test
+	public void readFrames() throws Exception {
+		
+		DataFrame frame = new DataFrame();
+		frame.read_hdf("test-scratch/write_example/inmem_data_frame.h5");
+		assertArrayEquals(new int[] {256, 3}, frame.getData().getShape());
+		assertEquals(Arrays.asList("a", "b", "c"), frame.getNames());
+		assertEquals(frame, readWriteTmp(frame));
+		
+		frame.read_hdf("test-scratch/write_example/lazy_data_frame-2d.h5");
+		assertArrayEquals(new int[] {256, 10}, frame.getData().getShape());
+		List<String> snames = IntStream.range(0, 10).mapToObj(i->"slice_"+i).collect(Collectors.toList());
+		assertEquals(snames, frame.getNames());
+		assertEquals(frame, readWriteTmp(frame));
+
+		frame.read_hdf("test-scratch/write_example/lazy_data_frame-3d.h5");
+		assertArrayEquals(new int[] {256, 256, 10}, frame.getData().getShape());
+		assertEquals(snames, frame.getNames());
+		assertEquals(frame, readWriteTmp(frame));
+	}
+
+	private DataFrame readWriteTmp(DataFrame frame) throws NexusException, IOException, DatasetException {
+		frame.to_hdf("test-scratch/write_example/tmp.h5", "/some/other/path");
+		return frame.read_hdf("test-scratch/write_example/tmp.h5");
+	}
 }
