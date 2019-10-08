@@ -16,8 +16,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import org.eclipse.january.metadata.MetadataType;
-
 /**
  * Well metadata which contains the las metadata as a map
  * of maps. Each meta section name is added to the map with
@@ -26,7 +24,7 @@ import org.eclipse.january.metadata.MetadataType;
  * @author Matthew Gerring
  *
  */
-public class WellMetadata implements MetadataType {
+public class WellMetadata implements NxsMetadata {
 	
 	public static final String CURVE_INFO = "CURVE INFORMATION";
 
@@ -175,7 +173,7 @@ public class WellMetadata implements MetadataType {
 	}
 	
 	@Override
-	public MetadataType clone() {
+	public WellMetadata clone() {
 		return new WellMetadata(metadata);
 	}
 

@@ -12,17 +12,13 @@ package org.eclipse.january.h5jan;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.dawnsci.analysis.tree.impl.AttributeImpl;
 import org.eclipse.dawnsci.nexus.NexusException;
 import org.eclipse.january.DatasetException;
 import org.eclipse.january.IMonitor;
 import org.eclipse.january.dataset.IDataset;
-import org.eclipse.january.dataset.ILazyDataset;
 import org.eclipse.january.dataset.ILazyWriteableDataset;
-import org.eclipse.january.dataset.SliceND;
 
 /**
  * Class to append data during a slice writing operation.
@@ -37,19 +33,24 @@ class AppenderImpl implements Appender {
 	private List<String> 			names;
 	private NxsFile      			hFile;
 	private ILazyWriteableDataset 	data;
+	private DataFrame			 	frame;
 	private Closeable 				closer;
 	private IMonitor 				monitor = new IMonitor.Stub();
 	
-	AppenderImpl(List<String> names, String filePath, String h5Path, ILazyWriteableDataset data, Closeable closer) throws NexusException, IOException {
+	AppenderImpl(List<String> names, String filePath, String h5Path, ILazyWriteableDataset data, DataFrame frame, Closeable closer) throws NexusException, IOException {
 		
 		this.names	= names;
 		this.h5Path = h5Path;
+		if (data==null) {
+			throw new IllegalArgumentException("The data must not be null!");
+		}
 		this.hFile 	= NxsFile.create(filePath);
 		this.hFile.createData(h5Path, data, true);
-		hFile.addAttribute("/", new AttributeImpl(DataFrame.PATH, h5Path));
-		hFile.addAttribute("/", new AttributeImpl(DataFrame.DATA_PATH, h5Path+"/"+data.getName()));
+		
+		Util.setReferenceAttributes(hFile, h5Path, data.getName());
 
 		this.data 	= data;
+		this.frame 	= frame;
 		this.closer = closer;
 	}
 	
@@ -63,7 +64,7 @@ class AppenderImpl implements Appender {
 	}
 
 	public void close() throws Exception {
-		this.hFile.addAttribute(h5Path, new AttributeImpl("column_names", names));
+		Util.setMetaAttributues(hFile, h5Path, frame);
 		this.hFile.close();
 		this.hFile = null;
 		this.closer.close();

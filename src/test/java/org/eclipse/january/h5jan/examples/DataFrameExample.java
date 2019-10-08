@@ -1,3 +1,13 @@
+/*-
+ *******************************************************************************
+ * Copyright (c) 2019 Halliburton International, Inc.
+ * 
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ *******************************************************************************/
 package org.eclipse.january.h5jan.examples;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -15,14 +25,16 @@ import org.eclipse.january.dataset.Dataset;
 import org.eclipse.january.dataset.IDataset;
 import org.eclipse.january.dataset.ILazyWriteableDataset;
 import org.eclipse.january.dataset.Random;
+import org.eclipse.january.h5jan.AbstractH5JanTest;
 import org.eclipse.january.h5jan.Appender;
 import org.eclipse.january.h5jan.DataFrame;
+import org.eclipse.january.h5jan.WellMetadata;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) // We write some files then futher test them.
-public class DataFrameExample {
+public class DataFrameExample extends AbstractH5JanTest {
 	
 	/**
 	 * All data in memory, write it out.
@@ -63,6 +75,32 @@ public class DataFrameExample {
 		frame.to_hdf("test-scratch/write_example/inmem_data_frame_inc.h5", "/entry1/myData");
 	}
 	
+	/**
+	 * All data in memory, write it out.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void awriteInMemoryDataFrameWithMetadata() throws Exception {
+		
+		// We create a place to put our data
+		IDataset someData = Random.rand(256, 3);
+		someData.setName("fred");
+		
+		// Make a test frame
+		DataFrame frame = new DataFrame(someData, 1, Arrays.asList("a", "b", "c"), Dataset.FLOAT32);
+		WellMetadata meta = createWellMetadata();
+		frame.setMetadata(meta);
+		
+		// Save to HDF5
+		frame.to_hdf("test-scratch/write_example/inmem_data_frame_meta.h5", "/entry1/myData");
+		
+		DataFrame read = (new DataFrame()).read_hdf("test-scratch/write_example/inmem_data_frame_meta.h5");
+		WellMetadata readMeta = read.getData().getMetadata(WellMetadata.class).get(0);
+		assertEquals(meta, readMeta);
+	}
+
+
 	/**
 	 * Data in slices
 	 * @throws Exception
@@ -117,28 +155,30 @@ public class DataFrameExample {
 
 		frame.read_hdf("test-scratch/write_example/inmem_data_frame.h5");
 		assertArrayEquals(new int[] {256, 3}, frame.getData().getShape());
-		assertEquals(Arrays.asList("a", "b", "c"), frame.getNames());
+		assertEquals(Arrays.asList("a", "b", "c"), frame.getColumnNames());
 		assertEquals(frame, readWriteTmp(frame));
 		
 		frame.read_hdf("test-scratch/write_example/inmem_data_frame_inc.h5");
 		assertArrayEquals(new int[] {256, 3}, frame.getData().getShape());
-		assertEquals(Arrays.asList("slice_0", "slice_1", "slice_2"), frame.getNames());
+		assertEquals(Arrays.asList("slice_0", "slice_1", "slice_2"), frame.getColumnNames());
 		assertEquals(frame, readWriteTmp(frame));
+		
+		frame.read_hdf("test-scratch/write_example/inmem_data_frame_meta.h5");
+		assertArrayEquals(new int[] {256, 3}, frame.getData().getShape());
+		assertEquals(Arrays.asList("a", "b", "c"), frame.getColumnNames());
+		assertEquals(frame, readWriteTmp(frame));
+		assertEquals(createWellMetadata(), frame.getMetadata());
 		
 		frame.read_hdf("test-scratch/write_example/lazy_data_frame-2d.h5");
 		assertArrayEquals(new int[] {256, 10}, frame.getData().getShape());
 		List<String> snames = IntStream.range(0, 10).mapToObj(i->"slice_"+i).collect(Collectors.toList());
-		assertEquals(snames, frame.getNames());
+		assertEquals(snames, frame.getColumnNames());
 		assertEquals(frame, readWriteTmp(frame));
 
 		frame.read_hdf("test-scratch/write_example/lazy_data_frame-3d.h5");
 		assertArrayEquals(new int[] {256, 256, 10}, frame.getData().getShape());
-		assertEquals(snames, frame.getNames());
+		assertEquals(snames, frame.getColumnNames());
 		assertEquals(frame, readWriteTmp(frame));
 	}
 
-	private DataFrame readWriteTmp(DataFrame frame) throws NexusException, IOException, DatasetException {
-		frame.to_hdf("test-scratch/write_example/tmp.h5", "/some/other/path");
-		return frame.read_hdf("test-scratch/write_example/tmp.h5");
-	}
 }

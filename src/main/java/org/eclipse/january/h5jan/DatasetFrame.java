@@ -12,14 +12,37 @@ package org.eclipse.january.h5jan;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.eclipse.january.DatasetException;
+import org.eclipse.january.dataset.BooleanDataset;
+import org.eclipse.january.dataset.ByteDataset;
+import org.eclipse.january.dataset.ComplexDoubleDataset;
+import org.eclipse.january.dataset.ComplexFloatDataset;
+import org.eclipse.january.dataset.CompoundByteDataset;
+import org.eclipse.january.dataset.CompoundDoubleDataset;
+import org.eclipse.january.dataset.CompoundFloatDataset;
+import org.eclipse.january.dataset.CompoundIntegerDataset;
+import org.eclipse.january.dataset.CompoundLongDataset;
+import org.eclipse.january.dataset.CompoundShortDataset;
 import org.eclipse.january.dataset.Dataset;
 import org.eclipse.january.dataset.DatasetFactory;
+import org.eclipse.january.dataset.DateDataset;
+import org.eclipse.january.dataset.DoubleDataset;
+import org.eclipse.january.dataset.FloatDataset;
 import org.eclipse.january.dataset.IDataset;
 import org.eclipse.january.dataset.ILazyDataset;
+import org.eclipse.january.dataset.IntegerDataset;
+import org.eclipse.january.dataset.LongDataset;
+import org.eclipse.january.dataset.ObjectDataset;
+import org.eclipse.january.dataset.RGBDataset;
+import org.eclipse.january.dataset.ShortDataset;
 import org.eclipse.january.dataset.SliceND;
+import org.eclipse.january.dataset.StringDataset;
 
 /**
  * Dataset Frame is a holder of the kind of data needed by DataFrame
@@ -32,7 +55,7 @@ class DatasetFrame {
 	protected int   		dtype=-1; // NONE
 	protected ILazyDataset 	data;
 	protected int 			index=0;
-	protected List<String> 	names;
+	protected List<String> 	columnNames;
 
 	public DatasetFrame() {
 	}
@@ -52,18 +75,20 @@ class DatasetFrame {
 		Dataset tdata = DatasetFactory.zeros(columns[0].getClass(), full);
 		tdata.setName(name);
 		
+		setDtype(dtype);
 		this.name = name;
-		this.names = new ArrayList<String>();
+		this.columnNames = new ArrayList<String>();
 		for (int i = 0; i < columns.length; i++) {
 			
 			if (columns[i].getName() == null) {
 				throw new IllegalArgumentException("All columns must have a name please!");
 			}
-			names.add(columns[i].getName());
+			columnNames.add(columns[i].getName());
 			DatasetFrame.addDimension(columns[i]);
 			tdata.setSlice(columns[i], orient(tdata, i, full));
 		}
 		this.data = tdata;
+		check(this.data, this.columnNames);
 	}
 
 
@@ -73,13 +98,22 @@ class DatasetFrame {
 	 * You can choose to write it in slices or all at once.
 	 * @param data - nD array data
 	 * @param index - index of this data frame.
-	 * @param names - names of columns, last axis of data
+	 * @param columnNames - names of columns, last axis of data
 	 * @param dtype - to write, e.g. Dataset.FLOAT32
 	 */
 	public DatasetFrame(ILazyDataset data, int dtype) {
 		this(data.getName());
 		this.data = data;
-		this.dtype = dtype;
+		setDtype(dtype);
+		
+		if (data.getRank()<1) {
+			throw new IllegalArgumentException("The dataset rank must not be 0!");
+		}
+		int[] shape = data.getShape();
+		int size = shape[shape.length-1];
+
+		this.columnNames = IntStream.range(0, size).mapToObj(i->"column_"+i).collect(Collectors.toList());
+		check(data, columnNames);
 	}
 
 	/**
@@ -95,10 +129,22 @@ class DatasetFrame {
 		this(data.getName());
 		this.data = data;
 		this.index = index;
-		this.names = names;
-		this.dtype = dtype;
+		this.columnNames = names;
+		setDtype(dtype);
+		check(data, names);
 	}
 	
+
+	private static final void check(ILazyDataset data, List<String> names) {
+		if (data.getRank()<2) {
+			throw new IllegalArgumentException("The data must be rank 2 or larger!");
+		}
+		int[] shape = data.getShape();
+		int nCol = shape[shape.length-1];
+		if (nCol!=names.size()) {
+			throw new IllegalArgumentException("The size of the final dimension and the column names must be equal!");
+		}
+	}
 
 	private int[] checkSameShape(ILazyDataset[] columns) {
 		int[] shape = columns[0].getShape();
@@ -125,6 +171,9 @@ class DatasetFrame {
 	}
 
 	public void setDtype(int dtype) {
+		if (!interface2DTypes.values().contains(dtype)) {
+			throw new IllegalArgumentException("Cannot fomd dtype: "+dtype);
+		}
 		this.dtype = dtype;
 	}
 
@@ -133,6 +182,7 @@ class DatasetFrame {
 	}
 
 	public void setData(ILazyDataset data) {
+		check(data, this.columnNames);
 		this.data = data;
 	}
 
@@ -144,12 +194,13 @@ class DatasetFrame {
 		this.index = index;
 	}
 
-	public List<String> getNames() {
-		return names;
+	public List<String> getColumnNames() {
+		return columnNames;
 	}
 
-	public void setNames(List<String> names) {
-		this.names = names;
+	public void setColumnNames(List<String> names) {
+		check(this.data, names);
+		this.columnNames = names;
 	}
 
 	@Override
@@ -160,7 +211,7 @@ class DatasetFrame {
 		result = prime * result + dtype;
 		result = prime * result + index;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((names == null) ? 0 : names.hashCode());
+		result = prime * result + ((columnNames == null) ? 0 : columnNames.hashCode());
 		return result;
 	}
 
@@ -187,10 +238,10 @@ class DatasetFrame {
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
-		if (names == null) {
-			if (other.names != null)
+		if (columnNames == null) {
+			if (other.columnNames != null)
 				return false;
-		} else if (!names.equals(other.names))
+		} else if (!columnNames.equals(other.columnNames))
 			return false;
 		return true;
 	}
@@ -207,7 +258,8 @@ class DatasetFrame {
 		int[]step = new int[shape.length];
 		Arrays.fill(step, 1);
 		
-		return SliceND.createSlice(data, from, to, step);
+		SliceND ret = SliceND.createSlice(data, from, to, step);
+		return ret;
 	}
 
 	public static void addDimension(IDataset slice) {
@@ -216,4 +268,42 @@ class DatasetFrame {
 		shape[shape.length-1] = 1;
 		slice.resize(shape);
 	}
+	
+	public DatasetFrame clone() {
+		DatasetFrame ret = new DatasetFrame();
+		ret.columnNames = new ArrayList<>(this.columnNames);
+		ret.data = this.data; // Do not copy
+		ret.dtype = this.dtype;
+		ret.index = this.index;
+		ret.name = this.name;
+		return ret;
+	}
+	
+	private static final Map<Class<? extends Dataset>, Integer> interface2DTypes = createInterfaceMap(); // map interface to dataset type
+
+	private static Map<Class<? extends Dataset>, Integer> createInterfaceMap() {
+		Map<Class<? extends Dataset>, Integer> map = new HashMap<Class<? extends Dataset>, Integer>();
+		map.put(BooleanDataset.class, Dataset.BOOL);
+		map.put(ByteDataset.class, Dataset.INT8);
+		map.put(ShortDataset.class, Dataset.INT16);
+		map.put(IntegerDataset.class, Dataset.INT32);
+		map.put(LongDataset.class, Dataset.INT64);
+		map.put(FloatDataset.class, Dataset.FLOAT32);
+		map.put(DoubleDataset.class, Dataset.FLOAT64);
+		map.put(CompoundByteDataset.class, Dataset.ARRAYINT8);
+		map.put(CompoundShortDataset.class, Dataset.ARRAYINT16);
+		map.put(CompoundIntegerDataset.class, Dataset.ARRAYINT32);
+		map.put(CompoundLongDataset.class, Dataset.ARRAYINT64);
+		map.put(CompoundFloatDataset.class, Dataset.ARRAYFLOAT32);
+		map.put(CompoundDoubleDataset.class, Dataset.ARRAYFLOAT64);
+		map.put(ComplexFloatDataset.class, Dataset.COMPLEX64);
+		map.put(ComplexDoubleDataset.class, Dataset.COMPLEX128);
+		map.put(ObjectDataset.class, Dataset.OBJECT);
+		map.put(StringDataset.class, Dataset.STRING);
+		map.put(DateDataset.class, Dataset.DATE);
+		map.put(RGBDataset.class, Dataset.RGB);
+		map.put(ObjectDataset.class, Dataset.OBJECT);
+		return map;
+	}
+
 }

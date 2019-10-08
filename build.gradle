@@ -180,6 +180,11 @@ dependencies {
 	// https://mvnrepository.com/artifact/si.uom/si-units
 	implementation group: 'si.uom', name: 'si-units', version: '2.0.1'
 	
+	// json
+    compile 'com.fasterxml.jackson.core:jackson-core:2.9.4'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.4'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.4'
+	
 	// Logging
 	compile 'org.slf4j:slf4j-api:1.7.25'
 	compile 'ch.qos.logback:logback-core:1.2.3'
