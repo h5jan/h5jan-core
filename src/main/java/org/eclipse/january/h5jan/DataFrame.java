@@ -140,8 +140,8 @@ public class DataFrame extends DatasetFrame {
 
 		// Clone a frame to 
 		DataFrame writer = clone();
-		writer.setData(data);
-		writer.setColumnNames(new ArrayList<>());
+		writer.data = data;
+		writer.columnNames = new ArrayList<>();
 		try (Appender app = writer.open_hdf(filePath, h5Path)) {
 			
 			// Take the data of each slice and put it back again, this time writing.

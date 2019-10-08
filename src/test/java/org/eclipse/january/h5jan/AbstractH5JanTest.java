@@ -44,6 +44,10 @@ public abstract class AbstractH5JanTest {
 	}
 	
 	protected void round(Dataset someData) throws Exception {
+		round(someData, true);
+	}
+	
+	protected void round(Dataset someData, boolean doLazy) throws Exception {
 		someData.setName("fred");
 		
 		// Make a test frame
@@ -54,9 +58,11 @@ public abstract class AbstractH5JanTest {
 		assertEquals(frame.getMetadata(), tmp.getMetadata());
 		assertEquals(frame, tmp);
 		
-		tmp = readWriteTmpLazy(frame);
-		assertEquals(frame.getMetadata(), tmp.getMetadata());
-		assertEquals(frame, tmp);
+		if (doLazy) {
+			tmp = readWriteTmpLazy(frame);
+			assertEquals(frame.getMetadata(), tmp.getMetadata());
+			assertEquals(frame, tmp);
+		}
 	}
 
 	protected DataFrame readWriteTmp(DataFrame frame) throws NexusException, IOException, DatasetException {

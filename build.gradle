@@ -1,4 +1,6 @@
-
+/**
+Publishing to maven central see: https://dzone.com/articles/publish-your-artifacts-to-maven-central
+**/
 plugins {
     id "com.webcohesion.enunciate" version "2.9.1"
 }

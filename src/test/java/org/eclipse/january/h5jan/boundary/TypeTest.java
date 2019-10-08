@@ -13,6 +13,7 @@ package org.eclipse.january.h5jan.boundary;
 import java.util.Arrays;
 import java.util.Date;
 
+import org.eclipse.january.dataset.DTypeUtils;
 import org.eclipse.january.dataset.Dataset;
 import org.eclipse.january.dataset.DatasetFactory;
 import org.eclipse.january.h5jan.AbstractH5JanTest;
@@ -115,7 +116,11 @@ public class TypeTest extends AbstractH5JanTest {
 	@Test
 	public void ones() throws Exception {
 		for (int i = 0; i < 10; i++) {
-			round(DatasetFactory.ones(new int[] {256, 3}, types[i]));
+			try {
+				round(DatasetFactory.ones(new int[] {256, 3}, types[i]), false);
+			} catch (Exception ne) {
+				throw new Exception("Cannot process dtype "+DTypeUtils.getDTypeName(types[i], 1), ne);
+			}
 		}
 	}
 	
@@ -123,11 +128,11 @@ public class TypeTest extends AbstractH5JanTest {
 	@Test
 	public void zeros() throws Exception {
 		for (int i = 0; i < types.length; i++) {
-			round(DatasetFactory.zeros(new int[] {256, 3}, types[i]));
+			round(DatasetFactory.zeros(new int[] {256, 3}, types[i]), false);
 		}
 	}
 	
-	@Test
+	@Test(expected=IllegalArgumentException.class)
 	public void strings() throws Exception {
 		round(DatasetFactory.createFromList(Arrays.asList("one", "two", "three")));
 	}
