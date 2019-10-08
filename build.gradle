@@ -19,7 +19,7 @@ apply plugin: "com.webcohesion.enunciate"
 group 'org.eclipse.january'
 
 ext {
-	baseVersion = "0.1.1"
+	baseVersion = "0.2.0"
     if (project.hasProperty('version')) {
 		baseVersionNum = version
     }
