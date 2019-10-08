@@ -34,9 +34,10 @@ import org.eclipse.january.dataset.LazyWriteableDataset;
 import org.eclipse.january.dataset.ShortDataset;
 import org.eclipse.january.dataset.Slice;
 import org.eclipse.january.dataset.SliceND;
-import org.eclipse.january.h5jan.JPaths;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import io.github.gerring.h5jan.JPaths;
 
 public class NexusFileIntegrationTest {
 	static String testScratchDirectoryName;

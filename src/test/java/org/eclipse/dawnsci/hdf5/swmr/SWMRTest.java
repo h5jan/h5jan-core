@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.eclipse.january.h5jan.JPaths;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,6 +25,7 @@ import hdf.hdf5lib.H5;
 import hdf.hdf5lib.HDF5Constants;
 import hdf.hdf5lib.exceptions.HDF5Exception;
 import hdf.hdf5lib.exceptions.HDF5LibraryException;
+import io.github.gerring.h5jan.JPaths;
 
 public class SWMRTest {
 

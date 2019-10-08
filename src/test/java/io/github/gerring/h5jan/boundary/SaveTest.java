@@ -8,7 +8,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  *******************************************************************************/
-package org.eclipse.january.h5jan.boundary;
+package io.github.gerring.h5jan.boundary;
 
 import static org.junit.Assert.assertEquals;
 
@@ -20,10 +20,11 @@ import org.eclipse.january.DatasetException;
 import org.eclipse.january.dataset.Dataset;
 import org.eclipse.january.dataset.IDataset;
 import org.eclipse.january.dataset.Random;
-import org.eclipse.january.h5jan.AbstractH5JanTest;
-import org.eclipse.january.h5jan.DataFrame;
 import org.junit.Before;
 import org.junit.Test;
+
+import io.github.gerring.h5jan.AbstractH5JanTest;
+import io.github.gerring.h5jan.DataFrame;
 
 /**
  * Pinning down the saving of some invalid states.

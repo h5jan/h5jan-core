@@ -8,7 +8,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  *******************************************************************************/
-package org.eclipse.january.h5jan;
+package io.github.gerring.h5jan;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -136,6 +136,12 @@ class DatasetFrame {
 	
 
 	private static final void check(ILazyDataset data, List<String> names) {
+		if (data==null) {
+			throw new IllegalArgumentException("Null data is not allowed");
+		}
+		if (names==null) {
+			throw new IllegalArgumentException("Null column names are not allowed");
+		}
 		if (data.getRank()<2) {
 			throw new IllegalArgumentException("The data must be rank 2 or larger!");
 		}

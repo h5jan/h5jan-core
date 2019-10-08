@@ -8,7 +8,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  *******************************************************************************/
-package org.eclipse.january.h5jan.examples;
+package io.github.gerring.h5jan.examples;
 
 import java.util.Arrays;
 
@@ -20,13 +20,14 @@ import org.eclipse.january.dataset.ILazyWriteableDataset;
 import org.eclipse.january.dataset.LazyWriteableDataset;
 import org.eclipse.january.dataset.Random;
 import org.eclipse.january.dataset.SliceND;
-import org.eclipse.january.h5jan.Appender;
-import org.eclipse.january.h5jan.DataFrame;
-import org.eclipse.january.h5jan.NxsFile;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+
+import io.github.gerring.h5jan.Appender;
+import io.github.gerring.h5jan.DataFrame;
+import io.github.gerring.h5jan.NxsFile;
 
 /**
  * Test which aggregates the raw read operations possible to and

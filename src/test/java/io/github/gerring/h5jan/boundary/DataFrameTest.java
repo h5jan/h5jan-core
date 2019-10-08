@@ -8,7 +8,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  *******************************************************************************/
-package org.eclipse.january.h5jan.boundary;
+package io.github.gerring.h5jan.boundary;
 
 import static org.junit.Assert.assertEquals;
 
@@ -18,8 +18,9 @@ import org.eclipse.january.dataset.Dataset;
 import org.eclipse.january.dataset.DatasetFactory;
 import org.eclipse.january.dataset.IDataset;
 import org.eclipse.january.dataset.Random;
-import org.eclipse.january.h5jan.DataFrame;
 import org.junit.Test;
+
+import io.github.gerring.h5jan.DataFrame;
 
 public class DataFrameTest {
 

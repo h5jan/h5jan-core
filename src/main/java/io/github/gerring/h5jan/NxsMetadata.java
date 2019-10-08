@@ -1,4 +1,4 @@
-package org.eclipse.january.h5jan;
+package io.github.gerring.h5jan;
 
 import org.eclipse.january.metadata.MetadataType;
 

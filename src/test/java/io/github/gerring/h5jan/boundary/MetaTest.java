@@ -1,4 +1,4 @@
-package org.eclipse.january.h5jan.boundary;
+package io.github.gerring.h5jan.boundary;
 
 import static org.junit.Assert.assertEquals;
 
@@ -7,12 +7,6 @@ import java.util.Arrays;
 import org.eclipse.january.dataset.Dataset;
 import org.eclipse.january.dataset.IDataset;
 import org.eclipse.january.dataset.Random;
-import org.eclipse.january.h5jan.AbstractH5JanTest;
-import org.eclipse.january.h5jan.DataFrame;
-import org.eclipse.january.h5jan.GenericMetadata;
-import org.eclipse.january.h5jan.JPaths;
-import org.eclipse.january.h5jan.NxsMetadata;
-import org.eclipse.january.h5jan.WellMetadata;
 import org.eclipse.january.metadata.MetadataType;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,6 +14,13 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
+
+import io.github.gerring.h5jan.AbstractH5JanTest;
+import io.github.gerring.h5jan.DataFrame;
+import io.github.gerring.h5jan.GenericMetadata;
+import io.github.gerring.h5jan.JPaths;
+import io.github.gerring.h5jan.NxsMetadata;
+import io.github.gerring.h5jan.WellMetadata;
 
 /*-
  *******************************************************************************

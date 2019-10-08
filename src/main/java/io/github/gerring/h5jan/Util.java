@@ -8,7 +8,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  *******************************************************************************/
-package org.eclipse.january.h5jan;
+package io.github.gerring.h5jan;
 
 import org.eclipse.dawnsci.analysis.tree.impl.AttributeImpl;
 import org.eclipse.dawnsci.nexus.NexusException;

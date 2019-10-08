@@ -8,7 +8,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  *******************************************************************************/
-package org.eclipse.january.h5jan.examples;
+package io.github.gerring.h5jan.examples;
 
 import static org.junit.Assert.assertArrayEquals;
 
@@ -20,14 +20,14 @@ import org.eclipse.dawnsci.nexus.NexusException;
 import org.eclipse.january.dataset.IDataset;
 import org.eclipse.january.dataset.ILazyDataset;
 import org.eclipse.january.dataset.Slice;
-import org.eclipse.january.h5jan.JPaths;
-import org.eclipse.january.h5jan.NxsFile;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 
 import hdf.hdf5lib.H5;
+import io.github.gerring.h5jan.JPaths;
+import io.github.gerring.h5jan.NxsFile;
 
 /**
  * Test which aggregates the raw read operations possible to and

@@ -8,13 +8,15 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  *******************************************************************************/
-package org.eclipse.january.h5jan;
+package io.github.gerring.h5jan;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+
+import io.github.gerring.h5jan.NxsMetadata;
 
 /**
  * Well metadata which contains the las metadata as a map
