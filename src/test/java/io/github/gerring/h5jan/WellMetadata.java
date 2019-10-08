@@ -16,8 +16,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import io.github.gerring.h5jan.NxsMetadata;
-
 /**
  * Well metadata which contains the las metadata as a map
  * of maps. Each meta section name is added to the map with

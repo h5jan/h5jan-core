@@ -10,8 +10,6 @@
  *******************************************************************************/
 package io.github.gerring.h5jan.examples;
 
-import java.util.Arrays;
-
 import org.eclipse.dawnsci.nexus.NexusException;
 import org.eclipse.january.IMonitor;
 import org.eclipse.january.dataset.Dataset;
@@ -25,8 +23,6 @@ import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 
-import io.github.gerring.h5jan.Appender;
-import io.github.gerring.h5jan.DataFrame;
 import io.github.gerring.h5jan.NxsFile;
 
 /**

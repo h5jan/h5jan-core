@@ -21,8 +21,6 @@ import org.eclipse.dawnsci.nexus.NexusException;
 import org.eclipse.january.DatasetException;
 import org.eclipse.january.dataset.Dataset;
 
-import io.github.gerring.h5jan.DataFrame;
-
 public abstract class AbstractH5JanTest {
 
 	

@@ -7,7 +7,6 @@ import java.util.Arrays;
 import org.eclipse.january.dataset.Dataset;
 import org.eclipse.january.dataset.IDataset;
 import org.eclipse.january.dataset.Random;
-import org.eclipse.january.metadata.MetadataType;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -25,7 +25,6 @@ import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 
-import hdf.hdf5lib.H5;
 import io.github.gerring.h5jan.JPaths;
 import io.github.gerring.h5jan.NxsFile;
 
