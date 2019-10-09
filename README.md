@@ -7,7 +7,7 @@ It happens to write the HDF5 in the [NeXus](http://lns00.psi.ch/NeXus/) format w
 which is easily readable from Python as DataFrames.
 
 It allows the reading and writing of:
-1. <b>Datasets</b> to/from HDF5 files.
+1. <b>Datasets</b> to/from HDF5 files (numpy nD array and pandas DataFrame)
 2. <b>Lazy datasets</b> to/from HDF5 files and working with slices. (Larger data than will fit in memory).
 
 Why are these things useful we hear you ask? Well it means that binary data structures can be built in Java and
