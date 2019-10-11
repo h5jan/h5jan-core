@@ -8,7 +8,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  *******************************************************************************/
-package io.github.gerring.h5jan.examples;
+package io.github.h5jan.core.examples;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -26,10 +26,10 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import io.github.gerring.h5jan.AbstractH5JanTest;
-import io.github.gerring.h5jan.Appender;
-import io.github.gerring.h5jan.DataFrame;
-import io.github.gerring.h5jan.WellMetadata;
+import io.github.h5jan.core.AbstractH5JanTest;
+import io.github.h5jan.core.Appender;
+import io.github.h5jan.core.DataFrame;
+import io.github.h5jan.core.WellMetadata;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) // We write some files then futher test them.
 public class DataFrameExample extends AbstractH5JanTest {

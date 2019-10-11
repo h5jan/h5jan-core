@@ -8,7 +8,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  *******************************************************************************/
-package io.github.gerring.h5jan.examples;
+package io.github.h5jan.core.examples;
 
 import org.eclipse.dawnsci.nexus.NexusException;
 import org.eclipse.january.IMonitor;
@@ -23,7 +23,7 @@ import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 
-import io.github.gerring.h5jan.NxsFile;
+import io.github.h5jan.core.NxsFile;
 
 /**
  * Test which aggregates the raw read operations possible to and

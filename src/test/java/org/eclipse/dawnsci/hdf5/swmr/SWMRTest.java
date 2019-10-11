@@ -25,7 +25,7 @@ import hdf.hdf5lib.H5;
 import hdf.hdf5lib.HDF5Constants;
 import hdf.hdf5lib.exceptions.HDF5Exception;
 import hdf.hdf5lib.exceptions.HDF5LibraryException;
-import io.github.gerring.h5jan.JPaths;
+import io.github.h5jan.core.JPaths;
 
 public class SWMRTest {
 

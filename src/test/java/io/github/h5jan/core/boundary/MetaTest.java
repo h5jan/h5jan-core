@@ -1,4 +1,4 @@
-package io.github.gerring.h5jan.boundary;
+package io.github.h5jan.core.boundary;
 
 import static org.junit.Assert.assertEquals;
 
@@ -14,12 +14,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
 
-import io.github.gerring.h5jan.AbstractH5JanTest;
-import io.github.gerring.h5jan.DataFrame;
-import io.github.gerring.h5jan.GenericMetadata;
-import io.github.gerring.h5jan.JPaths;
-import io.github.gerring.h5jan.NxsMetadata;
-import io.github.gerring.h5jan.WellMetadata;
+import io.github.h5jan.core.AbstractH5JanTest;
+import io.github.h5jan.core.DataFrame;
+import io.github.h5jan.core.GenericMetadata;
+import io.github.h5jan.core.JPaths;
+import io.github.h5jan.core.NxsMetadata;
+import io.github.h5jan.core.WellMetadata;
 
 /*-
  *******************************************************************************

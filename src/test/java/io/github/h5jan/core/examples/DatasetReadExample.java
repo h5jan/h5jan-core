@@ -8,7 +8,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  *******************************************************************************/
-package io.github.gerring.h5jan.examples;
+package io.github.h5jan.core.examples;
 
 import static org.junit.Assert.assertArrayEquals;
 
@@ -25,8 +25,8 @@ import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 
-import io.github.gerring.h5jan.JPaths;
-import io.github.gerring.h5jan.NxsFile;
+import io.github.h5jan.core.JPaths;
+import io.github.h5jan.core.NxsFile;
 
 /**
  * Test which aggregates the raw read operations possible to and

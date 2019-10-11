@@ -37,7 +37,7 @@ import org.eclipse.january.dataset.SliceND;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import io.github.gerring.h5jan.JPaths;
+import io.github.h5jan.core.JPaths;
 
 public class NexusFileIntegrationTest {
 	static String testScratchDirectoryName;

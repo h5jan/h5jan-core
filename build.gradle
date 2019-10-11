@@ -21,10 +21,10 @@ apply plugin: 'checkstyle'
 // We aspire one day to be part of Eclipse January.
 // Currently this package is an extension to January and
 // not part of the core project
-group 'io.github.gerring'
+group 'io.github.h5jan'
 
 ext {
-	baseVersion = "0.3.0"
+	baseVersion = "0.4.0"
     if (project.hasProperty('version')) {
 		baseVersionNum = version
     }
@@ -213,7 +213,7 @@ signing {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-        	groupId = 'io.github.gerring'
+        	groupId = 'io.github.h5jan'
             artifactId = 'h5jan'
             version = fullVersion
             from components.java

@@ -8,7 +8,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  *******************************************************************************/
-package io.github.gerring.h5jan;
+package io.github.h5jan.core;
 
 import org.eclipse.january.DatasetException;
 import org.eclipse.january.IMonitor;

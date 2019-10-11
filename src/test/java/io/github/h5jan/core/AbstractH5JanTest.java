@@ -8,7 +8,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  *******************************************************************************/
-package io.github.gerring.h5jan;
+package io.github.h5jan.core;
 
 import static org.junit.Assert.assertEquals;
 
@@ -20,6 +20,8 @@ import java.util.List;
 import org.eclipse.dawnsci.nexus.NexusException;
 import org.eclipse.january.DatasetException;
 import org.eclipse.january.dataset.Dataset;
+
+import io.github.h5jan.core.DataFrame;
 
 public abstract class AbstractH5JanTest {
 

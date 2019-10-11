@@ -8,7 +8,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  *******************************************************************************/
-package io.github.gerring.h5jan.boundary;
+package io.github.h5jan.core.boundary;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -18,7 +18,7 @@ import org.eclipse.january.dataset.Dataset;
 import org.eclipse.january.dataset.DatasetFactory;
 import org.junit.Test;
 
-import io.github.gerring.h5jan.AbstractH5JanTest;
+import io.github.h5jan.core.AbstractH5JanTest;
 
 public class TypeTest extends AbstractH5JanTest {
 	
