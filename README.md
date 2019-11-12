@@ -2,26 +2,26 @@
 =====
 
 ## What is it
-h5jan is a Java(TM) API for reading and writing [Eclipse January*](https://github.com/eclipse/january) datasets ot HDF5.
-It happens to write the HDF5 in the [NeXus](http://lns00.psi.ch/NeXus/) format which is a self describing binary data format
-which is easily readable from Python as DataFrames.
+h5jan is a Java(TM) API for reading and writing [Eclipse January*](https://github.com/eclipse/january) datasets to HDF5.
+It writes the HDF5 to a self describing format
+which is easily readable from Python as DataFrames using h5py. (The format is: [NeXus](http://lns00.psi.ch/NeXus/))
 
 It allows the reading and writing of:
 1. <b>Datasets</b> to/from HDF5 files (numpy nD array and pandas DataFrame)
 2. <b>Lazy datasets</b> to/from HDF5 files and working with slices. (Larger data than will fit in memory).
 
-Why are these things useful we hear you ask? Well it means that binary data structures can be built in Java and
+Why are these things useful? Well it means that binary data structures can be built in Java and
 saved as HDF5. That then means that you can use Java in the middleware or middle
-microservice, here it shines with tools like Spring Boot available and its many 
-multi-threaded APIs. Then if a parallel execution of python process such as 
-machine learning run are required, h5jan allows you to write h5 files which can be loaded
+microservice, here it shines with tools like [Spring Boot](https://spring.io/projects/spring-boot) and [Grails](https://grails.org) available.
+Then if a parallel execution of python process such as 
+machine learning run are required, h5jan allows you to write scalable h5 files which can be loaded
 as dataframes or numpy arrays in python using h5py and pandas.
 
-Not only that but the reading and writing API are based around slicable lazy data. This allows code to be
+The reading and writing API are based around slicable lazy data. This allows code to be
 written which interacts with very large datasets without loading all the data into memory. You can write 
 on the fly using ILazyWritableDataset and read slices as required for data analysis. This means that instead
 of holding large datasets in memory on vendor cloud and paying the cost, relatively cheap solutions around
-data slicing can be created - where that solves your problems of coure!
+data slicing can be created - where that would work with your design of course!
 
 ## Examples
 
@@ -47,6 +47,7 @@ data slicing can be created - where that solves your problems of coure!
 
 	# Make a reader
 	reader = DataFrameReader()
+	
 	# Read the frame
 	print(reader.read('test-scratch/write_example/lazy_data_frame-2d.h5'))
 	
@@ -174,10 +175,20 @@ is in your repositories{} block
 
 
 2. Add dependency 
+Gradle
 ~~~~ 
 compile "io.github.h5jan:h5jan-core:0.4.3" 
 ~~~~ 
-to your file.
+
+Maven
+```xml
+<dependency>
+	<groupId>io.github.h5jan</groupId>
+	<artifactId>h5jan-core</artifactId>
+	<version>0.4.3</version>
+</dependency>
+```
+
 
 When you rebuild now january will be available to your gradle project.
 
