@@ -23,6 +23,8 @@ on the fly using ILazyWritableDataset and read slices as required for data analy
 of holding large datasets in memory on vendor cloud and paying the cost, relatively cheap solutions around
 data slicing can be created - where that would work with your design of course!
 
+ \* Eclipse January has a page on the [Eclipse Foundation](https://www.eclipse.org/january/) web site.
+ 
 ## Examples
 
 ### DataFrame Examples
@@ -149,7 +151,6 @@ We support the [Eclipse Science](https://science.eclipse.org/) working group.<br
 NOTE: This project *has not* been proposed as an eclipse science project yet, however
 it is made up of code from the dawnsci project and depends on January. 
 
- \* Eclipse January has a page on the [Eclipse Foundation](https://www.eclipse.org/january/) web site.
  
 ## Setting PATH and LD_LIBRARY_PATH
 This library will load its native parts automatically.
