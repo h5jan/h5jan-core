@@ -2,6 +2,14 @@
 Publishing to maven central see: 
 https://dzone.com/articles/publish-your-artifacts-to-maven-central
 https://medium.com/@nmauti/sign-and-publish-on-maven-central-a-project-with-the-new-maven-publish-gradle-plugin-22a72a4bfd4b
+
+Release process:
+0. Set release number in this file.
+1. ./gradlew publish
+2. ./gradlew publish -PmakeRelease=true
+3. Go to https://oss.sonatype.org/#stagingRepositories and manually hit save and close.
+	(https://central.sonatype.org/pages/releasing-the-deployment.html)
+
 **/
 plugins {
     id "maven"
@@ -11,7 +19,7 @@ plugins {
 }
 
 apply plugin: 'java'
-apply plugin: "jacoco"
+apply plugin: 'jacoco'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'findbugs'
@@ -22,9 +30,13 @@ apply plugin: 'checkstyle'
 // Currently this package is an extension to January and
 // not part of the core project
 group 'io.github.h5jan'
+description = "h5jan-core"
+
+// To sign, enter the gradle command 'gradle(w) sign'
+defaultTasks 'compileJava', 'classes', 'jar', 'sourceJar', 'compileTestJava', 'processTestResources', 'testClasses', 'findbugsMain', 'pmdMain', 'test'
 
 ext {
-	baseVersion = "0.4.1"
+	baseVersion = "0.4.3"
     if (project.hasProperty('version')) {
 		baseVersionNum = version
     }
@@ -55,6 +67,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 javadoc {
+    title = "h5jan-core"
     source = sourceSets.main.allJava
     classpath = configurations.compile
     include 'io/github/h5jan/**'             // From h5jan
@@ -81,6 +94,7 @@ tasks.withType(Checkstyle).each { checkstyleTask ->
 }
 
 task sourceJar ( type: Jar, dependsOn: classes ) {
+	archiveName = "h5jan-core-sources.jar"
     classifier = 'sources'
 	from sourceSets.main.allJava
     from("build/docs/"){
@@ -129,9 +143,6 @@ tasks.withType(JacocoCoverageVerification) {
 }
 check.dependsOn jacocoTestCoverageVerification
 
-// To sign, enter the gradle command 'gradle(w) sign'
-defaultTasks 'compileJava', 'classes', 'jar', 'sourceJar', 'compileTestJava', 'processTestResources', 'testClasses', 'findbugsMain', 'pmdMain', 'test'
-description = "h5jan"
 
 repositories {
     mavenCentral()
@@ -229,7 +240,7 @@ publishing {
         mavenJava(MavenPublication) {
         	customizePom(pom)
         	groupId = 'io.github.h5jan'
-            artifactId = 'h5jan'
+            artifactId = 'h5jan-core'
             version = fullVersion
             
             from components.java

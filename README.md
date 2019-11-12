@@ -175,7 +175,7 @@ is in your repositories{} block
 
 2. Add dependency 
 ~~~~ 
-compile "org.eclipse.january:h5jan-core:0.2.0" 
+compile "io.github.h5jan:h5jan-core:0.4.3" 
 ~~~~ 
 to your file.
 

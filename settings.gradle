@@ -16,7 +16,7 @@ include 'api'
 include 'services:webservice'
 */
 
-rootProject.name = 'h5jan'
+rootProject.name = 'h5jan-core'
 
 // Using default setting in gpg
 //signing.gnupg.executable=gpg
