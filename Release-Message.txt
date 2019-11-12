@@ -1,0 +1,15 @@
+hdf5 between Java and Python microservices?
+h5jan 0.4.3 now released on Maven Central.
+
+From Gradle:
+compile group: 'io.github.h5jan', name: 'h5jan-core', version:'0.4.3'
+
+From Maven:
+<dependency>
+    <groupId>io.github.h5jan</groupId>
+    <artifactId>h5jan-core</artifactId>
+    <version>0.4.3</version>
+</dependency>
+
+Examples and more information.
+https://github.com/h5jan

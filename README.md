@@ -311,4 +311,4 @@ You can change the log levels for an installed Docker image, by using the \_JAVA
         -DROOT_LOG_LEVEL=DEBUG -DSTDOUT_LOG_LEVEL=DEBUG -DHAL_LOG_LEVEL=DEBUG -DFILE_LOG_LEVEL=DEBUG
  
 ## License
-See [LICENSE](https://github.com/h5jan/h5jan-core/blob/master/LICENSE.MD)
+See [LICENSE](https://github.com/h5jan/h5jan-core/blob/master/LICENSE.md)
