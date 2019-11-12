@@ -24,7 +24,7 @@ apply plugin: 'checkstyle'
 group 'io.github.h5jan'
 
 ext {
-	baseVersion = "0.4.0"
+	baseVersion = "0.4.1"
     if (project.hasProperty('version')) {
 		baseVersionNum = version
     }
@@ -293,7 +293,7 @@ def customizePom(pom) {
             resolveStrategy = Closure.DELEGATE_FIRST
 
             description 'Read and write h5 files from Java, including Datasets, nD arrays and slicing.'
-            name 'h5jan'
+            name 'h5jan-core'
             url 'https://github.com/h5jan/h5jan-core'
             organization {
                 name 'io.github.h5jan'
