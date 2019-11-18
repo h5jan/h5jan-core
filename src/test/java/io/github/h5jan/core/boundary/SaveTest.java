@@ -90,7 +90,7 @@ public class SaveTest extends AbstractH5JanTest {
 		frame.to_hdf("           ", "/some/other/path");
 	}
 	
-	@Test(expected=IOException.class)
+	@Test(expected=Throwable.class)
 	public void noFile4() throws Exception {
 		frame.to_hdf("\\||??", "/some/other/path");
 	}
