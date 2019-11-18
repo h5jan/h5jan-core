@@ -21,4 +21,5 @@ jobs:
       run: mkdir test-scratch
            
     - name: Build with Gradle
-      run: ./gradlew test -PsonatypeUsername=None -PsonatypePassword=None
+      run: ./gradlew test -i -PsonatypeUsername=None -PsonatypePassword=None
+
