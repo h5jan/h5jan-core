@@ -1,3 +1,13 @@
+/*-
+ *******************************************************************************
+ * Copyright (c) 2019 Halliburton International, Inc.
+ * 
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ *******************************************************************************/
 package io.github.h5jan.core.boundary;
 
 import static org.junit.Assert.assertEquals;
@@ -21,16 +31,6 @@ import io.github.h5jan.core.JPaths;
 import io.github.h5jan.core.NxsMetadata;
 import io.github.h5jan.core.WellMetadata;
 
-/*-
- *******************************************************************************
- * Copyright (c) 2019 Halliburton International, Inc.
- * 
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- *******************************************************************************/
 public class MetaTest extends AbstractH5JanTest {
 
 	private DataFrame frame;
@@ -48,16 +48,14 @@ public class MetaTest extends AbstractH5JanTest {
 
 	@Test
 	public void none() throws Exception {
-		checkMeta(frame, readWriteTmp(frame));
-		checkMeta(frame, readWriteTmpLazy(frame));
+		checkMeta(frame, readWriteLazy(frame, "none"));
 	}
 	
 	@Test
 	public void wells() throws Exception {
 		WellMetadata meta = createWellMetadata();
 		frame.setMetadata(meta);
-		checkMeta(frame, readWriteTmp(frame));
-		checkMeta(frame, readWriteTmpLazy(frame));
+		checkMeta(frame, readWriteLazy(frame, "wells"));
 	}
 	
 	@Test
@@ -65,8 +63,7 @@ public class MetaTest extends AbstractH5JanTest {
 		
 		GenericMetadata meta = new GenericMetadata();
 		frame.setMetadata(meta);
-		checkMeta(frame, readWriteTmp(frame));
-		checkMeta(frame, readWriteTmpLazy(frame));
+		checkMeta(frame, readWriteLazy(frame, "genericEmpty"));
 	}
 
 	@Test
@@ -75,8 +72,7 @@ public class MetaTest extends AbstractH5JanTest {
 		JsonNode node = mapper.readTree(JPaths.getTestResource("alias.json").toFile());
 		GenericMetadata meta = new GenericMetadata(node);
 		frame.setMetadata(meta);
-		checkMeta(frame, readWriteTmp(frame));
-		checkMeta(frame, readWriteTmpLazy(frame));
+		checkMeta(frame, readWriteLazy(frame, "genericJson"));
 	}
 	
 	@Test(expected=InvalidDefinitionException.class)
@@ -86,8 +82,7 @@ public class MetaTest extends AbstractH5JanTest {
 				return null;
 			}
 		});
-		checkMeta(frame, readWriteTmp(frame));
-		checkMeta(frame, readWriteTmpLazy(frame));
+		checkMeta(frame, readWriteLazy(frame, "anonymous"));
 	}
 
 	private void checkMeta(DataFrame frm1, DataFrame frm2) {

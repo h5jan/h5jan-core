@@ -10,9 +10,10 @@
  *******************************************************************************/
 package io.github.h5jan.core;
 
+import java.util.List;
+
 import org.eclipse.dawnsci.analysis.tree.impl.AttributeImpl;
 import org.eclipse.dawnsci.nexus.NexusException;
-import org.eclipse.january.dataset.ILazyWriteableDataset;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -29,7 +30,8 @@ public class Util {
 		nfile.addAttribute("/", new AttributeImpl(Constants.PATH, h5Path));
 		nfile.addAttribute("/", new AttributeImpl(Constants.DATA_PATH, h5Path+"/"+name));
 	}
-
+	
+	
 	/**
 	 * Column names and metadata written
 	 * @param hFile
@@ -39,6 +41,19 @@ public class Util {
 	 * @throws JsonProcessingException 
 	 */
 	public static void setMetaAttributues(NxsFile hFile, String h5Path, DataFrame data) throws NexusException, JsonProcessingException {
+		Util.setMetaAttributues(hFile, h5Path, data, data.getColumnNames());
+	}
+
+
+	/**
+	 * Column names and metadata written
+	 * @param hFile
+	 * @param h5Path
+	 * @param names
+	 * @throws NexusException
+	 * @throws JsonProcessingException 
+	 */
+	public static void setMetaAttributues(NxsFile hFile, String h5Path, DataFrame data, List<String> columnNames) throws NexusException, JsonProcessingException {
 		
 		
 		if (data.getName() == null) {
@@ -49,7 +64,7 @@ public class Util {
 		}
 
 		hFile.addAttribute(h5Path, new AttributeImpl(Constants.NAME, data.getName()));
-		hFile.addAttribute(h5Path, new AttributeImpl(Constants.COL_NAMES, data.getColumnNames()));
+		hFile.addAttribute(h5Path, new AttributeImpl(Constants.COL_NAMES, columnNames));
 		if (data!=null) {
 			// Difficult to store all metadata because ILazyDataset only provides
 			// access by type and we do not know the type at the point of serialization to hdf5.

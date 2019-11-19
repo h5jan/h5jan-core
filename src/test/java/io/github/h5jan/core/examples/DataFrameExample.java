@@ -29,6 +29,7 @@ import org.junit.runners.MethodSorters;
 import io.github.h5jan.core.AbstractH5JanTest;
 import io.github.h5jan.core.Appender;
 import io.github.h5jan.core.DataFrame;
+import io.github.h5jan.core.FrameUtil;
 import io.github.h5jan.core.WellMetadata;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) // We write some files then futher test them.
@@ -94,7 +95,7 @@ public class DataFrameExample extends AbstractH5JanTest {
 		frame.to_hdf("test-scratch/write_example/inmem_data_frame_meta.h5", "/entry1/myData");
 		
 		DataFrame read = (new DataFrame()).read_hdf("test-scratch/write_example/inmem_data_frame_meta.h5");
-		WellMetadata readMeta = read.getData().getMetadata(WellMetadata.class).get(0);
+		WellMetadata readMeta = (WellMetadata)read.getMetadata();
 		assertEquals(meta, readMeta);
 	}
 
@@ -106,11 +107,8 @@ public class DataFrameExample extends AbstractH5JanTest {
 	@Test
 	public void awriteLazyDataFrame2D() throws Exception {
 		
-		// We create a place to put our data
-		ILazyWriteableDataset data = DataFrame.create("data", Dataset.FLOAT32, new int[] { 256 });
-		
-		// Make a test frame
-		DataFrame frame = new DataFrame(data, Dataset.FLOAT32);
+		// Make a frame for lazy writing (does not hold data)
+		DataFrame frame = new DataFrame("data", Dataset.FLOAT64, new int[] { 256 });
 		
 		// Save to HDF5, columns can be large, these are not it's a test
 		try (Appender app = frame.open_hdf("test-scratch/write_example/lazy_data_frame-2d.h5", "/entry1/myData")) {
@@ -130,11 +128,8 @@ public class DataFrameExample extends AbstractH5JanTest {
 	@Test
 	public void awriteLazyDataFrame3D() throws Exception {
 		
-		// We create a place to put our data
-		ILazyWriteableDataset data = DataFrame.create("data", Dataset.FLOAT32, new int[] { 256, 256 });
-		
-		// Make a test frame
-		DataFrame frame = new DataFrame(data, Dataset.FLOAT32);
+		// Make a writing frame
+		DataFrame frame = new DataFrame("data", Dataset.FLOAT32, new int[] { 256, 256 });
 		
 		// Save to HDF5, columns can be large, these are not it's a test
 		try (Appender app = frame.open_hdf("test-scratch/write_example/lazy_data_frame-3d.h5", "/entry1/myData")) {
@@ -149,34 +144,34 @@ public class DataFrameExample extends AbstractH5JanTest {
 	@Test
 	public void readFrames() throws Exception {
 		
-		DataFrame frame = new DataFrame();
+		DataFrame frame = new DataFrame("data", Dataset.FLOAT32, new int[] { 256 });
 
 		frame.read_hdf("test-scratch/write_example/inmem_data_frame.h5");
-		assertArrayEquals(new int[] {256, 3}, frame.getData().getShape());
+		assertArrayEquals(new int[] {256, 3}, frame.getShape());
 		assertEquals(Arrays.asList("a", "b", "c"), frame.getColumnNames());
-		assertEquals(frame, readWriteTmp(frame));
+		assertEquals(frame, readWriteLazy(frame, "readFrames"));
 		
 		frame.read_hdf("test-scratch/write_example/inmem_data_frame_inc.h5");
-		assertArrayEquals(new int[] {256, 3}, frame.getData().getShape());
+		assertArrayEquals(new int[] {256, 3}, frame.getShape());
 		assertEquals(Arrays.asList("slice_0", "slice_1", "slice_2"), frame.getColumnNames());
-		assertEquals(frame, readWriteTmp(frame));
+		assertEquals(frame, readWriteLazy(frame, "readFrames"));
 		
 		frame.read_hdf("test-scratch/write_example/inmem_data_frame_meta.h5");
-		assertArrayEquals(new int[] {256, 3}, frame.getData().getShape());
+		assertArrayEquals(new int[] {256, 3}, frame.getShape());
 		assertEquals(Arrays.asList("a", "b", "c"), frame.getColumnNames());
-		assertEquals(frame, readWriteTmp(frame));
+		assertEquals(frame, readWriteLazy(frame, "readFrames"));
 		assertEquals(createWellMetadata(), frame.getMetadata());
 		
 		frame.read_hdf("test-scratch/write_example/lazy_data_frame-2d.h5");
-		assertArrayEquals(new int[] {256, 10}, frame.getData().getShape());
+		assertArrayEquals(new int[] {256, 10}, frame.getShape());
 		List<String> snames = IntStream.range(0, 10).mapToObj(i->"slice_"+i).collect(Collectors.toList());
 		assertEquals(snames, frame.getColumnNames());
-		assertEquals(frame, readWriteTmp(frame));
+		assertEquals(frame, readWriteLazy(frame, "readFrames"));
 
 		frame.read_hdf("test-scratch/write_example/lazy_data_frame-3d.h5");
-		assertArrayEquals(new int[] {256, 256, 10}, frame.getData().getShape());
+		assertArrayEquals(new int[] {256, 256, 10}, frame.getShape());
 		assertEquals(snames, frame.getColumnNames());
-		assertEquals(frame, readWriteTmp(frame));
+		assertEquals(frame, readWriteLazy(frame, "readFrames"));
 	}
 
 }

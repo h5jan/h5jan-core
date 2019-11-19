@@ -62,10 +62,7 @@ it is here: [DataFrameReader](https://github.com/h5jan/h5jan-core/blob/master/re
 
 	// Write as slices, not all frame in memory at one time.
 	// We create a place to put our data
-	ILazyWriteableDataset data = DataFrame.create("data", Dataset.FLOAT32, new int[] { 256 });
-		
-	// Make a test frame
-	DataFrame frame = new DataFrame(data, Dataset.FLOAT32);
+	DataFrame frame = new DataFrame("data", Dataset.FLOAT32, new int[] { 256 });
 		
 	// Save to HDF5, columns can be large, these are not it's a test
 	try (Appender app = frame.open_hdf("test-scratch/write_example/lazy_data_frame.h5", "/entry1/myData")) {

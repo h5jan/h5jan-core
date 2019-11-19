@@ -12,16 +12,12 @@ package io.github.h5jan.core;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.dawnsci.nexus.NexusException;
-import org.eclipse.january.DatasetException;
 import org.eclipse.january.dataset.Dataset;
-
-import io.github.h5jan.core.DataFrame;
 
 public abstract class AbstractH5JanTest {
 
@@ -45,37 +41,27 @@ public abstract class AbstractH5JanTest {
 		return new WellMetadata(values);
 	}
 	
-	protected void round(Dataset someData) throws Exception {
-		round(someData, true);
-	}
-	
-	protected void round(Dataset someData, boolean doLazy) throws Exception {
+	protected void round(Dataset someData, String name) throws Exception {
 		someData.setName("fred");
 		
 		// Make a test frame
 		DataFrame frame = new DataFrame(someData, 1, Arrays.asList("a", "b", "c"), someData.getDType());
 		frame.setMetadata(createWellMetadata());
 		
-		DataFrame tmp = readWriteTmp(frame);
+		DataFrame tmp = readWriteLazy(frame, name);
 		assertEquals(frame.getMetadata(), tmp.getMetadata());
 		assertEquals(frame, tmp);
-		
-		if (doLazy) {
-			tmp = readWriteTmpLazy(frame);
-			assertEquals(frame.getMetadata(), tmp.getMetadata());
-			assertEquals(frame, tmp);
-		}
 	}
 
-	protected DataFrame readWriteTmp(DataFrame frame) throws NexusException, IOException, DatasetException {
-		frame.to_hdf("test-scratch/temp/tmp.h5", "/some/other/path");
-		return frame.read_hdf("test-scratch/temp/tmp.h5");
-	}
-
-	protected DataFrame readWriteTmpLazy(DataFrame frame) throws Exception {
+	protected DataFrame readWriteLazy(DataFrame frame, String name) throws Exception {
+		File dir = new File("test-scratch/temp/");
+		if (!dir.exists()) dir.mkdirs();
 		
-		frame.to_lazy_hdf("test-scratch/temp/tmp_lazy.h5", "/some/other/path");
-		return frame.read_hdf("test-scratch/temp/tmp_lazy.h5");
+		String path = "test-scratch/temp/"+name+".h5";
+		frame.to_hdf(path, "/some/other/path");
+		DataFrame read = frame.read_hdf(path);
+		(new File(path)).deleteOnExit();
+		return read;
 	}
 
 }
