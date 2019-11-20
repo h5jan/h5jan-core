@@ -21,7 +21,7 @@ import io.github.h5jan.core.boundary.TypeTest;
 import io.github.h5jan.core.examples.DataFrameExample;
 import io.github.h5jan.core.examples.DatasetReadExample;
 import io.github.h5jan.core.examples.DatasetWriteExample;
-import io.github.h5jan.io.ImagesFormatTest;
+import io.github.h5jan.io.ImageStitcherTest;
 
 /**
  * Suite to run just the io.github.h5jan tests.
@@ -38,7 +38,7 @@ import io.github.h5jan.io.ImagesFormatTest;
 		DataFrameExample.class,
 		DatasetReadExample.class,
 		DatasetWriteExample.class,
-		ImagesFormatTest.class
+		ImageStitcherTest.class
 })
 @Ignore
 public class DataFrameSuite {

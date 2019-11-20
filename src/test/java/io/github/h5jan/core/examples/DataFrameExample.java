@@ -13,14 +13,17 @@ package io.github.h5jan.core.examples;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.eclipse.january.IMonitor;
 import org.eclipse.january.dataset.Dataset;
+import org.eclipse.january.dataset.DatasetUtils;
+import org.eclipse.january.dataset.FloatDataset;
 import org.eclipse.january.dataset.IDataset;
-import org.eclipse.january.dataset.ILazyWriteableDataset;
 import org.eclipse.january.dataset.Random;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -29,8 +32,10 @@ import org.junit.runners.MethodSorters;
 import io.github.h5jan.core.AbstractH5JanTest;
 import io.github.h5jan.core.Appender;
 import io.github.h5jan.core.DataFrame;
-import io.github.h5jan.core.FrameUtil;
+import io.github.h5jan.core.JPaths;
 import io.github.h5jan.core.WellMetadata;
+import io.github.h5jan.io.Configuration;
+import io.github.h5jan.io.DataFrameReader;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) // We write some files then futher test them.
 public class DataFrameExample extends AbstractH5JanTest {
@@ -139,6 +144,53 @@ public class DataFrameExample extends AbstractH5JanTest {
 				app.append("slice_"+i, Random.rand(256, 256));
 			}
 		}
+	}
+	
+	/**
+	 * This example assembles TIFF images into a HDF file. 
+	 * It is useful to create stitched stacks which can be sliced and visualised
+	 * in DAWN http://www.dawnsci.org/
+	 * 
+	 * @throws Exception
+	 */
+	@SuppressWarnings("deprecation")
+	@Test
+	public void awriteLazyMicroscopeStack() throws Exception {
+		
+		// Make a writing frame, the tiled image is this size.
+		// Each tile is 96,128 so as we are making 3x3 stitching, we need 288,384
+		DataFrame frame = new DataFrame("scope_image", Dataset.FLOAT32, new int[] { 288,384 });
+		
+		// Make an object to read other formats, in this case TIFF
+		DataFrameReader reader = new DataFrameReader();
+
+		// Save to HDF5, columns can be large, these are not it's a test
+		try (Appender app = frame.open_hdf("test-scratch/write_example/lazy_microscope_image.h5", "/entry1/myData")) {
+			
+			File[] dirs = JPaths.getTestResource("microscope").toFile().listFiles();
+			
+			for (int i = 0; i < dirs.length; i++) {
+				
+				// Directory of tiles
+				File dir = dirs[i];
+
+				// Read tiles, assuming their file name order is also their tile order.
+				DataFrame tiles = reader.read(dir, Configuration.GREYSCALE, new IMonitor.Stub());
+				
+				// Stitch to make image based on a 3x3 matrix of tiles.
+				Dataset image = tiles.stitch(new int[] {3,3});
+				assertArrayEquals(new int[] {288,384}, frame.getColumnShape());
+				image = DatasetUtils.cast(image, Dataset.FLOAT32);
+				
+				// Add the image - note they are not all in memory
+				// so this process should scale reasonably well.
+				app.append("image_"+i, image);
+			}
+		}
+
+		DataFrame stack = new DataFrame();
+		stack.read_hdf("test-scratch/write_example/lazy_microscope_image.h5");
+		assertArrayEquals(new int[] {288,384,2}, stack.getShape());
 	}
 
 	@Test

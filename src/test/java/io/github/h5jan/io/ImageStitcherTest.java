@@ -17,35 +17,22 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.util.Arrays;
 
 import org.eclipse.january.DatasetException;
 import org.eclipse.january.IMonitor;
-import org.eclipse.january.IMonitor.Stub;
 import org.eclipse.january.dataset.Dataset;
 import org.eclipse.january.dataset.IDataset;
 import org.eclipse.january.dataset.LazyDataset;
 import org.eclipse.january.dataset.RGBDataset;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import io.github.h5jan.core.DataFrame;
 import io.github.h5jan.core.JPaths;
 
-public class ImagesFormatTest {
+public class ImageStitcherTest extends AbstractReaderTest {
 	
-	private DataFrameReader reader;
-	private DataFrameWriter writer;
-
-	@Before
-	public void before() throws Exception {
-		this.reader = new DataFrameReader();
-		this.writer = new DataFrameWriter();
-	}
-
 	@Test
 	public void readSingleTiff() throws Exception {
 		Path path = JPaths.getTestResource("microscope/0/tile00.tif");
@@ -71,7 +58,6 @@ public class ImagesFormatTest {
 		assertEquals(RGBDataset.class, loaded.getClass());
 	}
 	
-	@Ignore
 	@Test
 	public void greyNotEquals() throws Exception {
 		Path path = JPaths.getTestResource("microscope/0/tile00.tif");
@@ -138,21 +124,64 @@ public class ImagesFormatTest {
 		shape = stitch4x2.getShape();
 		assertArrayEquals(new int[] {384,256}, shape);
 		round(stitch4x2, "test-scratch/image", "stitch4x2");
-
+	}
+	
+	@Test(expected=NullPointerException.class)
+	public void stitchNull() throws Exception {
+		Path path = JPaths.getTestResource("microscope/0/");
+		DataFrame stack = reader.read(path, Configuration.DEFAULT, new IMonitor.Stub());
+		assertEquals(9, stack.size());
+		stack.stitch(null);
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void stitchTooLarge() throws Exception {
+		Path path = JPaths.getTestResource("microscope/0/");
+		DataFrame stack = reader.read(path, Configuration.DEFAULT, new IMonitor.Stub());
+		assertEquals(9, stack.size());
+		stack.stitch(new int[] {4,3});
+	}
+	
+	@Test
+	public void stitchZero() throws Exception {
+		Path path = JPaths.getTestResource("microscope/0/");
+		DataFrame stack = reader.read(path, Configuration.DEFAULT, new IMonitor.Stub());
+		assertEquals(9, stack.size());
+		Dataset image = stack.stitch(new int[] {0,3});
+		assertArrayEquals(new int[] {0,384}, image.getShape());
 	}
 
-	private void round(Dataset set, String sdir, String name) throws Exception {
-		DataFrame output = new DataFrame(name, Dataset.RGB, set.getShape());
-		output.add(set);
-		Configuration conf = Configuration.image(output.getName(), "JPG", 8, false);
-		File dir = new File(sdir);
-		dir.mkdirs();
-		writer.save(dir, conf, output, new IMonitor.Stub());
-		
-		File file = new File("test-scratch/image/"+name+".jpg");
-		DataFrame frame = reader.read(file, Configuration.DEFAULT, new IMonitor.Stub());
-		
-		assertArrayEquals(output.getShape(), frame.getShape());
+	@Test(expected=IllegalArgumentException.class)
+	public void stitchNegative1() throws Exception {
+		Path path = JPaths.getTestResource("microscope/0/");
+		DataFrame stack = reader.read(path, Configuration.DEFAULT, new IMonitor.Stub());
+		assertEquals(9, stack.size());
+		stack.stitch(new int[] {-1,3});
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void stitchNegative2() throws Exception {
+		Path path = JPaths.getTestResource("microscope/0/");
+		DataFrame stack = reader.read(path, Configuration.DEFAULT, new IMonitor.Stub());
+		assertEquals(9, stack.size());
+		stack.stitch(new int[] {3,-3});
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void stitchLargeRank() throws Exception {
+		Path path = JPaths.getTestResource("microscope/0/");
+		DataFrame stack = reader.read(path, Configuration.DEFAULT, new IMonitor.Stub());
+		assertEquals(9, stack.size());
+		stack.stitch(new int[] {3,3,3});
+	}
+
+	@Test
+	public void stitchSmallRank() throws Exception {
+		Path path = JPaths.getTestResource("microscope/0/");
+		DataFrame stack = reader.read(path, Configuration.DEFAULT, new IMonitor.Stub());
+		assertEquals(9, stack.size());
+		Dataset image = stack.stitch(new int[] {3});
+		assertArrayEquals(new int[] {96,384}, image.getShape());
 	}
 
 }

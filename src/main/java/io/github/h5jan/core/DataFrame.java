@@ -295,4 +295,12 @@ public class DataFrame extends LazyDatasetList {
 		if (columnNames==null) return 0;
 		return columnNames.size();
 	}
+
+	public int[] getColumnShape() {
+		return columnShape;
+	}
+
+	public void setColumnShape(int[] columnShape) {
+		this.columnShape = columnShape;
+	}
 }
