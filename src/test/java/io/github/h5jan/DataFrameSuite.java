@@ -10,6 +10,7 @@
  *******************************************************************************/
 package io.github.h5jan;
 
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite.SuiteClasses;
 
@@ -39,6 +40,7 @@ import io.github.h5jan.io.ImagesFormatTest;
 		DatasetWriteExample.class,
 		ImagesFormatTest.class
 })
+@Ignore
 public class DataFrameSuite {
 
 }
