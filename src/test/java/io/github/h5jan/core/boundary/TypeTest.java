@@ -75,7 +75,6 @@ public class TypeTest extends AbstractH5JanTest {
 		 */
 		types[9] = Dataset.RGB;
 
-
 		/**
 		 * Array of signed 8-bit integers
 		 */
@@ -87,29 +86,24 @@ public class TypeTest extends AbstractH5JanTest {
 		types[11] = Dataset.ARRAYINT16;
 
 		/**
-		 * Array of three signed 16-bit integers for RGB values
-		 */
-		types[12] = Dataset.RGB;
-
-		/**
 		 * Array of signed 32-bit integers
 		 */
-		types[13] = Dataset.ARRAYINT32;
+		types[12] = Dataset.ARRAYINT32;
 
 		/**
 		 * Array of signed 64-bit integers
 		 */
-		types[14] = Dataset.ARRAYINT64;
+		types[13] = Dataset.ARRAYINT64;
 
 		/**
 		 * Array of 32-bit floating points
 		 */
-		types[15] = Dataset.ARRAYFLOAT32;
+		types[14] = Dataset.ARRAYFLOAT32;
 
 		/**
 		 * Array of 64-bit floating points
 		 */
-		types[16] = Dataset.ARRAYFLOAT64;
+		types[15] = Dataset.ARRAYFLOAT64;
 
 	}
 
@@ -118,28 +112,34 @@ public class TypeTest extends AbstractH5JanTest {
 	public void ones() throws Exception {
 		for (int i = 0; i < 10; i++) {
 			try {
-				round(DatasetFactory.ones(new int[] {256, 3}, types[i]), false);
+				round(DatasetFactory.ones(new int[] {256, 3}, types[i]), "ones");
 			} catch (Exception ne) {
 				throw new Exception("Cannot process dtype "+DTypeUtils.getDTypeName(types[i], 1), ne);
 			}
 		}
 	}
 	
+	@Test
+	public void rgb() throws Exception {
+		// This test is done above but it makes it easy to run a single failing type
+		round(DatasetFactory.ones(new int[] {256, 3}, Dataset.RGB), "rgb");
+	}
+	
 	@SuppressWarnings("deprecation")
 	@Test
 	public void zeros() throws Exception {
 		for (int i = 0; i < types.length; i++) {
-			round(DatasetFactory.zeros(new int[] {256, 3}, types[i]), false);
+			round(DatasetFactory.zeros(new int[] {256, 3}, types[i]), "zeros");
 		}
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void strings() throws Exception {
-		round(DatasetFactory.createFromList(Arrays.asList("one", "two", "three")));
+		round(DatasetFactory.createFromList(Arrays.asList("one", "two", "three")), "strings");
 	}
 
 	@Test(expected=IllegalArgumentException.class) // Date is not yet supported.
 	public void dates() throws Exception {
-		round(DatasetFactory.createFromList(Arrays.asList(new Date(), new Date(), new Date())));
+		round(DatasetFactory.createFromList(Arrays.asList(new Date(), new Date(), new Date())), "dates");
 	}
 }

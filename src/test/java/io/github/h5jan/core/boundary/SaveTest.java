@@ -12,7 +12,6 @@ package io.github.h5jan.core.boundary;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 import org.eclipse.january.dataset.Dataset;
@@ -47,32 +46,30 @@ public class SaveTest extends AbstractH5JanTest {
 	
 	@Test
 	public void good() throws Exception {
-		assertEquals(frame, readWriteTmp(frame));
-		assertEquals(frame, readWriteTmpLazy(frame));
+		assertEquals(frame, readWriteLazy(frame, "good"));
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void badDtype() throws Exception {
 		frame.setDtype(-1456456568);
-		assertEquals(frame, readWriteTmp(frame));
+		assertEquals(frame, readWriteLazy(frame, "badDtype"));
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected=NullPointerException.class)
 	public void noName() throws Exception {
 		frame.setName(null);
-		assertEquals(frame, readWriteTmp(frame));
+		assertEquals(frame, readWriteLazy(frame, "noName"));
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void noColumns() throws Exception {
 		frame.setColumnNames(null);
-		assertEquals(frame, readWriteTmp(frame));
+		assertEquals(frame, readWriteLazy(frame, "noColumns"));
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected=NullPointerException.class)
 	public void noData() throws Exception {
 		frame.setData(null);
-		assertEquals(frame, readWriteTmp(frame));
 	}
 	
 	@Test(expected=NullPointerException.class)
@@ -80,12 +77,12 @@ public class SaveTest extends AbstractH5JanTest {
 		frame.to_hdf(null, "/some/other/path");
 	}
 
-	@Test(expected=NullPointerException.class)
+	@Test(expected=IllegalArgumentException.class)
 	public void noFile2() throws Exception {
 		frame.to_hdf("", "/some/other/path");
 	}
 
-	@Test(expected=NullPointerException.class)
+	@Test(expected=IllegalArgumentException.class)
 	public void noFile3() throws Exception {
 		frame.to_hdf("           ", "/some/other/path");
 	}

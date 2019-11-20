@@ -36,7 +36,7 @@ description = "h5jan-core"
 defaultTasks 'compileJava', 'classes', 'jar', 'sourceJar', 'compileTestJava', 'processTestResources', 'testClasses', 'findbugsMain', 'pmdMain', 'test'
 
 ext {
-	baseVersion = "0.4.3"
+	baseVersion = "0.5.0"
     if (project.hasProperty('version')) {
 		baseVersionNum = version
     }
@@ -203,6 +203,14 @@ dependencies {
 	
 	// https://mvnrepository.com/artifact/si.uom/si-units
 	implementation group: 'si.uom', name: 'si-units', version: '2.0.1'
+	
+	// https://mvnrepository.com/artifact/javax.media/jai-core
+	// The license of this code was the Java distribution license.
+	compile group: 'javax.media', name: 'jai-core', version: '1.1.3'	
+	
+	// https://mvnrepository.com/artifact/it.tidalwave.imageio/it.tidalwave.imageio.raw
+	compile files('lib/it.tidalwave.imageio.raw-1.6.1.jar')
+	compile files('lib/jai_imageio-1.1.jar')
 	
 	// json
     compile 'com.fasterxml.jackson.core:jackson-core:2.9.4'
