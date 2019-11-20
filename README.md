@@ -127,44 +127,44 @@ it is here: [DataFrameReader](https://github.com/h5jan/h5jan-core/blob/master/re
 
 ```
 
-If the images come from a directory structure as many detectors and microscopes do.
-In this example each directory contains tiles of a larger images then each directory
-above that is a stack. We write the HDF5 stack directly to a single file.
+Example if the images come from a directory structure, as many detectors and microscopes do.
+Each directory contains tiles of a larger image then each directory above that is a represents the stack.
+We write the HDF5 stack directly to a single file in a lazy way such that the whole thing is never in memory.
 
 ```java
 
-		// Make a writing frame, the tiled image is this size.
-		// Each tile is 96,128 so as we are making 3x3 stitching, we need 288,384
-		DataFrame frame = new DataFrame("scope_image", Dataset.FLOAT32, new int[] { 288,384 });
+  // Make a writing frame, the tiled image is this size.
+  // Each tile is 96,128 so as we are making 3x3 stitching, we need 288,384
+  DataFrame frame = new DataFrame("scope_image", Dataset.FLOAT32, new int[] { 288,384 });
 		
-		// Make an object to read other formats, in this case TIFF
-		DataFrameReader reader = new DataFrameReader();
+  // Make an object to read other formats, in this case TIFF
+  DataFrameReader reader = new DataFrameReader();
 
-		// Save to HDF5, columns can be large, these are not it's a test
-		try (Appender app = frame.open_hdf("test-scratch/write_example/lazy_microscope_image.h5", "/entry1/myData")) {
+  // Save to HDF5, columns can be large, these are not it's a test
+  try (Appender app = frame.open_hdf("test-scratch/write_example/lazy_microscope_image.h5", "/entry1/myData")) {
 			
-			// Directory structure is "microscope/0" image0, "microscope/1" image1 and in each
-			// directory are nine images which need to be stitched.
-			File[] dirs = JPaths.getTestResource("microscope").toFile().listFiles();
+  // Directory structure is "microscope/0" image0, "microscope/1" image1 and in each
+  // directory are nine images which need to be stitched.
+  File[] dirs = JPaths.getTestResource("microscope").toFile().listFiles();
 			
-			for (int i = 0; i < dirs.length; i++) {
+  for (int i = 0; i < dirs.length; i++) {
 				
-				// Directory of tiles
-				File dir = dirs[i];
+	// Directory of tiles
+	File dir = dirs[i];
 
-				// Read tiles, assuming their file name order is also their tile order.
-				DataFrame tiles = reader.read(dir, Configuration.GREYSCALE, new IMonitor.Stub());
+	// Read tiles, assuming their file name order is also their tile order.
+	DataFrame tiles = reader.read(dir, Configuration.GREYSCALE, new IMonitor.Stub());
 				
-				// Stitch to make image based on a 3x3 matrix of tiles.
-				Dataset image = tiles.stitch(new int[] {3,3});
-				assertArrayEquals(new int[] {288,384}, frame.getColumnShape());
-				image = DatasetUtils.cast(image, Dataset.FLOAT32);
+	// Stitch to make image based on a 3x3 matrix of tiles.
+	Dataset image = tiles.stitch(new int[] {3,3});
+	assertArrayEquals(new int[] {288,384}, frame.getColumnShape());
+	image = DatasetUtils.cast(image, Dataset.FLOAT32);
 				
-				// Add the image - note they are not all in memory
-				// so this process should scale reasonably well.
-				app.append("image_"+i, image);
-			}
-		}
+	// Add the image - note they are not all in memory
+	// so this process should scale reasonably well.
+	app.append("image_"+i, image);
+  }
+}
 ```
 
 ## Additional Examples
