@@ -163,8 +163,8 @@ We write the HDF5 stack directly to a single file in a lazy way such that the wh
 	// Add the image - note they are not all in memory
 	// so this process should scale reasonably well.
 	app.append("image_"+i, image);
+    }
   }
-}
 ```
 
 ## Additional Examples
