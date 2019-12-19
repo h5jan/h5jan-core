@@ -11,11 +11,15 @@
 package io.github.h5jan.io;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FilenameUtils;
 import org.eclipse.january.DatasetException;
@@ -31,12 +35,25 @@ import io.github.h5jan.core.DataFrame;
  * @see https://github.com/DawnScience/scisoft-core/blob/master/uk.ac.diamond.scisoft.analysis/src/uk/ac/diamond/scisoft/analysis/io/LoaderFactory.java
  */
 public class DataFrameReader {
+	
+	/**
+			
+		// Check for file
+		if (!file.exists()) {
+			logger.warn("File, {}, did not exist. Now trying to replace suffix", file.getName());
+			file = findCorrectSuffix(file);
+		}
+		setFile(file);
+
+		fileType = FilenameUtils.getExtension(file.getName()).toUpperCase();
+
+	 */
 		
 	// TODO LoaderFactory has more than one loader for an extension.
 	// We do not currently need this so it is not available.
-	private final static Map<String, Class<? extends IFileLoader>> loaders;
+	private final static Map<String, Class<? extends IStreamLoader>> loaders;
 	static {
-		loaders = Collections.synchronizedMap(new HashMap<String,Class<? extends IFileLoader>>());
+		loaders = Collections.synchronizedMap(new HashMap<String,Class<? extends IStreamLoader>>());
 		loaders.put("tif",		TIFFImageLoader.class);
 		loaders.put("tiff",		TIFFImageLoader.class);
 		loaders.put("png",		JavaImageLoader.class);
@@ -95,7 +112,7 @@ public class DataFrameReader {
 			DataFrame image = file(file, configuration, monitor);
 			frame.setDtype(image.getDtype());
 			image.forEach(i->{ // Normally just one
-				String name = String.format(AbstractFileLoader.IMAGE_NAME_FORMAT, frame.size());
+				String name = String.format(AbstractStreamLoader.IMAGE_NAME_FORMAT, frame.size());
 				i.setName(name);
 				frame.add(i);
 				monitor.worked(1);
@@ -113,18 +130,59 @@ public class DataFrameReader {
 
 	private DataFrame file(File file, Configuration configuration, IMonitor monitor) throws IOException, InstantiationException, IllegalAccessException {
 		monitor.subTask("Load "+file.getName());
-		IFileLoader loader = getLoader(file);
-		return loader.load(file, configuration, monitor);
+		if (configuration==null) configuration = Configuration.createDefault();
+		configuration.align(file);
+		IStreamLoader loader = getLoader(configuration.getFileName());
+		return loader.load(new FileInputStream(file), configuration, monitor);
 	}
 
-	private IFileLoader getLoader(File file) throws IOException, InstantiationException, IllegalAccessException {
-		String ext = FilenameUtils.getExtension(file.getName());
-		if (ext==null) throw new IOException("File "+file.getName()+" does not have an extension.");
+	private IStreamLoader getLoader(String fileName) throws IOException, InstantiationException, IllegalAccessException {
+		String ext = FilenameUtils.getExtension(fileName);
+		if (ext==null) throw new IOException("File "+fileName+" does not have an extension.");
 		
 		ext = ext.toLowerCase(); // TODO Tests with capitalized extensions.
-		Class<? extends IFileLoader> loaderClass = loaders.get(ext);
+		Class<? extends IStreamLoader> loaderClass = loaders.get(ext);
 		if (loaderClass==null) throw new InstantiationException("No load for extension "+ext+".");
 		
 		return loaderClass.newInstance();
 	}
+	
+	protected File findCorrectSuffix(File file, String fileType) throws IOException {
+		
+		String fileName = file.getName();
+		String[] suffixes = ImageIO.getReaderFileSuffixes();
+		String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+
+		File f = null;
+		testforsuffix: {
+			if (!extension.equals(fileName)) { // there is a suffix
+				for (String s : suffixes) {
+					if (extension.equalsIgnoreCase(s)) {
+						break testforsuffix;
+					}
+				}
+			}
+			// try standard suffix first then all supported suffixes
+			String name = fileName + "." + fileType;
+			f = new File(name);
+			if (f.exists()) {
+				fileName = name;
+				break testforsuffix;
+			}
+			for (String s : suffixes) {
+				name = fileName + "." + s;
+				f = new File(name);
+				if (f.exists()) {
+					fileName = name;
+					break testforsuffix;
+				}
+			}
+		}
+		if (f == null || !f.exists()) {
+			throw new IOException("Does not exist",
+					new FileNotFoundException(fileName));
+		}
+		return f;
+	}
+
 }

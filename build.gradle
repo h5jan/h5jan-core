@@ -22,8 +22,6 @@ apply plugin: 'java'
 apply plugin: 'jacoco'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
-apply plugin: 'findbugs'
-apply plugin: 'pmd'
 apply plugin: 'checkstyle'
 
 // We aspire one day to be part of Eclipse January.
@@ -33,10 +31,10 @@ group 'io.github.h5jan'
 description = "h5jan-core"
 
 // To sign, enter the gradle command 'gradle(w) sign'
-defaultTasks 'compileJava', 'classes', 'jar', 'sourceJar', 'compileTestJava', 'processTestResources', 'testClasses', 'findbugsMain', 'pmdMain', 'test'
+defaultTasks 'compileJava', 'javadoc', 'enunciate', 'check', 'compileTestJava', 'processTestResources', 'test', 'jar'
 
 ext {
-	baseVersion = "0.5.0"
+	baseVersion = "0.6.0"
     if (project.hasProperty('version')) {
 		baseVersionNum = version
     }
@@ -152,18 +150,6 @@ repositories {
     }
 }
 
-
-findbugs {
-    ignoreFailures = true
-    sourceSets = [sourceSets.main]
-    reportsDir = file("$project.buildDir/reports/findbugs")
-    effort = "max"
-}
-
-pmd {
-    ignoreFailures = true
-}
-
 /**
  The Suites are for local testing, gradle can file other unit tests
  see https://docs.gradle.org/current/dsl/org.gradle.api.tasks.testing.Test.html
@@ -197,6 +183,9 @@ dependencies {
 	
 	// https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils
     compile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
+	
+	// https://mvnrepository.com/artifact/org.apache.commons/commons-csv
+	compile group: 'org.apache.commons', name: 'commons-csv', version: '1.7'
 	
 	// https://mvnrepository.com/artifact/tec.units/indriya/1.0  Units  BSD License
 	implementation group: 'tec.units', name: 'indriya', version: '1.0'
@@ -270,17 +259,17 @@ publishing {
 			    }
 			}// create the signed artifacts
 			
-			project.tasks.signArchives.signatureFiles.each {
-			    artifact(it) {
-			        def matcher = it.file =~ /-(sources|javadoc)\.jar\.asc$/
-			        if (matcher.find()) {
-			            classifier = matcher.group(1)
-			        } else {
-			            classifier = null
-			        }
-			        extension = 'jar.asc'
-			    }
-			}
+			//project.tasks.signArchives.signatureFiles.each {
+			//    artifact(it) {
+			//        def matcher = it.file =~ /-(sources|javadoc)\.jar\.asc$/
+			//        if (matcher.find()) {
+			//            classifier = matcher.group(1)
+			//        } else {
+			//            classifier = null
+			//        }
+			//        extension = 'jar.asc'
+			//    }
+			//}
         }	
     }
     

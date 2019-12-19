@@ -40,7 +40,7 @@ public abstract class AbstractReaderTest {
 		writer.save(dir, conf, output, new IMonitor.Stub());
 		
 		File file = new File("test-scratch/image/"+name+".jpg");
-		DataFrame frame = reader.read(file, Configuration.DEFAULT, new IMonitor.Stub());
+		DataFrame frame = reader.read(file, Configuration.createDefault(), new IMonitor.Stub());
 		
 		assertArrayEquals(output.getShape(), frame.getShape());
 	}

@@ -31,7 +31,7 @@ public class ImageReaderTest extends AbstractReaderTest {
 	@Test
 	public void working() throws Exception {
 		Path path = JPaths.getTestResource("microscope/0/tile00.tif");
-		DataFrame image = reader.read(path, Configuration.DEFAULT, new IMonitor.Stub());
+		DataFrame image = reader.read(path, Configuration.createDefault(), new IMonitor.Stub());
 		assertNotNull(image);
 		assertArrayEquals(new int[] {96,128,1}, image.getShape());
 		assertEquals("tile00.tif", image.getName());
@@ -44,31 +44,31 @@ public class ImageReaderTest extends AbstractReaderTest {
 	@Test(expected=IOException.class)
 	public void badFilePath() throws Exception {
 		Path path = JPaths.getTestResource("microscope/0/NOT-THERE.tif");
-		reader.read(path, Configuration.DEFAULT, new IMonitor.Stub());
+		reader.read(path, Configuration.createDefault(), new IMonitor.Stub());
 	}
 
 	@Test(expected=IOException.class)
 	public void badFile() throws Exception {
 		Path path = JPaths.getTestResource("bad.tif");
-		reader.read(path, Configuration.DEFAULT, new IMonitor.Stub());
+		reader.read(path, Configuration.createDefault(), new IMonitor.Stub());
 	}
 
 	@Test(expected=IOException.class)
 	public void emptyFile() throws Exception {
 		Path path = JPaths.getTestResource("empty.png");
-		reader.read(path, Configuration.DEFAULT, new IMonitor.Stub());
+		reader.read(path, Configuration.createDefault(), new IMonitor.Stub());
 	}
 	
 	@Test(expected=IOException.class)
 	public void wrongExtension() throws Exception {
 		Path path = JPaths.getTestResource("wrong_extension.tif");
-		reader.read(path, Configuration.DEFAULT, new IMonitor.Stub());
+		reader.read(path, Configuration.createDefault(), new IMonitor.Stub());
 	}
 	
 	@Test
 	public void goodPNG() throws Exception {
 		Path path = JPaths.getTestResource("dawn.png");
-		DataFrame frame = reader.read(path, Configuration.DEFAULT, new IMonitor.Stub());
+		DataFrame frame = reader.read(path, Configuration.createDefault(), new IMonitor.Stub());
 		assertArrayEquals(new int[] {831, 1216, 1}, frame.getShape());
 		assertEquals(Dataset.RGB, frame.getDtype());
 	}

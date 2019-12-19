@@ -12,8 +12,8 @@
 
 package io.github.h5jan.io;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.eclipse.january.IMonitor;
 
@@ -23,19 +23,19 @@ import io.github.h5jan.core.DataFrame;
  * This interface specifies the methods required to allow the ScanFileHolder to load in data from a file of some
  * description
  */
-public interface IFileLoader {
+public interface IStreamLoader {
 
 	/**
 	 * This function is called when the ScanFileHolder needs to load data from a particular source
 	 * It can also be called on by itself
 	 * 
-	 * @param file - file to load
+	 * @param stream - data to load
 	 * @param configuration - configuration or null or empty
 	 * @param mon - may be null
 	 * @return This returned object is all the data which has been loaded returned in a small object package.
 	 * @throws IOException
 	 */
-	DataFrame load(File file, Configuration configuration, IMonitor mon) throws IOException;
+	DataFrame load(InputStream stream, Configuration configuration, IMonitor mon) throws IOException;
 
 	/**
 	 * If this loader supports asynchronous loading

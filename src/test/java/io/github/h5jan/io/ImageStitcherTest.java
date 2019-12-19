@@ -36,7 +36,7 @@ public class ImageStitcherTest extends AbstractReaderTest {
 	@Test
 	public void readSingleTiff() throws Exception {
 		Path path = JPaths.getTestResource("microscope/0/tile00.tif");
-		DataFrame image = reader.read(path.toFile(), Configuration.DEFAULT, new IMonitor.Stub());
+		DataFrame image = reader.read(path.toFile(), Configuration.createDefault(), new IMonitor.Stub());
 		assertNotNull(image);
 		assertArrayEquals(new int[] {96,128,1}, image.getShape());
 		assertEquals("tile00.tif", image.getName());
@@ -49,7 +49,7 @@ public class ImageStitcherTest extends AbstractReaderTest {
 	@Test
 	public void readGreyTiff() throws Exception {
 		Path path = JPaths.getTestResource("microscope/0/tile00.tif");
-		DataFrame image = reader.read(path.toFile(), Configuration.GREYSCALE, new IMonitor.Stub());
+		DataFrame image = reader.read(path.toFile(), Configuration.createDefault(), new IMonitor.Stub());
 		assertNotNull(image);
 		assertArrayEquals(new int[] {96,128,1}, image.getShape());
 		assertEquals("tile00.tif", image.getName());
@@ -61,8 +61,8 @@ public class ImageStitcherTest extends AbstractReaderTest {
 	@Test
 	public void greyNotEquals() throws Exception {
 		Path path = JPaths.getTestResource("microscope/0/tile00.tif");
-		DataFrame rgb = reader.read(path.toFile(), Configuration.DEFAULT, new IMonitor.Stub());
-		DataFrame grey = reader.read(path.toFile(), Configuration.GREYSCALE, new IMonitor.Stub());
+		DataFrame rgb = reader.read(path.toFile(), Configuration.createDefault(), new IMonitor.Stub());
+		DataFrame grey = reader.read(path.toFile(), Configuration.createGreyScale(), new IMonitor.Stub());
 		assertNotEquals(rgb, grey);
 	}
 
@@ -73,7 +73,7 @@ public class ImageStitcherTest extends AbstractReaderTest {
 	@Test
 	public void readDirectory() throws Exception {
 		Path path = JPaths.getTestResource("microscope/0/");
-		DataFrame image = reader.read(path, Configuration.DEFAULT, new IMonitor.Stub());
+		DataFrame image = reader.read(path, Configuration.createDefault(), new IMonitor.Stub());
 		assertEquals(9, image.size());
 		assertEquals(Arrays.asList("image-00", "image-01", "image-02", "image-03", "image-04",
 								   "image-05", "image-06", "image-07", "image-08"),
@@ -102,7 +102,7 @@ public class ImageStitcherTest extends AbstractReaderTest {
 	@Test
 	public void stitchDirectory() throws Exception {
 		Path path = JPaths.getTestResource("microscope/0/");
-		DataFrame stack = reader.read(path, Configuration.DEFAULT, new IMonitor.Stub());
+		DataFrame stack = reader.read(path, Configuration.createDefault(), new IMonitor.Stub());
 		assertEquals(9, stack.size());
 		
 		Dataset stitch3x3 = stack.stitch(new int[] {3,3});
@@ -129,7 +129,7 @@ public class ImageStitcherTest extends AbstractReaderTest {
 	@Test(expected=NullPointerException.class)
 	public void stitchNull() throws Exception {
 		Path path = JPaths.getTestResource("microscope/0/");
-		DataFrame stack = reader.read(path, Configuration.DEFAULT, new IMonitor.Stub());
+		DataFrame stack = reader.read(path, Configuration.createDefault(), new IMonitor.Stub());
 		assertEquals(9, stack.size());
 		stack.stitch(null);
 	}
@@ -137,7 +137,7 @@ public class ImageStitcherTest extends AbstractReaderTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void stitchTooLarge() throws Exception {
 		Path path = JPaths.getTestResource("microscope/0/");
-		DataFrame stack = reader.read(path, Configuration.DEFAULT, new IMonitor.Stub());
+		DataFrame stack = reader.read(path, Configuration.createDefault(), new IMonitor.Stub());
 		assertEquals(9, stack.size());
 		stack.stitch(new int[] {4,3});
 	}
@@ -145,7 +145,7 @@ public class ImageStitcherTest extends AbstractReaderTest {
 	@Test
 	public void stitchZero() throws Exception {
 		Path path = JPaths.getTestResource("microscope/0/");
-		DataFrame stack = reader.read(path, Configuration.DEFAULT, new IMonitor.Stub());
+		DataFrame stack = reader.read(path, Configuration.createDefault(), new IMonitor.Stub());
 		assertEquals(9, stack.size());
 		Dataset image = stack.stitch(new int[] {0,3});
 		assertArrayEquals(new int[] {0,384}, image.getShape());
@@ -154,7 +154,7 @@ public class ImageStitcherTest extends AbstractReaderTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void stitchNegative1() throws Exception {
 		Path path = JPaths.getTestResource("microscope/0/");
-		DataFrame stack = reader.read(path, Configuration.DEFAULT, new IMonitor.Stub());
+		DataFrame stack = reader.read(path, Configuration.createDefault(), new IMonitor.Stub());
 		assertEquals(9, stack.size());
 		stack.stitch(new int[] {-1,3});
 	}
@@ -162,7 +162,7 @@ public class ImageStitcherTest extends AbstractReaderTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void stitchNegative2() throws Exception {
 		Path path = JPaths.getTestResource("microscope/0/");
-		DataFrame stack = reader.read(path, Configuration.DEFAULT, new IMonitor.Stub());
+		DataFrame stack = reader.read(path, Configuration.createDefault(), new IMonitor.Stub());
 		assertEquals(9, stack.size());
 		stack.stitch(new int[] {3,-3});
 	}
@@ -170,7 +170,7 @@ public class ImageStitcherTest extends AbstractReaderTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void stitchLargeRank() throws Exception {
 		Path path = JPaths.getTestResource("microscope/0/");
-		DataFrame stack = reader.read(path, Configuration.DEFAULT, new IMonitor.Stub());
+		DataFrame stack = reader.read(path, Configuration.createDefault(), new IMonitor.Stub());
 		assertEquals(9, stack.size());
 		stack.stitch(new int[] {3,3,3});
 	}
@@ -178,7 +178,7 @@ public class ImageStitcherTest extends AbstractReaderTest {
 	@Test
 	public void stitchSmallRank() throws Exception {
 		Path path = JPaths.getTestResource("microscope/0/");
-		DataFrame stack = reader.read(path, Configuration.DEFAULT, new IMonitor.Stub());
+		DataFrame stack = reader.read(path, Configuration.createDefault(), new IMonitor.Stub());
 		assertEquals(9, stack.size());
 		Dataset image = stack.stitch(new int[] {3});
 		assertArrayEquals(new int[] {96,384}, image.getShape());

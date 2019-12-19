@@ -10,8 +10,11 @@
  *******************************************************************************/
 package io.github.h5jan.io;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.commons.io.FilenameUtils;
 
 /**
  * A class to hold common dataset loading configurations.
@@ -24,17 +27,23 @@ public interface Configuration extends Map<String, Object> {
 	/**
 	 * No conf
 	 */
-	public static final Configuration DEFAULT = new ConfigurationImpl();
+	public static Configuration createDefault() {
+		return new ConfigurationImpl();
+	}
 	
 	/**
 	 * Grey scale conf.
 	 */
-	public static final Configuration GREYSCALE = concrete("asGrey", Boolean.TRUE);
+	public static Configuration createGreyScale() { 
+		return concrete("asGrey", Boolean.TRUE);
+	}
 
 	/**
 	 * Keep pixel width
 	 */
-	public static final Configuration KEEPWIDTH = concrete("keepBitWidth", Boolean.TRUE);
+	public static Configuration createKeepWidth() {
+	    return concrete("keepBitWidth", Boolean.TRUE);
+	}
 
 	/**
 	 * Create any configuration with key value pairs
@@ -45,15 +54,41 @@ public interface Configuration extends Map<String, Object> {
 		return new ConfigurationImpl(values);
 	}
 	
+	/**
+	 * Align from name and type
+	 * @param fileName - file name
+	 * @param fileType - file type
+	 * @param numBits - number of bits
+	 * @param asUnsigned - signed or unsigned.
+	 * @return configuration
+	 */
 	public static Configuration image(String fileName, String fileType, int numBits, boolean asUnsigned) {
 		return new ConfigurationImpl("fileName", fileName,
 									"fileType", fileType,
 									"numBits", numBits,
 									"asUnsigned", asUnsigned);
 	}
+	
+	/**
+	 * Align from file.
+	 * @param file - file 
+	 * @param numBits - number of bits
+	 * @param asUnsigned - signed or unsigned.
+	 * @return configuration
+	 */
+	public static Configuration image(File file, int numBits, boolean asUnsigned) {
+		Configuration ret = new ConfigurationImpl("numBits", numBits,
+									"asUnsigned", asUnsigned);
+		ret.align(file);
+		return ret;
+	}
 
 	public default String getFileName() {
 		return (String)get("fileName");
+	}
+	
+	public default String getFilePath() {
+		return (String)get("filePath");
 	}
 
 	public default String getFileType() {
@@ -66,6 +101,17 @@ public interface Configuration extends Map<String, Object> {
 
 	public default boolean getAsUnsigned() {
 		return (Boolean)get("asUnsigned");
+	}
+
+	public default void align(File file) {
+		if (!containsKey("fileName")) put("fileName", file.getName());
+		if (!containsKey("filePath")) put("filePath", file.getAbsolutePath());
+		if (!containsKey("fileType")) {
+			String ext = FilenameUtils.getBaseName(file.getName());
+			if (ext!=null) {
+				 put("fileType", ext.toUpperCase());
+			}
+		}
 	}
 }
 

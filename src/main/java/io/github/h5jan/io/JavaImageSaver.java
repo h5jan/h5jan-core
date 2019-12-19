@@ -13,6 +13,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
@@ -34,14 +35,14 @@ import io.github.h5jan.core.DataFrame;
  * If the DataHolder contains more than one dataset then multiple image
  * files are saved with names labelled from 00001 to 99999.
  */
-class JavaImageSaver implements IFileSaver {
+class JavaImageSaver implements IStreamSaver {
 
 	static {
 		ImageIO.scanForPlugins(); // in case the ImageIO jar has not been loaded yet 
 	}
 
 	@Override
-	public boolean saveFile(File dir, Configuration conf, DataFrame dh, IMonitor monitor) throws IOException {
+	public boolean save(OutputStream stream, Configuration conf, DataFrame dh, IMonitor monitor) throws IOException {
 		
 		String fileName = conf.getFileName();
 		String fileType = conf.getFileType(); // format name
@@ -53,8 +54,6 @@ class JavaImageSaver implements IFileSaver {
 		} else {
 			maxVal = 1.0; // flag to use doubles (TIFF only)
 		}
-
-		File f = null;
 
 		if (numBits <= 0) {
 			throw new IOException(
@@ -84,8 +83,6 @@ class JavaImageSaver implements IFileSaver {
 					name = name + "." + fileType.toLowerCase();
 				}
 
-				f = new File(dir, name);
-
 				IDataset idata = dh.get(i).getSlice();
 				Dataset data = DatasetUtils.convertToDataset(idata);
 
@@ -109,7 +106,7 @@ class JavaImageSaver implements IFileSaver {
 						throw new IOException("Unable to create a buffered image to save file type");
 					}
 					
-					boolean w = writeImageLocked(image, fileType, f, dh);
+					boolean w = writeImageLocked(image, fileType, stream, fileName, dh);
 					if (!w)
 						throw new IOException("No writer for '" + fileName + "' of type " + fileType);
 				} else {
@@ -118,7 +115,7 @@ class JavaImageSaver implements IFileSaver {
 					if (image == null) {
 						throw new IOException("Unable to create a tiled image to save file type");
 					}
-					boolean w = writeImageLocked(image, fileType, f, dh);
+					boolean w = writeImageLocked(image, fileType, stream, fileName, dh);
 					if (!w)
 						throw new IOException("No writer for '" + fileName + "' of type " + fileType);
 				}
@@ -132,13 +129,13 @@ class JavaImageSaver implements IFileSaver {
 		return true;
 	}
 
-	protected boolean writeImageLocked(RenderedImage image, String fileType, File f, DataFrame dh) throws Exception {
+	protected boolean writeImageLocked(RenderedImage image, String fileType, OutputStream out, String fileName, DataFrame dh) throws Exception {
 		
 		// Write meta data to image header
 		if (image instanceof PlanarImage) {
 			PlanarImage pi = (PlanarImage)image;
-			if (f.getAbsolutePath()!=null) {
-				pi.setProperty("originalDataSource", f.getAbsolutePath());
+			if (fileName!=null) {
+				pi.setProperty("originalDataSource", fileName);
 			}
 
 // TODO Write metadata
@@ -151,7 +148,7 @@ class JavaImageSaver implements IFileSaver {
 //			}
 		}
 		// Separate method added as may add file locking option.
-		return ImageIO.write(image, fileType, f);
+		return ImageIO.write(image, fileType, out);
 	}
 
 }

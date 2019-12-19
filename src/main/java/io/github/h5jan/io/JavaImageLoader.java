@@ -12,9 +12,8 @@ package io.github.h5jan.io;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.SampleModel;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 
 import javax.imageio.ImageIO;
@@ -22,7 +21,6 @@ import javax.imageio.ImageReader;
 import javax.imageio.ImageTypeSpecifier;
 import javax.imageio.stream.ImageInputStream;
 
-import org.apache.commons.io.FilenameUtils;
 import org.eclipse.january.IMonitor;
 import org.eclipse.january.dataset.Dataset;
 import org.eclipse.january.dataset.DatasetUtils;
@@ -46,55 +44,38 @@ import io.github.h5jan.core.DataFrame;
  * comprises a Raster and a ColorModel. The reader/writer handles BufferImages
  * so access the image data via the BufferedImage's Raster attribute.
  */
-class JavaImageLoader extends AbstractFileLoader {
+class JavaImageLoader extends AbstractStreamLoader {
 
 	protected static final Logger logger = LoggerFactory.getLogger(JavaImageLoader.class);
 
-	/**
-	 * Image format PNG, JPG, TIFF etc.
-	 */
-	private String fileType;
 	protected boolean asGrey;
 	protected boolean keepBitWidth = false;
 	
 	protected void configure(Configuration configuration) {
 		if (configuration.containsKey("asGrey")) this.asGrey = (Boolean)configuration.get("asGrey");
 		if (configuration.containsKey("keepBitWidth")) this.keepBitWidth = (Boolean)configuration.get("keepBitWidth");
-		if (configuration.containsKey("fileType")) this.fileType = (String)configuration.get("fileType");
 	}
 
 	@Override
-	public void setFile(final File file) {
-		super.setFile(file);
-		fileType = FilenameUtils.getExtension(file.getName()).toUpperCase();
-	}
-
-	@Override
-	public DataFrame load(File file, Configuration configuration, IMonitor mon) throws IOException {
+	public DataFrame load(InputStream stream, Configuration configuration, IMonitor mon) throws IOException {
 		
 		configure(configuration);
 		
-		// Check for file
-		if (!file.exists()) {
-			logger.warn("File, {}, did not exist. Now trying to replace suffix", file.getName());
-			file = findCorrectSuffix(file);
-		}
-		setFile(file);
-
-		DataFrame output = new DataFrame(file.getName());
+		String fileName = configuration.getFileName();
+		DataFrame output = new DataFrame(fileName);
 		output.setDtype(Dataset.RGB);
 		mon.worked(1);
 		
 		ImageInputStream iis = null;
 		try {
-			iis = ImageIO.createImageInputStream(file);
+			iis = ImageIO.createImageInputStream(stream);
 		} catch (Exception e) {
-			logger.error("Problem creating input stream for file " + file.getName(), e);
-			throw new IOException("Problem creating input stream for file " + file.getName(), e);
+			logger.error("Problem creating input stream for file " + fileName, e);
+			throw new IOException("Problem creating input stream for file " + fileName, e);
 		}
 		if (iis == null) {
-			logger.error("File format in '{}' cannot be read", file.getName());
-			throw new IOException("File format in '" + file.getName() + "' cannot be read");
+			logger.error("File format in '{}' cannot be read", fileName);
+			throw new IOException("File format in '" + fileName + "' cannot be read");
 		}
 		mon.worked(1);
 		
@@ -107,8 +88,8 @@ class JavaImageLoader extends AbstractFileLoader {
 			mon.worked(1);
 		}
 		if (!loaded) {
-			logger.error("File format in '{}' cannot be read", file.getName());
-			throw new IOException("File format in '" + file.getName() + "' cannot be read");
+			logger.error("File format in '{}' cannot be read", fileName);
+			throw new IOException("File format in '" + fileName + "' cannot be read");
 		}
 
 		return output;
@@ -126,7 +107,7 @@ class JavaImageLoader extends AbstractFileLoader {
 				LazyDataset lazy = createLazyDataset(new LazyLoaderStub() {
 					@Override
 					public IDataset getDataset(IMonitor mon, SliceND slice) throws IOException {
-						Dataset data = loadDataset(file, name, num, asGrey, keepBitWidth);
+						Dataset data = loadDataset(reader.getInput(), name, num, asGrey, keepBitWidth);
 						return data == null ? null : data.getSliceView(slice);
 					}
 				}, name, clazz, shape);
@@ -142,19 +123,19 @@ class JavaImageLoader extends AbstractFileLoader {
 		return output.getColumnNames().size() > 0;
 	}
 
-	private static Dataset loadDataset(File file, String name, int num, boolean asGrey, boolean keepBitWidth) throws IOException {
+	private static Dataset loadDataset(Object source, String name, int num, boolean asGrey, boolean keepBitWidth) throws IOException {
 		
 
 		ImageInputStream iis = null;
 		try {
-			iis = ImageIO.createImageInputStream(file);
+			iis = ImageIO.createImageInputStream(source);
 		} catch (Exception e) {
-			logger.error("Problem creating input stream for file " + file, e);
-			throw new IOException("Problem creating input stream for file " + file, e);
+			logger.error("Problem creating input stream for file " + name, e);
+			throw new IOException("Problem creating input stream for file " + name, e);
 		}
 		if (iis == null) {
-			logger.error("File format in '{}' cannot be read", file);
-			throw new IOException("File format in '" + file + "' cannot be read");
+			logger.error("File format in '{}' cannot be read", name);
+			throw new IOException("File format in '" + name + "' cannot be read");
 		}
 		Iterator<ImageReader> it = ImageIO.getImageReaders(iis);
 		while (it.hasNext()) {
@@ -217,52 +198,10 @@ class JavaImageLoader extends AbstractFileLoader {
 		return data;
 	}
 
-	protected File findCorrectSuffix(File file) throws IOException {
-		
-		String fileName = file.getName();
-		String[] suffixes = ImageIO.getReaderFileSuffixes();
-		String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
-
-		File f = null;
-		testforsuffix: {
-			if (!extension.equals(fileName)) { // there is a suffix
-				for (String s : suffixes) {
-					if (extension.equalsIgnoreCase(s)) {
-						break testforsuffix;
-					}
-				}
-			}
-			// try standard suffix first then all supported suffixes
-			String name = fileName + "." + fileType;
-			f = new File(name);
-			if (f.exists()) {
-				fileName = name;
-				break testforsuffix;
-			}
-			for (String s : suffixes) {
-				name = fileName + "." + s;
-				f = new File(name);
-				if (f.exists()) {
-					fileName = name;
-					break testforsuffix;
-				}
-			}
-		}
-		if (f == null || !f.exists()) {
-			throw new IOException("Does not exist",
-					new FileNotFoundException(fileName));
-		}
-		return f;
-	}
-
 	public void setAsGrey(boolean asGrey) {
 		this.asGrey = asGrey;
 	}
 
-	public void setFileType(String fileType) {
-		this.fileType = fileType;
-	}
-	
 	/**
 	 * @return true if loader keeps bit width of pixels
 	 */

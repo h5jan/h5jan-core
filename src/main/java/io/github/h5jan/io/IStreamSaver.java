@@ -14,6 +14,7 @@ package io.github.h5jan.io;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import org.eclipse.january.IMonitor;
 
@@ -23,13 +24,13 @@ import io.github.h5jan.core.DataFrame;
  * This interface specifies the methods required to allow the ScanFileHolder to save data to a file of some
  * description
  */
-public interface IFileSaver {
+public interface IStreamSaver {
 
 	/**
 	 * This function is called when the ScanFileHolder needs to save data from a particular source.
 	 * It can also be called on by itself
 	 * 
-	 * @param dir
+	 * @param output
 	 * 			The directory to create image files within
 	 * @param conf
 	 * 			The configuration for writing the image.
@@ -42,5 +43,5 @@ public interface IFileSaver {
 	 * 
 	 * @throws IOException
 	 */
-	boolean saveFile(File dir, Configuration conf, DataFrame holder, IMonitor monitor) throws IOException;
+	boolean save(OutputStream output, Configuration conf, DataFrame holder, IMonitor monitor) throws IOException;
 }

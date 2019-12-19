@@ -175,7 +175,7 @@ public class DataFrameExample extends AbstractH5JanTest {
 				File dir = dirs[i];
 
 				// Read tiles, assuming their file name order is also their tile order.
-				DataFrame tiles = reader.read(dir, Configuration.GREYSCALE, new IMonitor.Stub());
+				DataFrame tiles = reader.read(dir, Configuration.createGreyScale(), new IMonitor.Stub());
 				
 				// Stitch to make image based on a 3x3 matrix of tiles.
 				Dataset image = tiles.stitch(new int[] {3,3});

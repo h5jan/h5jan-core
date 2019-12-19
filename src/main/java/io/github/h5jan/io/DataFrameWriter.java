@@ -11,6 +11,7 @@
 package io.github.h5jan.io;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -33,9 +34,9 @@ public class DataFrameWriter {
 		
 	// TODO LoaderFactory has more than one loader for an extension.
 	// We do not currently need this so it is not available.
-	private final static Map<String, Class<? extends IFileSaver>> writers;
+	private final static Map<String, Class<? extends IStreamSaver>> writers;
 	static {
-		writers = Collections.synchronizedMap(new HashMap<String,Class<? extends IFileSaver>>());
+		writers = Collections.synchronizedMap(new HashMap<String,Class<? extends IStreamSaver>>());
 		writers.put("tif",		TIFFImageSaver.class);
 		writers.put("tiff",		TIFFImageSaver.class);
 		writers.put("png",		JavaImageSaver.class);
@@ -79,7 +80,7 @@ public class DataFrameWriter {
 		if (path.isDirectory()) {
 			return saveToDirectory(path, configuration, data, monitor);
 		} else {
-			throw new IOException("Only files and directories can be read.");
+			throw new IOException("Only directories can be written to!");
 		}
 	}
 
@@ -89,18 +90,19 @@ public class DataFrameWriter {
 		if (fileType==null) throw new IllegalArgumentException("Please provide the file type to save in the configuration!");
 		if (!hasSaver(fileType)) throw new IllegalArgumentException("No saver for type '"+fileType+"'!");
 		
-		IFileSaver saver = getSaver(fileType);
-		return saver.saveFile(dir, configuration, data, monitor);
+		IStreamSaver saver = getSaver(fileType);
+		File out = new File(dir, configuration.getFileName());
+		return saver.save(new FileOutputStream(out), configuration, data, monitor);
 	}
 
 	private boolean hasSaver(String fileType) {
 		return writers.containsKey(fileType.toLowerCase());
 	}
 
-	private IFileSaver getSaver(String fileType) throws IOException, InstantiationException, IllegalAccessException {
+	private IStreamSaver getSaver(String fileType) throws IOException, InstantiationException, IllegalAccessException {
 		if (fileType==null) throw new IOException("No file type provided!");
 		fileType = fileType.toLowerCase();
-		Class<? extends IFileSaver> saverClass = writers.get(fileType);
+		Class<? extends IStreamSaver> saverClass = writers.get(fileType);
 		if (saverClass==null) throw new InstantiationException("No saver for '"+fileType+"'.");
 		
 		return saverClass.newInstance();

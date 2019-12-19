@@ -11,6 +11,7 @@ package io.github.h5jan.io;
 
 import java.awt.image.RenderedImage;
 import java.io.File;
+import java.io.OutputStream;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -29,7 +30,7 @@ class TIFFImageSaver extends JavaImageSaver {
 	private static final String FORMAT_NAME = "tiff";
 
 	@Override
-	protected boolean writeImageLocked(RenderedImage image, String fileType, File f, DataFrame dh) throws Exception {
+	protected boolean writeImageLocked(RenderedImage image, String fileType, OutputStream stream, String fileName, DataFrame dh) throws Exception {
 		
 		// special case to force little endian
 		ImageWriter writer = ImageIO.getImageWritersByFormatName(FORMAT_NAME).next();
@@ -43,7 +44,6 @@ class TIFFImageSaver extends JavaImageSaver {
 		tree.appendChild(endianNode);
 		streamMeta.setFromTree(metadataFormatName, tree);
 
-		ImageOutputStream stream = ImageIO.createImageOutputStream(f);
 		writer.setOutput(stream);
 		writer.write(streamMeta, new IIOImage(image, null, null), null);
 		return true;
