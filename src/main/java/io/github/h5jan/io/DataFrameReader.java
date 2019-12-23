@@ -54,6 +54,8 @@ public class DataFrameReader {
 	private final static Map<String, Class<? extends IStreamLoader>> loaders;
 	static {
 		loaders = Collections.synchronizedMap(new HashMap<String,Class<? extends IStreamLoader>>());
+		loaders.put("csv",		CsvLoader.class);
+		loaders.put("txt",		CsvLoader.class);
 		loaders.put("tif",		TIFFImageLoader.class);
 		loaders.put("tiff",		TIFFImageLoader.class);
 		loaders.put("png",		JavaImageLoader.class);
@@ -128,7 +130,7 @@ public class DataFrameReader {
 		return loaders.containsKey(ext);
 	}
 
-	private DataFrame file(File file, Configuration configuration, IMonitor monitor) throws IOException, InstantiationException, IllegalAccessException {
+	private DataFrame file(File file, Configuration configuration, IMonitor monitor) throws IOException, InstantiationException, IllegalAccessException, DatasetException {
 		monitor.subTask("Load "+file.getName());
 		if (configuration==null) configuration = Configuration.createDefault();
 		configuration.align(file);

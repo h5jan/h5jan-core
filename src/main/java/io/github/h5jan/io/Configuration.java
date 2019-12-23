@@ -30,6 +30,10 @@ public interface Configuration extends Map<String, Object> {
 	public static Configuration createDefault() {
 		return new ConfigurationImpl();
 	}
+
+	public static Configuration createEmpty() {
+		return new ConfigurationImpl();
+	}
 	
 	/**
 	 * Grey scale conf.
@@ -83,6 +87,30 @@ public interface Configuration extends Map<String, Object> {
 		return ret;
 	}
 
+	public default String setFileName(String fileName) {
+		return (String)put("fileName", fileName);
+	}
+	
+	public default String setFilePath(String filePath) {
+		return (String)put("filePath", filePath);
+	}
+
+	public default String setFileType(String fileType) {
+		return (String)put("fileType", fileType);
+	}
+
+	public default String setFilterName(String filterName) {
+		return (String)put("filterName", filterName);
+	}
+
+	public default int getNumBits(Integer numBits) {
+		return (Integer)put("numBits", numBits);
+	}
+
+	public default boolean setAsUnsigned(boolean asUnsigned) {
+		return (Boolean)put("asUnsigned", asUnsigned);
+	}
+	
 	public default String getFileName() {
 		return (String)get("fileName");
 	}
@@ -93,6 +121,10 @@ public interface Configuration extends Map<String, Object> {
 
 	public default String getFileType() {
 		return (String)get("fileType");
+	}
+
+	public default String getFilterName() {
+		return (String)get("filterName");
 	}
 
 	public default int getNumBits() {

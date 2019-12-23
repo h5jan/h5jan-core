@@ -12,7 +12,6 @@
 
 package io.github.h5jan.io;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -41,7 +40,7 @@ public interface IStreamSaver {
 	 *            The progress monitor object
 	 * @return true if saved.
 	 * 
-	 * @throws IOException
+	 * @throws IOException - if cannot write to stream.
 	 */
 	boolean save(OutputStream output, Configuration conf, DataFrame holder, IMonitor monitor) throws IOException;
 }

@@ -63,7 +63,7 @@ import org.eclipse.january.dataset.StringDataset;
  *
  */
 class LazyDatasetList implements List<ILazyDataset> {
-	
+		
 	protected String 				name;
 	protected int   				dtype=-1; // NONE
 	protected List<ILazyDataset> 	data;
@@ -92,6 +92,19 @@ class LazyDatasetList implements List<ILazyDataset> {
 		FrameUtil.check(this.data, this.columnNames);
 	}
 
+	public LazyDatasetList(String name, int dtype, List<? extends ILazyDataset> columns) throws DatasetException {
+		this(name);
+		setDtype(dtype);
+		this.data = new ArrayList<>();
+		data.addAll(columns);
+		this.columnNames = new ArrayList<>();
+		for (int i = 0; i < columns.size(); i++) {
+			String cname = columns.get(i).getName();
+			if (cname==null || cname.length()<1) cname = "column_"+i;
+			columnNames.add(cname);
+		}
+		FrameUtil.check(this.data, this.columnNames);
+	}
 
 	/**
 	 * The classic data frame style constructor.
@@ -289,9 +302,43 @@ class LazyDatasetList implements List<ILazyDataset> {
 	 * @throws NullPointerException if name is not known.
 	 */
 	public ILazyDataset get(String name) throws DatasetException {
+		return get(name, false);
+	}
+	
+	/**
+	 * Get the column of this name.
+	 * @param name of column
+	 * @param ignoreCase true to ignore case of dataset
+	 * @return dataset
+	 * @throws DatasetException
+	 */
+	public ILazyDataset get(String name, boolean ignoreCase) throws DatasetException {
 		if (columnNames == null) throw new DatasetException("Incomplete data frame, no column names!");
-		if (!columnNames.contains(name)) throw new DatasetException("No such column "+name);
-		return get(columnNames.indexOf(name));
+		
+		List<String> testList = ignoreCase ? columnNames.stream().map(String::toLowerCase).collect(Collectors.toList()) : columnNames;
+		String testString = ignoreCase ? name.toLowerCase() : name;
+		if (!testList.contains(testString)) throw new DatasetException("No such column "+name);
+		return get(testList.indexOf(testString));
+	}
+	
+	/**
+	 * Get the column of this name.
+	 * @param regExName a regex to match the name
+	 * @return dataset
+	 * @throws DatasetException
+	 */
+	public ILazyDataset find(String regExName) throws DatasetException {
+		if (columnNames == null) throw new DatasetException("Incomplete data frame, no column names!");
+		int index = -1;
+		for (int i = 0; i < columnNames.size(); i++) {
+			String name = columnNames.get(i);
+			if (name.matches(regExName)) {
+				index = i;
+				break;
+			}
+		}
+		if (index<0) throw new DatasetException("The regex '"+regExName+"' could not be matched! Available names are: "+columnNames);
+		return get(index);
 	}
 
 	/**

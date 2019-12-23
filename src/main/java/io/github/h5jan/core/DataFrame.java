@@ -84,6 +84,10 @@ public class DataFrame extends LazyDatasetList {
 	public DataFrame(String name, int dtype, Dataset... columns) throws DatasetException {
 		super(name, dtype, columns);
 	}
+	
+	public DataFrame(String name, int dtype, List<? extends ILazyDataset> columns) throws DatasetException {
+		super(name, dtype, columns);
+	}
 
 	public DataFrame(ILazyDataset data, int dtype) {
 		super(data, dtype);
