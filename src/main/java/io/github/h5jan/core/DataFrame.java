@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.eclipse.dawnsci.analysis.api.tree.GroupNode;
 import org.eclipse.dawnsci.nexus.NexusException;
+import org.eclipse.dawnsci.nexus.NexusFile;
 import org.eclipse.january.DatasetException;
 import org.eclipse.january.dataset.Dataset;
 import org.eclipse.january.dataset.IDataset;
@@ -133,6 +134,24 @@ public class DataFrame extends LazyDatasetList {
 	 * @throws Exception - any other error and HDF errors.
 	 */
 	public DataFrame to_hdf(String filePath, String h5Path) throws Exception {
+		return to_hdf(filePath, h5Path, NexusFile.COMPRESSION_NONE);
+	}
+	/**
+	 * This method writes the data in slices down the column axis.
+	 * If your data is already in a true LazyDataset it will be sliced
+	 * in the column axis and each slice written to HDF. This might 
+	 * be more memory efficient depending on what you are writing.
+	 *  
+	 * @param filePath - path to file
+	 * @param h5Path - path in h5
+	 * @param h5Path - NexusFile.COMPRESSION_NONE or NexusFile.COMPRESSION_LZW_L1
+	 * The former is no compress, the latter is compressed.
+	 * @throws NullPointerException - if data incomplete
+	 * @throws IllegalArgumentException - if paths invalid
+	 * @throws IOException - if cannot write file
+	 * @throws Exception - any other error and HDF errors.
+	 */
+	public DataFrame to_hdf(String filePath, String h5Path, int compressio) throws Exception {
 		
 		checkString(filePath, "There is no file path!");
 		checkString(h5Path, "There is no h5 path!");
@@ -178,7 +197,7 @@ public class DataFrame extends LazyDatasetList {
 			writer = new LazyWriteableDataset(name, dtype, getShape(), null, null, null);
 		} else if (columnShape!=null) {
 			// We create a place to put our data
-			writer = FrameUtil.create(name, Dataset.FLOAT32, columnShape);
+			writer = FrameUtil.create(name, dtype, columnShape);
 		} else {
 			throw new IllegalArgumentException("There is not enough data in the frame to create a LazyWriteableDataset!");
 		}

@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.dawnsci.nexus.NexusException;
+import org.eclipse.dawnsci.nexus.NexusFile;
 import org.eclipse.january.DatasetException;
 import org.eclipse.january.IMonitor;
 import org.eclipse.january.dataset.IDataset;
@@ -33,6 +34,7 @@ class AppenderImpl implements Appender {
 
 	private static final Logger logger = LoggerFactory.getLogger(AppenderImpl.class);
 	
+	private String 					filePath;
 	private String      			h5Path;
 	private List<String> 			names;
 	private NxsFile      			hFile;
@@ -41,24 +43,36 @@ class AppenderImpl implements Appender {
 	private Closeable 				closer;
 	private IMonitor 				monitor = new IMonitor.Stub();
 	
+	private int compression = NexusFile.COMPRESSION_NONE;
+
+	
 	AppenderImpl(String filePath, String h5Path, ILazyWriteableDataset data, DataFrame frame, Closeable closer) throws NexusException, IOException {
 		
+		this.filePath = filePath;
 		this.names	= new ArrayList<>();
 		this.h5Path = h5Path;
 		if (data==null) {
 			throw new IllegalArgumentException("The data must not be null!");
 		}
-		this.hFile 	= NxsFile.create(filePath);
-		this.hFile.createData(h5Path, data, true);
-		
-		Util.setReferenceAttributes(hFile, h5Path, data.getName());
 
 		this.data 	= data;
 		this.frame 	= frame;
 		this.closer = closer;
 	}
 	
-	public void append(String name, IDataset slice) throws DatasetException {
+	private void init() throws NexusException, IOException {
+		// We make the hdf5 file when the first slice comes in.
+		if (hFile==null) {
+			this.hFile 	= NxsFile.create(filePath);
+			this.hFile.createData(h5Path, data, compression, true);
+			
+			Util.setReferenceAttributes(hFile, h5Path, data.getName());
+		}
+	}
+	
+	public void append(String name, IDataset slice) throws DatasetException, NexusException, IOException {
+		
+		init();
 		names.add(name);
 		
 		int i = names.size()-1; // The index we are on
@@ -90,5 +104,15 @@ class AppenderImpl implements Appender {
 
 	public void setMonitor(IMonitor monitor) {
 		this.monitor = monitor;
+	}
+
+	@Override
+	public int getCompression() {
+		return compression;
+	}
+
+	@Override
+	public void setCompression(int compression) {
+		this.compression = compression;
 	}
 }

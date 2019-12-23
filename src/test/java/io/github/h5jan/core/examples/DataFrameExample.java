@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.eclipse.dawnsci.nexus.NexusFile;
 import org.eclipse.january.IMonitor;
 import org.eclipse.january.dataset.Dataset;
 import org.eclipse.january.dataset.DatasetUtils;
@@ -167,6 +168,8 @@ public class DataFrameExample extends AbstractH5JanTest {
 		// Save to HDF5, columns can be large, these are not it's a test
 		try (Appender app = frame.open_hdf("test-scratch/write_example/lazy_microscope_image.h5", "/entry1/myData")) {
 			
+			app.setCompression(NexusFile.COMPRESSION_LZW_L1); // Otherwise it will be too large.
+
 			File[] dirs = JPaths.getTestResource("microscope").toFile().listFiles();
 			
 			for (int i = 0; i < dirs.length; i++) {

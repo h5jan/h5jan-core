@@ -142,7 +142,9 @@ We write the HDF5 stack directly to a single file in a lazy way such that the wh
 
   // Save to HDF5, columns can be large, these are not it's a test
   try (Appender app = frame.open_hdf("test-scratch/write_example/lazy_microscope_image.h5", "/entry1/myData")) {
-			
+  
+  app.setCompression(NexusFile.COMPRESSION_LZW_L1); // Otherwise it will be too large. (Version 0.6 onwards.)
+	
   // Directory structure is "microscope/0" image0, "microscope/1" image1 and in each
   // directory are nine images which need to be stitched.
   File[] dirs = JPaths.getTestResource("microscope").toFile().listFiles();

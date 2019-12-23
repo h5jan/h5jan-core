@@ -27,9 +27,9 @@ public interface Appender extends AutoCloseable {
 	 * Add slice to end of current writable dataset
 	 * 
 	 * @param slice
-	 * @throws DatasetException 
+	 * @throws Exception 
 	 */
-	default void append(IDataset slice) throws DatasetException {
+	default void append(IDataset slice) throws Exception {
 		append(slice.getName(), slice);
 	}
 	
@@ -37,12 +37,29 @@ public interface Appender extends AutoCloseable {
 	 * Add slice to end of current writable dataset
 	 * @param name
 	 * @param slice
+	 * @throws Exception 
 	 */
-	void append(String name, IDataset slice) throws DatasetException ;
+	void append(String name, IDataset slice) throws Exception ;
 
 	/**
 	 * Called to provide an object to return progress about the writing.
 	 * @param monitor
 	 */
 	void setMonitor(IMonitor monitor);
+	
+	/**
+	 * The compression one of NexusFile values, currently:
+	 * NexusFile.COMPRESSION_NONE
+	 * NexusFile.COMPRESSION_LZW_L1
+	 * @return compression, default is NexusFile.COMPRESSION_NONE
+	 */
+	public int getCompression();
+
+	/**
+	 * The compression one of NexusFile values, currently:
+	 * NexusFile.COMPRESSION_NONE
+	 * NexusFile.COMPRESSION_LZW_L1
+	 * @return compression, default is NexusFile.COMPRESSION_NONE
+	 */
+	public void setCompression(int compression);
 }
