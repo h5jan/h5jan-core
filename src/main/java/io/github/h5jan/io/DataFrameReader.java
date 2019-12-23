@@ -14,6 +14,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,6 +26,8 @@ import javax.imageio.ImageIO;
 import org.apache.commons.io.FilenameUtils;
 import org.eclipse.january.DatasetException;
 import org.eclipse.january.IMonitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.github.h5jan.core.DataFrame;
 
@@ -36,18 +40,7 @@ import io.github.h5jan.core.DataFrame;
  */
 public class DataFrameReader {
 	
-	/**
-			
-		// Check for file
-		if (!file.exists()) {
-			logger.warn("File, {}, did not exist. Now trying to replace suffix", file.getName());
-			file = findCorrectSuffix(file);
-		}
-		setFile(file);
-
-		fileType = FilenameUtils.getExtension(file.getName()).toUpperCase();
-
-	 */
+	private static Logger logger = LoggerFactory.getLogger(DataFrameReader.class);
 		
 	// TODO LoaderFactory has more than one loader for an extension.
 	// We do not currently need this so it is not available.
@@ -62,6 +55,16 @@ public class DataFrameReader {
 		loaders.put("gif",		JavaImageLoader.class);
 		loaders.put("jpg",		JavaImageLoader.class);
 		loaders.put("jpeg",		JavaImageLoader.class);
+		
+		// Needs an actual file in the configuration.
+		loaders.put("h5",		H5Loader.class);
+		loaders.put("hdf5",		H5Loader.class);
+		loaders.put("nxs",		H5Loader.class);
+		
+		// Composite loaders
+		loaders.put("gz",		GZipLoader.class);
+		loaders.put("zip",		ZipLoader.class);
+
 	}
 	
 	/**
@@ -134,8 +137,25 @@ public class DataFrameReader {
 		monitor.subTask("Load "+file.getName());
 		if (configuration==null) configuration = Configuration.createDefault();
 		configuration.align(file);
+		return load(new FileInputStream(file), configuration, monitor);
+	}
+	
+	/**
+	 * Call to load the frame from a stream. For instance 
+	 * a zip entry.
+	 * 
+	 * @param stream - to load from
+	 * @param configuration - configuration or null or empty
+	 * @param monitor - monitor progress.
+	 * @return the frame
+	 * @throws IOExecption - If file read error.
+	 * @throws DatasetException - If DataFrame construction fails
+	 * @throws IllegalAccessException - If cannot make registered loader
+	 * @throws InstantiationException - If cannot make registered loader
+	 */
+	public DataFrame load(InputStream stream, Configuration configuration, IMonitor monitor) throws IOException, InstantiationException, IllegalAccessException, DatasetException {
 		IStreamLoader loader = getLoader(configuration.getFileName());
-		return loader.load(new FileInputStream(file), configuration, monitor);
+		return loader.load(stream, configuration, monitor);
 	}
 
 	private IStreamLoader getLoader(String fileName) throws IOException, InstantiationException, IllegalAccessException {
@@ -146,6 +166,12 @@ public class DataFrameReader {
 		Class<? extends IStreamLoader> loaderClass = loaders.get(ext);
 		if (loaderClass==null) throw new InstantiationException("No load for extension "+ext+".");
 		
+		try {
+			Constructor<? extends IStreamLoader> lclass = loaderClass.getConstructor(DataFrameReader.class);
+			return lclass.newInstance(this);
+		} catch (Exception ne) {
+			logger.trace("Cannot get data frame reader constructor!", ne);
+		}
 		return loaderClass.newInstance();
 	}
 	

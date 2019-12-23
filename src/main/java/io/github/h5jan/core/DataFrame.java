@@ -125,8 +125,12 @@ public class DataFrame extends LazyDatasetList {
 	 * in the column axis and each slice written to HDF. This might 
 	 * be more memory efficient depending on what you are writing.
 	 *  
-	 * @param filePath
-	 * @throws Exception 
+	 * @param filePath - path to file
+	 * @param h5Path - path in h5
+	 * @throws NullPointerException - if data incomplete
+	 * @throws IllegalArgumentException - if paths invalid
+	 * @throws IOException - if cannot write file
+	 * @throws Exception - any other error and HDF errors.
 	 */
 	public DataFrame to_hdf(String filePath, String h5Path) throws Exception {
 		

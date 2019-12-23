@@ -134,17 +134,31 @@ public interface Configuration extends Map<String, Object> {
 	public default boolean getAsUnsigned() {
 		return (Boolean)get("asUnsigned");
 	}
-
+	
 	public default void align(File file) {
-		if (!containsKey("fileName")) put("fileName", file.getName());
-		if (!containsKey("filePath")) put("filePath", file.getAbsolutePath());
-		if (!containsKey("fileType")) {
-			String ext = FilenameUtils.getBaseName(file.getName());
+		align(file, false);
+	}
+	
+	public default void align(File file, boolean force) {
+		if (force || !containsKey("fileName")) put("fileName", file.getName());
+		if (force || !containsKey("filePath")) put("filePath", file.getAbsolutePath());
+		if (force || !containsKey("fileType")) {
+			String ext = FilenameUtils.getExtension(file.getName());
 			if (ext!=null) {
 				 put("fileType", ext.toUpperCase());
 			}
 		}
 	}
+	
+	public default void align(String entryName) {
+		put("fileName", entryName);
+		String ext = FilenameUtils.getExtension(entryName);
+		if (ext!=null) {
+			put("fileType", ext.toUpperCase());
+		}
+	}
+
+	public Configuration clone();
 }
 
 class ConfigurationImpl extends HashMap<String,Object> implements Configuration {
@@ -161,5 +175,11 @@ class ConfigurationImpl extends HashMap<String,Object> implements Configuration 
 				put(values[i].toString(), values[i+1]);
 			}
 		}
+	}
+	
+	public Configuration clone() {
+		Configuration clone = new ConfigurationImpl();
+		clone.putAll(this);
+		return clone;
 	}
 }
