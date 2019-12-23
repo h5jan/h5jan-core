@@ -134,7 +134,7 @@ public class DataFrame extends LazyDatasetList {
 	 * @throws Exception - any other error and HDF errors.
 	 */
 	public DataFrame to_hdf(String filePath, String h5Path) throws Exception {
-		return to_hdf(filePath, h5Path, NexusFile.COMPRESSION_NONE);
+		return to_hdf(filePath, h5Path, -1);
 	}
 	/**
 	 * This method writes the data in slices down the column axis.
@@ -151,7 +151,7 @@ public class DataFrame extends LazyDatasetList {
 	 * @throws IOException - if cannot write file
 	 * @throws Exception - any other error and HDF errors.
 	 */
-	public DataFrame to_hdf(String filePath, String h5Path, int compressio) throws Exception {
+	public DataFrame to_hdf(String filePath, String h5Path, int compression) throws Exception {
 		
 		checkString(filePath, "There is no file path!");
 		checkString(h5Path, "There is no h5 path!");
@@ -162,6 +162,7 @@ public class DataFrame extends LazyDatasetList {
 
 		// Clone a frame to 
 		try (Appender app = open_hdf(filePath, h5Path)) {
+			if (compression>-1) app.setCompression(compression);
 			
 			// Take the data of each slice and put it back again, this time writing.
 			for (int i = 0; i < data.size(); i++) {

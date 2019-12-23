@@ -410,19 +410,19 @@ public class H5 implements java.io.Serializable {
 						log.error("Could not add {} as plugin path", p, e);
 					}
 				} catch (NoSuchMethodException | SecurityException e) {
-					log.info("No findLibrary method available in class path manager", e);
+					log.trace("No findLibrary method available in class path manager", e);
 				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-					log.info("Cannot invoke findLibrary method", e);
+					log.trace("Cannot invoke findLibrary method", e);
 				}
 			} catch (NoSuchMethodException | SecurityException e) {
-				log.info("No getClasspathManager method available in class loader", e);
+				log.trace("No getClasspathManager method available in class loader", e);
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-				log.info("Cannot invoke getClasspathManager method", e);
+				log.trace("Cannot invoke getClasspathManager method", e);
 			}
 
 			if (!found) {
 				System.err.println("HDF5 library could not be added as plugin directory");
-				log.info("HDF5 library could not be added as plugin directory");
+				log.trace("HDF5 library could not be added as plugin directory");
 			}
 		}
 	}
