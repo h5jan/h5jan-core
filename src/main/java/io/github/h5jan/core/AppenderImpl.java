@@ -60,7 +60,8 @@ class AppenderImpl implements Appender {
 		this.closer = closer;
 	}
 	
-	private void init() throws NexusException, IOException {
+	@Override
+	public void init() throws NexusException, IOException {
 		// We make the hdf5 file when the first slice comes in.
 		if (hFile==null) {
 			this.hFile 	= NxsFile.create(filePath);
@@ -90,7 +91,7 @@ class AppenderImpl implements Appender {
 			throw ne;
 		} finally {
 			try {
-				this.hFile.close();
+				if (this.hFile!=null) this.hFile.close();
 			} finally {
 				this.hFile = null;
 				this.closer.close();

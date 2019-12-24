@@ -63,6 +63,7 @@ public class Util {
 			throw new IllegalArgumentException("The columns must be named!");
 		}
 
+		if (hFile==null) return;
 		hFile.addAttribute(h5Path, new AttributeImpl(Constants.NAME, data.getName()));
 		hFile.addAttribute(h5Path, new AttributeImpl(Constants.COL_NAMES, columnNames));
 		if (data!=null) {

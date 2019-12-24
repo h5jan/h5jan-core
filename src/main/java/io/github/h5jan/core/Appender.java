@@ -10,6 +10,9 @@
  *******************************************************************************/
 package io.github.h5jan.core;
 
+import java.io.IOException;
+
+import org.eclipse.dawnsci.nexus.NexusException;
 import org.eclipse.january.DatasetException;
 import org.eclipse.january.IMonitor;
 import org.eclipse.january.dataset.IDataset;
@@ -62,4 +65,12 @@ public interface Appender extends AutoCloseable {
 	 * @return compression, default is NexusFile.COMPRESSION_NONE
 	 */
 	public void setCompression(int compression);
+
+	/**
+	 * May be optionally called to create the file and make
+	 * it ready for writing. Setting compression after init() has
+	 * no effect.
+	 * @throws Exception if the file cannot be made ready.
+	 */
+	void init() throws Exception;
 }

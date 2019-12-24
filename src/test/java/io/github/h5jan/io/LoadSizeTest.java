@@ -6,14 +6,17 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.dawnsci.nexus.NexusFile;
 import org.eclipse.january.IMonitor;
 import org.eclipse.january.dataset.Dataset;
+import org.eclipse.january.dataset.IDataset;
 import org.junit.Before;
 import org.junit.Test;
 
+import io.github.h5jan.core.Appender;
 import io.github.h5jan.core.DataFrame;
 import io.github.h5jan.core.JPaths;
 
@@ -36,7 +39,26 @@ public class LoadSizeTest extends AbstractReaderTest {
 	public void csvCompressed() throws Exception {
 		sizeTest(NexusFile.COMPRESSION_LZW_L1, "csv/j21.csv", 3000000, dir.resolve("j21.h5"), 2500000);
 	}
-
+	
+	private void sizeTest(int compression, String filePath, long scsv, Path writePath, long sh5) throws Exception {
+		
+		// Read and check size of source
+		Path pcsv = JPaths.getTestResource(filePath);
+		
+		try {
+			DataFrame csv = reader.read(pcsv, Configuration.createEmpty(), new IMonitor.Stub());
+			assertTrue(scsv>Files.size(pcsv));
+			
+			// Write csv file.
+			csv.to_hdf(writePath.toString(), "/entry1/data", compression);
+			
+			// We get size of output file.
+			assertTrue(sh5>Files.size(writePath));
+		} finally {
+			printSize("CSV size is ", pcsv);
+			printSize("H5 size is ", writePath);
+		}
+	}
 	@Test
 	public void images() throws Exception {
 		
@@ -52,27 +74,7 @@ public class LoadSizeTest extends AbstractReaderTest {
 		
 		System.out.println("Dir size "+dirSize);
 		System.out.println("H5 size compression "+h5Size);
-		assertTrue(dirSize>h5Size);
-	}
-
-	private void sizeTest(int compression, String filePath, long scsv, Path writePath, long sh5) throws Exception {
-		
-		// Read and check size of source
-		Path pcsv = JPaths.getTestResource(filePath);
-		
-		try {
-			DataFrame csv = reader.read(pcsv, Configuration.createEmpty(), new IMonitor.Stub());
-			assertTrue(scsv>Files.size(pcsv));
-			
-			// We write it, not sized
-			csv.to_hdf(writePath.toString(), "/entry1/data", compression);
-			
-			// We get size of output file.
-			assertTrue(sh5>Files.size(writePath));
-		} finally {
-			printSize("CSV size is ", pcsv);
-			printSize("H5 size is ", writePath);
-		}
+		assertTrue("The dir size is "+dirSize+" and the h5 size is "+h5Size, dirSize>h5Size);
 	}
 	
 	private void printSize(String msg, Path path) throws IOException {

@@ -157,17 +157,19 @@ public class DataFrame extends LazyDatasetList {
 		checkString(h5Path, "There is no h5 path!");
 		check();
 		
-		// Make size of slice
-		List<ILazyDataset> data = getData();
-
-		// Clone a frame to 
-		try (Appender app = open_hdf(filePath, h5Path)) {
-			if (compression>-1) app.setCompression(compression);
+		// Make an empty frame to use as a lazy writer.
+		DataFrame frame = new DataFrame(getName(), getDtype(), getColumnShape());
+		
+		// Save to HDF5, columns can be large, these are not it's a test
+		//Files.deleteIfExists(writePath);
+		try (Appender app = frame.open_hdf(filePath, h5Path)) {
 			
-			// Take the data of each slice and put it back again, this time writing.
-			for (int i = 0; i < data.size(); i++) {
-				IDataset slice = data.get(i).getSlice().squeeze();
-				String columnName = columnNames.get(i);
+			app.setCompression(compression); // Otherwise it will be too large.
+			
+			List<String> cnames = getColumnNames();
+			for (int i = 0; i < size(); i++) {
+				IDataset slice = get(i).getSlice().squeeze();
+				String columnName = cnames.get(i);
 				slice.setName(columnName);
 				app.append(columnName, slice);
 			}
@@ -325,6 +327,7 @@ public class DataFrame extends LazyDatasetList {
 	}
 
 	public int[] getColumnShape() {
+		if (columnShape==null && !isEmpty()) return get(0).getShape();
 		return columnShape;
 	}
 
