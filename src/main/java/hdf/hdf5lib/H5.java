@@ -19,6 +19,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandles.Lookup;
+import java.lang.invoke.VarHandle;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -440,12 +443,22 @@ public class H5 implements java.io.Serializable {
     
     public static void addLibraryPath(String pathToAdd) throws Exception {
     	System.setProperty( "java.library.path", pathToAdd+File.pathSeparator+System.getProperty("java.library.path"));
-        Field fieldSysPath = ClassLoader.class.getDeclaredField("sys_paths");
+        Field fieldSysPath=null;
         try {
-	        fieldSysPath.setAccessible( true );
-	        fieldSysPath.set( null, null );
-        } finally {
-        	fieldSysPath.setAccessible( false );
+        	// Java 8
+        	fieldSysPath = ClassLoader.class.getDeclaredField("sys_paths");
+            try {
+    	        fieldSysPath.setAccessible( true );
+    	        fieldSysPath.set( null, null );
+            } finally {
+            	fieldSysPath.setAccessible( false );
+            }
+            
+        } catch (NoSuchFieldException ne) {
+        	// Tried this with Java 13 and it worked.
+        	Lookup found = MethodHandles.privateLookupIn(ClassLoader.class, MethodHandles.lookup());
+        	VarHandle sys_paths = found.findStaticVarHandle(ClassLoader.class, "sys_paths", String[].class);
+        	sys_paths.set(null);
         }
 	}
 
