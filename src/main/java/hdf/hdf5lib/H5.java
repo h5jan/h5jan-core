@@ -19,9 +19,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodHandles.Lookup;
-import java.lang.invoke.VarHandle;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -455,9 +452,10 @@ public class H5 implements java.io.Serializable {
             }
             
         } catch (NoSuchFieldException ne) {
+        	
         	// Tried this with Java 13 and it worked.
-        	Lookup found = MethodHandles.privateLookupIn(ClassLoader.class, MethodHandles.lookup());
-        	VarHandle sys_paths = found.findStaticVarHandle(ClassLoader.class, "sys_paths", String[].class);
+        	java.lang.invoke.MethodHandles.Lookup found = java.lang.invoke.MethodHandles.privateLookupIn(ClassLoader.class, java.lang.invoke.MethodHandles.lookup());
+        	java.lang.invoke.VarHandle sys_paths = found.findStaticVarHandle(ClassLoader.class, "sys_paths", String[].class);
         	sys_paths.set(null);
         }
 	}
