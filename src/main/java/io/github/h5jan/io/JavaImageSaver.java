@@ -44,8 +44,9 @@ class JavaImageSaver implements IStreamSaver {
 	@Override
 	public boolean save(OutputStream stream, Configuration conf, DataFrame dh, IMonitor monitor) throws IOException {
 		
-		String fileName = conf.getFileName();
 		String fileType = conf.getFileType(); // format name
+		String fileName = conf.getFileName();
+		
 		int numBits = conf.getNumBits();
 		boolean unsigned = conf.getAsUnsigned();
 		double maxVal;

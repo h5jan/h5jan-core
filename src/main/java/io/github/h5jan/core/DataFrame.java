@@ -159,12 +159,15 @@ public class DataFrame extends LazyDatasetList {
 		
 		// Make an empty frame to use as a lazy writer.
 		DataFrame frame = new DataFrame(getName(), getDtype(), getColumnShape());
+		frame.setMetadata(getMetadata());
 		
 		// Save to HDF5, columns can be large, these are not it's a test
 		//Files.deleteIfExists(writePath);
 		try (Appender app = frame.open_hdf(filePath, h5Path)) {
 			
-			app.setCompression(compression); // Otherwise it will be too large.
+			if (compression>-1) { // -ve means leave as default.
+				app.setCompression(compression); // Can make file small if set correctly.
+			}
 			
 			List<String> cnames = getColumnNames();
 			for (int i = 0; i < size(); i++) {
@@ -228,6 +231,7 @@ public class DataFrame extends LazyDatasetList {
 			// Assign fields of DataFrame that we know.
 			this.columnNames = new ArrayList<String>(Arrays.asList(snames));
 			this.data = unpack(nfile.getDataset(dataPath), this.columnNames);
+			this.columnShape = null; // When we reset the data the columns could now be different.
 			this.name = gdata.getAttribute(Constants.NAME).getValue().getString();
 			
 			if (gdata.containsAttribute(Constants.META)) {

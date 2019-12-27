@@ -40,12 +40,12 @@ public class LoadSpeedTest extends AbstractReaderTest {
 	@Test
 	public void csvUncompressedLrg() throws Exception {
 		
-		speedTest(NexusFile.COMPRESSION_NONE, "csv/j21_large.csv", 2000, dir.resolve("j21.h5"), 500);
+		speedTest(NexusFile.COMPRESSION_NONE, "csv/j21_large.csv", 5000, dir.resolve("j21.h5"), 500);
 	}
 
 	@Test
 	public void csvCompressedLrg() throws Exception {
-		speedTest(NexusFile.COMPRESSION_LZW_L1, "csv/j21_large.csv", 2000, dir.resolve("j21.h5"), 500);
+		speedTest(NexusFile.COMPRESSION_LZW_L1, "csv/j21_large.csv", 5000, dir.resolve("j21.h5"), 500);
 	}
 
 	@Test

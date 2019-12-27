@@ -20,6 +20,7 @@ public class H5Loader extends AbstractStreamLoader {
 		File file = new File(filePath);
 		if (!file.exists()) throw new IOException(getClass().getSimpleName()+" requires an existing file to work!");
 		
+		stream.close();
 		DataFrame frame = new DataFrame();
 		try {
 			frame.read_hdf(filePath);

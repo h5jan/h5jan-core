@@ -1836,25 +1836,6 @@ public class H5 implements java.io.Serializable {
         }
         return id;
     }
-    
-    /**
- 
-72057594037927936
-/entry1/data/j21
-216172782113784129
-288230376151711751
-0
-720575940379279377
-0
-
-72057594037927936
-/entry1/myData/scope_image
-216172782113784129
-288230376151711751
-0
-720575940379279377
-0
-     */
 
     /**
      * H5Dcreate2 creates a new dataset named name at the location specified by loc_id.

@@ -91,7 +91,13 @@ public class DataFrameWriter {
 		if (!hasSaver(fileType)) throw new IllegalArgumentException("No saver for type '"+fileType+"'!");
 		
 		IStreamSaver saver = getSaver(fileType);
-		File out = new File(dir, configuration.getFileName());
+		
+		String fileName = configuration.getFileName();
+		if (!fileName.endsWith("."+fileType.toLowerCase())) {
+			fileName = fileName+"."+fileType.toLowerCase();
+		}
+
+		File out = new File(dir, fileName);
 		return saver.save(new FileOutputStream(out), configuration, data, monitor);
 	}
 

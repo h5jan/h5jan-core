@@ -124,7 +124,7 @@ public class SWMRTest {
 				try {
 					readSWMR(file, swmr, sleep);
 				} catch (Exception e) {
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				
 			}
