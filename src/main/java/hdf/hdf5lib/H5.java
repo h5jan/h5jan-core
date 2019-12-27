@@ -452,7 +452,7 @@ public class H5 implements java.io.Serializable {
             }
             
         } catch (NoSuchFieldException ne) {
-        	
+        	// JDK 1.9 plus
         	// Tried this with Java 13 and it worked.
         	java.lang.invoke.MethodHandles.Lookup found = java.lang.invoke.MethodHandles.privateLookupIn(ClassLoader.class, java.lang.invoke.MethodHandles.lookup());
         	java.lang.invoke.VarHandle sys_paths = found.findStaticVarHandle(ClassLoader.class, "sys_paths", String[].class);
