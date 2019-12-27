@@ -12,7 +12,7 @@ Release process:
 
 **/
 plugins {
-    id "maven"
+    id 'maven'
 	id 'maven-publish'
 	id 'signing'
 	id 'java-library'
@@ -28,7 +28,7 @@ apply plugin: 'checkstyle'
 // Currently this package is an extension to January and
 // not part of the core project
 group 'io.github.h5jan'
-description = "h5jan-core"
+description = 'h5jan-core'
 
 // To sign, enter the gradle command 'gradle(w) sign'
 defaultTasks 'compileJava', 'javadoc', 'enunciate', 'check', 'compileTestJava', 'processTestResources', 'test', 'jar'
@@ -118,7 +118,7 @@ artifacts {
 }
 
 jacoco {
-    toolVersion = "0.7.6.201602180812"
+    toolVersion = "0.8.5"
     reportsDir = file("$buildDir/reports/coverage")
 }
 
