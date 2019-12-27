@@ -7897,6 +7897,7 @@ public class H5 implements java.io.Serializable {
      *
      * @deprecated As of HDF5 1.10.0 in favor of H5Fget_info.
      **/
+    @Deprecated
     public synchronized static native int H5Pget_version(long plist, int[] version_info) throws HDF5LibraryException,
     NullPointerException, IllegalArgumentException;
 
