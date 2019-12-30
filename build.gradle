@@ -4,9 +4,9 @@ https://dzone.com/articles/publish-your-artifacts-to-maven-central
 https://medium.com/@nmauti/sign-and-publish-on-maven-central-a-project-with-the-new-maven-publish-gradle-plugin-22a72a4bfd4b
 
 Release process:
-0. Set release number in this file.
-1. ./gradlew assemble -x sign publish
-2. ./gradlew assemble -x sign publish -PmakeRelease=true
+0. Make sure gradle props contains signing.keyId, signing.password, signing.secretKeyRingFile, sonatypeUsername, sonatypePassword
+1. Set release number in this file.
+2. ./gradlew publish -PmakeRelease=true
 3. Go to https://oss.sonatype.org/#stagingRepositories and manually hit save and close.
 	(https://central.sonatype.org/pages/releasing-the-deployment.html)
 
@@ -224,15 +224,24 @@ dependencies {
     testCompile 'com.google.truth:truth:0.28'
 }
 
+model {
+    tasks.publishMavenJavaPublicationToMavenLocal {
+        dependsOn project.tasks.signArchives
+    }
+    tasks.publishMavenJavaPublicationToMavenRepository {
+        dependsOn project.tasks.signArchives
+    }
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
+        	customizePom(pom)
         	groupId = 'io.github.h5jan'
             artifactId = 'h5jan-core'
             version = fullVersion
             
             from components.java
-            
             artifact sourceJar {
                 classifier = 'sources'
             }
@@ -240,33 +249,18 @@ publishing {
                 classifier = 'javadoc'
             }
             
-            pom {
-			   name =  'h5jan-core'
-			   description = 'Read and write h5 files from Java, including Datasets, nD arrays and slicing.'
-			   url = 'https://github.com/h5jan/h5jan-core'
-			   
-			   licenses {
-			        license {
-			            name = 'Eclipse Public License - v 1.0'
-			            url = 'https://www.eclipse.org/legal/epl-v10.html'
-			        }
+            // create the sign pom artifact
+			pom.withXml {
+			    def pomFile = file("${project.buildDir}/generated-pom.xml")
+			    writeTo(pomFile)
+			    def pomAscFile = signing.sign(pomFile).signatureFiles[0]
+			    artifact(pomAscFile) {
+			        classifier = null
+			        extension = 'pom.asc'
 			    }
-			    issueManagement {
-			        system = 'GitHub'
-			        url = 'https://github.com/h5jan/h5jan-core/issues'
-			    }
-			    scm {
-			        url = 'https://github.com/h5jan/h5jan-core'
-			        connection = 'scm:git:git://github.com/h5jan/h5jan-core.git'
-			        developerConnection = 'scm:git:ssh://git@github.com:h5jan/h5jan-core.git'
-			    }
-			    developers {
-			        developer {
-			            name = 'Matthew Gerring'
-			        }
-			    }
-            }
-         }	
+			}// create the signed artifacts
+			
+        }	
     }
     
     repositories {
@@ -282,9 +276,52 @@ publishing {
         }
     }
 }
+    
+def customizePom(pom) {
+    pom.withXml {
+        def root = asNode()
 
+        // eliminate test-scoped dependencies (no need in maven central POMs)
+        root.dependencies.removeAll { dep ->
+            dep.scope == "test"
+        }
+
+        // add all items necessary for maven central publication
+        root.children().last() + {
+            resolveStrategy = Closure.DELEGATE_FIRST
+
+            description 'Read and write h5 files from Java, including Datasets, nD arrays and slicing.'
+            name 'h5jan-core'
+            url 'https://github.com/h5jan/h5jan-core'
+            organization {
+                name 'io.github.h5jan'
+                url 'https://github.com/h5jan'
+            }
+            issueManagement {
+                system 'GitHub'
+                url 'https://github.com/h5jan/h5jan-core/issues'
+            }
+            licenses {
+                license {
+                    name 'Eclipse Public License - v 1.0'
+                    url 'https://www.eclipse.org/legal/epl-v10.html'
+                    distribution 'repo'
+                }
+            }
+            scm {
+                url 'https://github.com/h5jan/h5jan-core'
+                connection 'scm:git:git://github.com/h5jan/h5jan-core.git'
+                developerConnection 'scm:git:ssh://git@github.com:h5jan/h5jan-core.git'
+            }
+            developers {
+                developer {
+                    name 'Matthew Gerring'
+                }
+            }
+        }
+    }
+}
 	
 signing {
-	sign publishing.publications.mavenJava
+	sign configurations.archives
 }
-    
