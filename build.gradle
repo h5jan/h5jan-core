@@ -224,19 +224,9 @@ dependencies {
     testCompile 'com.google.truth:truth:0.28'
 }
 
-model {
-    tasks.publishMavenJavaPublicationToMavenLocal {
-        dependsOn project.tasks.signArchives
-    }
-    tasks.publishMavenJavaPublicationToMavenRepository {
-        dependsOn project.tasks.signArchives
-    }
-}
-
 publishing {
     publications {
         mavenJava(MavenPublication) {
-        	customizePom(pom)
         	groupId = 'io.github.h5jan'
             artifactId = 'h5jan-core'
             version = fullVersion
@@ -249,17 +239,32 @@ publishing {
                 classifier = 'javadoc'
             }
             
-            // create the sign pom artifact
-			pom.withXml {
-			    def pomFile = file("${project.buildDir}/generated-pom.xml")
-			    writeTo(pomFile)
-			    def pomAscFile = signing.sign(pomFile).signatureFiles[0]
-			    artifact(pomAscFile) {
-			        classifier = null
-			        extension = 'pom.asc'
+            pom {
+			   name =  'h5jan-core'
+			   description = 'Read and write h5 files from Java, including Datasets, nD arrays and slicing.'
+			   url = 'https://github.com/h5jan/h5jan-core'
+			   
+			   licenses {
+			        license {
+			            name = 'Eclipse Public License - v 1.0'
+			            url = 'https://www.eclipse.org/legal/epl-v10.html'
+			        }
 			    }
-			}// create the signed artifacts
-			
+			    issueManagement {
+			        system = 'GitHub'
+			        url = 'https://github.com/h5jan/h5jan-core/issues'
+			    }
+			    scm {
+			        url = 'https://github.com/h5jan/h5jan-core'
+			        connection = 'scm:git:git://github.com/h5jan/h5jan-core.git'
+			        developerConnection = 'scm:git:ssh://git@github.com:h5jan/h5jan-core.git'
+			    }
+			    developers {
+			        developer {
+			            name = 'Matthew Gerring'
+			        }
+			    }
+            }
         }	
     }
     
@@ -276,52 +281,7 @@ publishing {
         }
     }
 }
-    
-def customizePom(pom) {
-    pom.withXml {
-        def root = asNode()
-
-        // eliminate test-scoped dependencies (no need in maven central POMs)
-        root.dependencies.removeAll { dep ->
-            dep.scope == "test"
-        }
-
-        // add all items necessary for maven central publication
-        root.children().last() + {
-            resolveStrategy = Closure.DELEGATE_FIRST
-
-            description 'Read and write h5 files from Java, including Datasets, nD arrays and slicing.'
-            name 'h5jan-core'
-            url 'https://github.com/h5jan/h5jan-core'
-            organization {
-                name 'io.github.h5jan'
-                url 'https://github.com/h5jan'
-            }
-            issueManagement {
-                system 'GitHub'
-                url 'https://github.com/h5jan/h5jan-core/issues'
-            }
-            licenses {
-                license {
-                    name 'Eclipse Public License - v 1.0'
-                    url 'https://www.eclipse.org/legal/epl-v10.html'
-                    distribution 'repo'
-                }
-            }
-            scm {
-                url 'https://github.com/h5jan/h5jan-core'
-                connection 'scm:git:git://github.com/h5jan/h5jan-core.git'
-                developerConnection 'scm:git:ssh://git@github.com:h5jan/h5jan-core.git'
-            }
-            developers {
-                developer {
-                    name 'Matthew Gerring'
-                }
-            }
-        }
-    }
-}
 	
 signing {
-	sign configurations.archives
+	sign publishing.publications.mavenJava
 }
