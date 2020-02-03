@@ -43,7 +43,11 @@ ext {
     if (project.hasProperty("makeRelease")) {
 		fullVersion = baseVersion
 	}
-    
+ 
+	// These only need to be set when publishing.
+	// If you are publising regularly then set them in gradle.properties in user home, not here.
+	sonatypeUsername = 'unset'
+	sonatypePassword = 'unset'   
 }
 
 jar {
