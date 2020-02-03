@@ -186,6 +186,9 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-configuration2
 	compile group: 'org.apache.commons', name: 'commons-configuration2', version: '2.6'
 	
+	// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+	compile group: 'org.apache.commons', name: 'commons-lang', version: '3.9'
+	
 	// https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils
     compile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
 	
@@ -197,6 +200,12 @@ dependencies {
 	
 	// https://mvnrepository.com/artifact/si.uom/si-units
 	implementation group: 'si.uom', name: 'si-units', version: '2.0.1'
+	
+	// https://mvnrepository.com/artifact/com.github.wendykierp/JTransforms
+	implementation group: 'com.github.wendykierp', name: 'JTransforms', version: '3.0'
+	
+	// https://mvnrepository.com/artifact/gov.nist.math/jama
+    implementation group: 'gov.nist.math', name: 'jama', version: '1.0.3'
 	
 	// https://mvnrepository.com/artifact/javax.media/jai-core
 	// The license of this code was the Java distribution license.
