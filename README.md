@@ -1,3 +1,5 @@
+![Java CI](https://github.com/h5jan/h5jan-core/workflows/Java%20CI/badge.svg)
+
 ![](https://github.com/h5jan/h5jan-core/blob/master/eclipsesci.png) h5jan
 =====
 
