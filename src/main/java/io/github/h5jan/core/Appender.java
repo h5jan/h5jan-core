@@ -10,10 +10,6 @@
  *******************************************************************************/
 package io.github.h5jan.core;
 
-import java.io.IOException;
-
-import org.eclipse.dawnsci.nexus.NexusException;
-import org.eclipse.january.DatasetException;
 import org.eclipse.january.IMonitor;
 import org.eclipse.january.dataset.IDataset;
 
