@@ -16,8 +16,6 @@ import java.util.Iterator;
 
 import org.eclipse.dawnsci.nexus.NXentry;
 import org.eclipse.dawnsci.nexus.NexusBaseClass;
-import org.eclipse.january.dataset.Dataset;
-import org.eclipse.january.dataset.DatasetFactory;
 
 /**
  * An interface defining a provider of metadata to a nexus entry ({@link NXentry} node),

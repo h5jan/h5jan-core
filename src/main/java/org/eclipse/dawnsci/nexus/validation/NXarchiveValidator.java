@@ -10,27 +10,21 @@
  *******************************************************************************/
 
 package org.eclipse.dawnsci.nexus.validation;
-import static org.eclipse.dawnsci.nexus.validation.NexusDataType.NX_CHAR;
-import static org.eclipse.dawnsci.nexus.validation.NexusDataType.NX_DATE_TIME;
-import static org.eclipse.dawnsci.nexus.validation.NexusDataType.NX_FLOAT;
-import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_CURRENT;
-import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_PRESSURE;
-import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_TEMPERATURE;
-import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_TIME;
-import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_UNITLESS;
-import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_VOLTAGE;
+import static org.eclipse.dawnsci.nexus.validation.NexusDataType.*;
+import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.*;
 
 import java.util.Map;
 
-import org.eclipse.dawnsci.analysis.api.tree.Attribute;
-import org.eclipse.dawnsci.nexus.NXentry;
-import org.eclipse.dawnsci.nexus.NXinstrument;
-import org.eclipse.dawnsci.nexus.NXroot;
-import org.eclipse.dawnsci.nexus.NXsample;
-import org.eclipse.dawnsci.nexus.NXsource;
-import org.eclipse.dawnsci.nexus.NXsubentry;
-import org.eclipse.dawnsci.nexus.NXuser;
 import org.eclipse.january.dataset.IDataset;
+import org.eclipse.dawnsci.analysis.api.tree.Attribute;
+
+import org.eclipse.dawnsci.nexus.NXroot;
+import org.eclipse.dawnsci.nexus.NXsubentry;
+import org.eclipse.dawnsci.nexus.NXentry;
+import org.eclipse.dawnsci.nexus.NXuser;
+import org.eclipse.dawnsci.nexus.NXinstrument;
+import org.eclipse.dawnsci.nexus.NXsource;
+import org.eclipse.dawnsci.nexus.NXsample;
 
 /**
  * Validator for the application definition 'NXarchive'.
@@ -218,10 +212,10 @@ public class NXarchiveValidator extends AbstractNexusValidator implements NexusA
 				"Spallation Neutron Source",
 				"Pulsed Reactor Neutron Source",
 				"Reactor Neutron Source",
-				"Synchrotron X-Ray Source",
+				"Synchrotron X-ray Source",
 				"Pulsed Muon Source",
-				"Rotating Anode X-Ray",
-				"Fixed Tube X-Ray");
+				"Rotating Anode X-ray",
+				"Fixed Tube X-ray");
 
 		// validate field 'name' of unknown type.
 		final IDataset name = group.getName();

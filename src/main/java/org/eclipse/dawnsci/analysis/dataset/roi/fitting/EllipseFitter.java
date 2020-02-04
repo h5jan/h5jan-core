@@ -51,6 +51,11 @@ import Jama.Matrix;
  * geometric parameters and an array of angles
  */
 class EllipseCoordinatesFunction implements IConicSectionFitFunction, Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3580314452571507373L;
+	
 	private static final int PARAMETERS = EllipseFitter.PARAMETERS;
 	private Dataset X;
 	private Dataset Y;

@@ -20,6 +20,10 @@ import org.eclipse.dawnsci.nexus.NexusFile;
  */
 public class NexusFileFactoryHDF5 implements INexusFileFactory {
 	
+	static {
+		System.out.println("Starting NeXus File Factory");
+	}
+
 	@Override
 	public NexusFile newNexusFile(String path) {
 		return new NexusFileHDF5(path);

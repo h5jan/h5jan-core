@@ -12,6 +12,7 @@
 
 package org.eclipse.dawnsci.analysis.dataset.roi;
 
+import org.eclipse.dawnsci.analysis.api.roi.IRectangularROI;
 import org.eclipse.dawnsci.analysis.dataset.impl.function.LineSample;
 import org.eclipse.january.IMonitor;
 import org.eclipse.january.dataset.Dataset;
@@ -48,7 +49,7 @@ public class ROISliceUtils {
 	 * @param step
 	 * @return slices
 	 */
-	public static Slice[] getSlicesFromRectangularROI(RectangularROI roi, int step) {
+	public static Slice[] getSlicesFromRectangularROI(IRectangularROI roi, int step) {
 
 		Slice[] slices = new Slice[2];
 
@@ -75,7 +76,7 @@ public class ROISliceUtils {
 	 * @return slices
 	 * @throws Exception 
 	 */
-	public static Dataset getDataset(ILazyDataset lz, RectangularROI roi, Slice[] slices, int[] order, int step, IMonitor monitor) throws Exception {
+	public static Dataset getDataset(ILazyDataset lz, IRectangularROI roi, Slice[] slices, int[] order, int step, IMonitor monitor) throws Exception {
 		
 		Slice[] roiSlice = getSlicesFromRectangularROI(roi, step);
 		if (monitor != null && monitor.isCancelled()) return null;

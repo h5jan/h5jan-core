@@ -26,7 +26,6 @@ import org.eclipse.dawnsci.nexus.NexusFile;
 import org.eclipse.january.IMonitor;
 import org.eclipse.january.dataset.Dataset;
 import org.eclipse.january.dataset.DatasetUtils;
-import org.eclipse.january.dataset.FloatDataset;
 import org.eclipse.january.dataset.IDataset;
 import org.eclipse.january.dataset.Random;
 import org.junit.FixMethodOrder;
@@ -149,74 +148,6 @@ public class DataFrameExample extends AbstractH5JanTest {
 			}
 		}
 	}
-	
-	/**
-	 * Data in slices
-	 * @throws Exception
-	 */
-	@Test
-	public void awriteLazyDataFrame3DSobelFilter() throws Exception {
-		
-		// Make a writing frame
-		DataFrame frame = new DataFrame("data", Dataset.FLOAT32, new int[] { 256, 256 });
-		
-		// Save to HDF5, columns can be large, these are not it's a test
-		try (Appender app = frame.open_hdf("test-scratch/write_example/lazy_data_frame-3d-sobel.h5", "/entry1/myData")) {
-			
-			// Add the columns incrementally without them all being in memory
-			for (int i = 0; i < 10; i++) {
-				Dataset data = Random.rand(256, 256);
-				Dataset sobel = Image.sobelFilter(data);
-				app.append("sobel_"+i, sobel);
-			}
-		}
-	}
-
-	/**
-	 * Data in slices
-	 * @throws Exception
-	 */
-	@Test
-	public void awriteLazyDataFrame3DFanoFilter() throws Exception {
-		
-		// Make a writing frame
-		DataFrame frame = new DataFrame("data", Dataset.FLOAT32, new int[] { 256, 256 });
-		
-		// Save to HDF5, columns can be large, these are not it's a test
-		try (Appender app = frame.open_hdf("test-scratch/write_example/lazy_data_frame-3d-fano.h5", "/entry1/myData")) {
-			
-			// Add the columns incrementally without them all being in memory
-			for (int i = 0; i < 10; i++) {
-				Dataset data = Random.rand(256, 256);
-				Dataset fano = Image.fanoFilter(data, 5, 5);
-				app.append("fano_"+i, fano);
-			}
-		}
-	}
-
-	/**
-	 * Data in slices
-	 * @throws Exception
-	 */
-	@Test
-	public void awriteLazyDataFrame3DDownsample() throws Exception {
-		
-		// Make a writing frame
-		DataFrame frame = new DataFrame("data", Dataset.FLOAT32, new int[] { 256, 256 });
-		
-		// Save to HDF5, columns can be large, these are not it's a test
-		try (Appender app = frame.open_hdf("test-scratch/write_example/lazy_data_frame-3d-downsample.h5", "/entry1/myData")) {
-			
-			// Add the columns incrementally without them all being in memory
-			for (int i = 0; i < 10; i++) {
-				Dataset data = Random.rand(256, 256);
-				Downsample ds = new Downsample(DownsampleMode.MAXIMUM, 4, 4);
-				Dataset smaller = ds.value(data).get(0);
-				app.append("downsample_"+i, smaller);
-			}
-		}
-	}
-
 	/**
 	 * This example assembles TIFF images into a HDF file. 
 	 * It is useful to create stitched stacks which can be sliced and visualised

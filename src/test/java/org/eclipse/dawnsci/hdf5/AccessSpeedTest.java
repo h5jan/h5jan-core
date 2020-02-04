@@ -16,6 +16,7 @@ import org.eclipse.dawnsci.analysis.api.io.ScanFileHolderException;
 import org.eclipse.dawnsci.nexus.NexusException;
 import org.eclipse.january.dataset.Dataset;
 import org.eclipse.january.dataset.DatasetFactory;
+import org.eclipse.january.dataset.DoubleDataset;
 import org.eclipse.january.dataset.PositionIterator;
 import org.eclipse.january.dataset.ShapeUtils;
 import org.eclipse.january.dataset.SliceND;
@@ -62,8 +63,8 @@ public class AccessSpeedTest {
 		now = -System.nanoTime();
 		while (iter.hasNext()) {
 			stop[0] = start[0] + 1;
-			data1 = HDF5Utils.loadDatasetWithClose(file, "data1", start, nshape, step, Dataset.FLOAT64, 1, false);
-			data2 = HDF5Utils.loadDatasetWithClose(file, "data2", start, nshape, step, Dataset.FLOAT64, 1, false);
+			data1 = HDF5Utils.loadDatasetWithClose(file, "data1", start, nshape, step, 1, DoubleDataset.class, false);
+			data2 = HDF5Utils.loadDatasetWithClose(file, "data2", start, nshape, step, 1, DoubleDataset.class, false);
 		}
 		now += System.nanoTime();
 		System.err.println("Test took " + now*1e-9 + "s");
@@ -73,8 +74,8 @@ public class AccessSpeedTest {
 		fid = H5.H5Fopen(file, HDF5Constants.H5F_ACC_RDONLY, HDF5Constants.H5P_DEFAULT);
 		while (iter.hasNext()) {
 			stop[0] = start[0] + 1;
-			data1 = HDF5Utils.readDataset(f, "data1", start, nshape, step, Dataset.FLOAT64, 1, false);
-			data2 = HDF5Utils.readDataset(f, "data2", start, nshape, step, Dataset.FLOAT64, 1, false);
+			data1 = HDF5Utils.readDataset(f, "data1", start, nshape, step, 1, DoubleDataset.class, false);
+			data2 = HDF5Utils.readDataset(f, "data2", start, nshape, step, 1, DoubleDataset.class, false);
 		}
 		H5.H5Fclose(fid);
 		now += System.nanoTime();
@@ -85,8 +86,8 @@ public class AccessSpeedTest {
 		f = HDF5FileFactory.acquireFile(file, false);
 		while (iter.hasNext()) {
 			stop[0] = start[0] + 1;
-			data1 = HDF5Utils.readDataset(f, "data1", start, nshape, step, Dataset.FLOAT64, 1, false);
-			data2 = HDF5Utils.readDataset(f, "data2", start, nshape, step, Dataset.FLOAT64, 1, false);
+			data1 = HDF5Utils.readDataset(f, "data1", start, nshape, step, 1, DoubleDataset.class, false);
+			data2 = HDF5Utils.readDataset(f, "data2", start, nshape, step, 1, DoubleDataset.class, false);
 		}
 		HDF5FileFactory.releaseFile(file, true);
 		now += System.nanoTime();
@@ -96,8 +97,8 @@ public class AccessSpeedTest {
 		now = -System.nanoTime();
 		while (iter.hasNext()) {
 			stop[0] = start[0] + 1;
-			data1 = HDF5Utils.loadDataset(file, "data1", start, nshape, step, Dataset.FLOAT64, 1, false);
-			data2 = HDF5Utils.loadDataset(file, "data2", start, nshape, step, Dataset.FLOAT64, 1, false);
+			data1 = HDF5Utils.loadDataset(file, "data1", start, nshape, step, 1, DoubleDataset.class, false);
+			data2 = HDF5Utils.loadDataset(file, "data2", start, nshape, step, 1, DoubleDataset.class, false);
 		}
 		HDF5FileFactory.releaseFile(file);
 		now += System.nanoTime();
@@ -184,8 +185,8 @@ public class AccessSpeedTest {
 		if (f.exists()) {
 			f.delete();
 		}
-		HDF5Utils.createDatasetWithClose(file, "/entry", "data1", chunk, mshape, chunk, Dataset.FLOAT64, null, false);
-		HDF5Utils.createDatasetWithClose(file, "/entry", "data2", chunk, mshape, chunk, Dataset.FLOAT64, null, false);
+		HDF5Utils.createDatasetWithClose(file, "/entry", "data1", chunk, mshape, chunk, DoubleDataset.class, null, false);
+		HDF5Utils.createDatasetWithClose(file, "/entry", "data2", chunk, mshape, chunk, DoubleDataset.class, null, false);
 	}
 
 	@Test

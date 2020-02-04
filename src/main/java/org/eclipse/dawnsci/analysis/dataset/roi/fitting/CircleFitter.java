@@ -47,6 +47,11 @@ import Jama.SingularValueDecomposition;
  * geometric parameters and an array of angles
  */
 class CircleCoordinatesFunction implements IConicSectionFitFunction, Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8327307049446153898L;
+	
 	private static final int PARAMETERS = CircleFitter.PARAMETERS;
 	private Dataset X;
 	private Dataset Y;

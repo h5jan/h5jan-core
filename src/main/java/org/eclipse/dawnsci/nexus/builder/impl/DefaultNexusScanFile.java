@@ -53,11 +53,7 @@ class DefaultNexusScanFile implements NexusScanFile {
 	@Override
 	public void close() throws NexusException {
 		if (nexusFile == null) return; // Legal this is an AutoClosable that does if it can.
-		try {
-			nexusFile.flush();
-		} catch (NexusException ignored) {
-			// Do nothing.
-		}
+		nexusFile.flush();
 		nexusFile.close();
 		nexusFile = null;
 	}

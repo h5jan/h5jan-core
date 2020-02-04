@@ -10,8 +10,11 @@
 package org.eclipse.dawnsci.hdf5;
 
 import org.eclipse.dawnsci.analysis.api.io.ScanFileHolderException;
+import org.eclipse.dawnsci.hdf5.HDF5FileFactory;
+import org.eclipse.dawnsci.hdf5.HDF5Utils;
 import org.eclipse.january.dataset.Dataset;
 import org.eclipse.january.dataset.DatasetFactory;
+import org.eclipse.january.dataset.DoubleDataset;
 import org.eclipse.january.dataset.PositionIterator;
 import org.eclipse.january.dataset.ShapeUtils;
 import org.eclipse.january.dataset.SliceND;
@@ -84,7 +87,7 @@ public class WriteThreadTest extends AbstractThreadTestBase {
 		HDF5FileFactory.deleteFile(file);
 
 		for (int i = 0; i < nthreads; i++) {
-			HDF5Utils.createDataset(file, group, "data" + i, chunk, mshape, chunk, Dataset.FLOAT64, null, false);
+			HDF5Utils.createDataset(file, group, "data" + i, chunk, mshape, chunk, DoubleDataset.class, null, false);
 		}
 	}
 }

@@ -10,16 +10,17 @@
  *******************************************************************************/
 
 package org.eclipse.dawnsci.nexus.validation;
-import static org.eclipse.dawnsci.nexus.validation.NexusDataType.NX_NUMBER;
-import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_WAVELENGTH;
+import static org.eclipse.dawnsci.nexus.validation.NexusDataType.*;
+import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.*;
 
-import org.eclipse.dawnsci.nexus.NXdata;
+import org.eclipse.january.dataset.IDataset;
+
+import org.eclipse.dawnsci.nexus.NXroot;
+import org.eclipse.dawnsci.nexus.NXsubentry;
 import org.eclipse.dawnsci.nexus.NXentry;
 import org.eclipse.dawnsci.nexus.NXinstrument;
-import org.eclipse.dawnsci.nexus.NXroot;
 import org.eclipse.dawnsci.nexus.NXsource;
-import org.eclipse.dawnsci.nexus.NXsubentry;
-import org.eclipse.january.dataset.IDataset;
+import org.eclipse.dawnsci.nexus.NXdata;
 
 /**
  * Validator for the application definition 'NXxlaue'.

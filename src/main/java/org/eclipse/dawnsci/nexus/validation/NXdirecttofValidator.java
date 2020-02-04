@@ -10,20 +10,19 @@
  *******************************************************************************/
 
 package org.eclipse.dawnsci.nexus.validation;
-import static org.eclipse.dawnsci.nexus.validation.NexusDataType.NX_DATE_TIME;
-import static org.eclipse.dawnsci.nexus.validation.NexusDataType.NX_FLOAT;
-import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_ENERGY;
-import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_FREQUENCY;
+import static org.eclipse.dawnsci.nexus.validation.NexusDataType.*;
+import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.*;
 
 import java.util.Map;
 
-import org.eclipse.dawnsci.nexus.NXdisk_chopper;
-import org.eclipse.dawnsci.nexus.NXentry;
-import org.eclipse.dawnsci.nexus.NXfermi_chopper;
-import org.eclipse.dawnsci.nexus.NXinstrument;
+import org.eclipse.january.dataset.IDataset;
+
 import org.eclipse.dawnsci.nexus.NXroot;
 import org.eclipse.dawnsci.nexus.NXsubentry;
-import org.eclipse.january.dataset.IDataset;
+import org.eclipse.dawnsci.nexus.NXentry;
+import org.eclipse.dawnsci.nexus.NXinstrument;
+import org.eclipse.dawnsci.nexus.NXfermi_chopper;
+import org.eclipse.dawnsci.nexus.NXdisk_chopper;
 
 /**
  * Validator for the application definition 'NXdirecttof'.
