@@ -69,7 +69,7 @@ public class LoadSpeedTest extends AbstractReaderTest {
 	private void speedTest(int compression, String filePath, long tcsv, Path writePath, long th5, boolean prod) throws Exception {
 		
 		Tuple<DataFrame, Long> rcsv = time(()->reader.read(JPaths.getTestResource(filePath), Configuration.createEmpty(), new IMonitor.Stub()));
-		if (prod) assertTrue(tcsv>rcsv.getRight());
+		if (prod) assertTrue(tcsv+25>=rcsv.getRight());
 		
 		// We write it, not timed
 		rcsv.getLeft().to_hdf(writePath.toString(), "/entry1/data", compression);
