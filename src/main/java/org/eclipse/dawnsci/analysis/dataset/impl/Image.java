@@ -756,4 +756,34 @@ public class Image {
 
 		return cropped;
 	}
+	
+
+	/**
+	 * Shift image using linear interpolation
+	 * @param im
+	 * @param shifts
+	 * @return shifted image
+	 */
+	public static Dataset shiftImage(Dataset im, double[] shifts) {
+		if (im.getRank() != 2) {
+			throw new IllegalArgumentException("Dataset must be 2d");
+		}
+		if (shifts.length < 2) {
+			throw new IllegalArgumentException("Shift array must have at least two entries");
+		}
+		Dataset newImage = DatasetFactory.zeros(im, DoubleDataset.class);
+		int[] shape = im.getShapeRef();
+	
+		double cx0, cx1;
+		for (int x0 = 0; x0 < shape[0]; x0++) {
+			cx0 = x0 + shifts[0];
+			for (int x1 = 0; x1 < shape[1]; x1++) {
+				cx1 = x1 + shifts[1];
+				newImage.set(Maths.interpolate(im, cx0, cx1), x0, x1);
+			}
+		}
+	
+		return newImage;
+	}
+
 }

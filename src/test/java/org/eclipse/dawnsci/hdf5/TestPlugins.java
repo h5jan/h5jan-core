@@ -34,6 +34,7 @@ import hdf.hdf5lib.exceptions.HDF5Exception;
  * Test various filter plugins that are built into the hdf.hdf5lib
  * plugin
  */
+@Ignore
 public class TestPlugins {
 
 	private final static String DATA_PATH = "/data";
@@ -44,28 +45,24 @@ public class TestPlugins {
 	private final static long[] DATA_MAX_SHAPE = new long[] {HDF5Constants.H5S_UNLIMITED, DIM_1, DIM_2};
 	private final static long[] DATA_CHUNK = new long[] {1, DIM_1, DIM_2};
 
-	@Ignore
 	@Test
 	public void testZlibFilter() throws NullPointerException, HDF5Exception {
 		testFilter("test-scratch/testFilterZlib.h5", true, HDF5Constants.H5Z_FILTER_DEFLATE, 1);
 		testFilter("test-scratch/testFilterZlib.h5", false, HDF5Constants.H5Z_FILTER_DEFLATE, 1);
 	}
 
-	@Ignore
 	@Test
 	public void testLZFFilter() throws NullPointerException, HDF5Exception {
 		testFilter("test-scratch/testFilterLZF.h5", true, 32000);
 		testFilter("test-scratch/testFilterLZF.h5", false, 32000); // crashes JVM in Windows during write - bug in filter
 	}
 
-	@Ignore
 	@Test
 	public void testLZ4Filter() throws NullPointerException, HDF5Exception {
 		testFilter("test-scratch/testFilterLZ4.h5", true, 32004, 1);
 		testFilter("test-scratch/testFilterLZ4.h5", false, 32004, 1);
 	}
 
-	@Ignore
 	@Test
 	public void testBSFilter() throws NullPointerException, HDF5Exception {
 		testFilter("test-scratch/testFilterBS.h5", true, 32008, 0, 2);

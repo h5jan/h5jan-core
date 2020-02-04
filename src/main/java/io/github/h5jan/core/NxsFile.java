@@ -508,15 +508,6 @@ public class NxsFile implements AutoCloseable{
 	}
 
 	/**
-	 * Get the complete tree of data.
-	 * @return tree or null if none exists.
-	 * @throws NexusException
-	 */
-	public Tree getTree() throws NexusException {
-		return ((NexusFileHDF5)file).getTree();
-	}
-
-	/**
 	 * Read an ILazyDataset
 	 * @param path to read
 	 * @return lazy dataset which does not use local memory.

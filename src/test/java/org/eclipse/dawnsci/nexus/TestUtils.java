@@ -69,36 +69,16 @@ public class TestUtils {
 	 * 
 	 * @param testScratchDirectoryname
 	 *            - the name of the directory to create.
-	 * @throws Exception - If cannot make dir.
+	 * @throws Exception
 	 */
 	public static void makeScratchDirectory(String testScratchDirectoryname) throws Exception {
-		makeScratchDirectory(testScratchDirectoryname, true);
-	}
-
-	/**
-	 * Creates an empty directory for use by test code. If the directory exists (from a previous test), the directory
-	 * and all its contents are first deleted.
-	 * 
-	 * @param testScratchDirectoryname
-	 *            - the name of the directory to create.
-	 * @param errorIfCannotDelete
-	 *            - false to send no exception if the dir cannot be cleaned before use.
-	 * @throws Exception - If cannot make dir.
-	 */
-	public static void makeScratchDirectory(String testScratchDirectoryname, boolean errorIfCannotDelete) throws Exception {
-		
-		File dir = new File(testScratchDirectoryname);
 		// delete any remains from a previous run of this test
-		if (!deleteDir(dir)) {
-			if (errorIfCannotDelete) {
-				throw new Exception("Unable to delete old test scratch directory " + testScratchDirectoryname);
-			}
+		if (!deleteDir(new File(testScratchDirectoryname))) {
+			throw new Exception("Unable to delete old test scratch directory " + testScratchDirectoryname);
 		}
 		// set up for a new run of this test
-		if (!(dir.mkdirs())) {
-			if (errorIfCannotDelete) {
-				throw new Exception("Unable to create new test scratch directory " + testScratchDirectoryname);
-			}
+		if (!((new File(testScratchDirectoryname)).mkdirs())) {
+			throw new Exception("Unable to create new test scratch directory " + testScratchDirectoryname);
 		}
 	}
 }

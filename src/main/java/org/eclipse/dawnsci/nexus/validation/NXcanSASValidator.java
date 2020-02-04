@@ -10,35 +10,27 @@
  *******************************************************************************/
 
 package org.eclipse.dawnsci.nexus.validation;
-import static org.eclipse.dawnsci.nexus.validation.NexusDataType.NX_CHAR;
-import static org.eclipse.dawnsci.nexus.validation.NexusDataType.NX_DATE_TIME;
-import static org.eclipse.dawnsci.nexus.validation.NexusDataType.NX_FLOAT;
-import static org.eclipse.dawnsci.nexus.validation.NexusDataType.NX_INT;
-import static org.eclipse.dawnsci.nexus.validation.NexusDataType.NX_NUMBER;
-import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_ANGLE;
-import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_DIMENSIONLESS;
-import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_LENGTH;
-import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_PER_LENGTH;
-import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_TEMPERATURE;
-import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.NX_WAVELENGTH;
+import static org.eclipse.dawnsci.nexus.validation.NexusDataType.*;
+import static org.eclipse.dawnsci.nexus.validation.NexusUnitCategory.*;
 
 import java.util.Map;
 
-import org.eclipse.dawnsci.analysis.api.tree.Attribute;
-import org.eclipse.dawnsci.nexus.NXaperture;
-import org.eclipse.dawnsci.nexus.NXcollection;
-import org.eclipse.dawnsci.nexus.NXcollimator;
-import org.eclipse.dawnsci.nexus.NXdata;
-import org.eclipse.dawnsci.nexus.NXdetector;
-import org.eclipse.dawnsci.nexus.NXentry;
-import org.eclipse.dawnsci.nexus.NXinstrument;
-import org.eclipse.dawnsci.nexus.NXnote;
-import org.eclipse.dawnsci.nexus.NXprocess;
-import org.eclipse.dawnsci.nexus.NXroot;
-import org.eclipse.dawnsci.nexus.NXsample;
-import org.eclipse.dawnsci.nexus.NXsource;
-import org.eclipse.dawnsci.nexus.NXsubentry;
 import org.eclipse.january.dataset.IDataset;
+import org.eclipse.dawnsci.analysis.api.tree.Attribute;
+
+import org.eclipse.dawnsci.nexus.NXroot;
+import org.eclipse.dawnsci.nexus.NXsubentry;
+import org.eclipse.dawnsci.nexus.NXentry;
+import org.eclipse.dawnsci.nexus.NXdata;
+import org.eclipse.dawnsci.nexus.NXinstrument;
+import org.eclipse.dawnsci.nexus.NXaperture;
+import org.eclipse.dawnsci.nexus.NXcollimator;
+import org.eclipse.dawnsci.nexus.NXdetector;
+import org.eclipse.dawnsci.nexus.NXsource;
+import org.eclipse.dawnsci.nexus.NXsample;
+import org.eclipse.dawnsci.nexus.NXprocess;
+import org.eclipse.dawnsci.nexus.NXnote;
+import org.eclipse.dawnsci.nexus.NXcollection;
 
 /**
  * Validator for the application definition 'NXcanSAS'.

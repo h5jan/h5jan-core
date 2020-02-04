@@ -60,7 +60,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-@Ignore
+@Ignore("Does not work on all OS")
 public class MultipleThreadNexusFileWriteTest {
 
 	private static abstract class AbstractTestDevice<N extends NXobject>

@@ -11,14 +11,15 @@
 
 package org.eclipse.dawnsci.nexus.impl;
 
+import java.util.Set;
 import java.util.EnumSet;
 import java.util.Map;
-import java.util.Set;
 
-import org.eclipse.dawnsci.nexus.NXentry;
-import org.eclipse.dawnsci.nexus.NXobject;
-import org.eclipse.dawnsci.nexus.NXreflections;
-import org.eclipse.dawnsci.nexus.NexusBaseClass;
+import org.eclipse.dawnsci.analysis.api.tree.DataNode;
+
+import org.eclipse.january.dataset.IDataset;
+
+import org.eclipse.dawnsci.nexus.*;
 
 /**
  * This is a definition for reflection data from diffraction experiments

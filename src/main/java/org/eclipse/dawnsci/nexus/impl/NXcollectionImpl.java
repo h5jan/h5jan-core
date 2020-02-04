@@ -11,12 +11,12 @@
 
 package org.eclipse.dawnsci.nexus.impl;
 
-import java.util.EnumSet;
 import java.util.Set;
+import java.util.EnumSet;
+import org.eclipse.dawnsci.analysis.api.tree.DataNode;
 
-import org.eclipse.dawnsci.nexus.NXcollection;
-import org.eclipse.dawnsci.nexus.NXobject;
-import org.eclipse.dawnsci.nexus.NexusBaseClass;
+
+import org.eclipse.dawnsci.nexus.*;
 
 /**
  * An unvalidated set of terms, such as the description of a beam line.

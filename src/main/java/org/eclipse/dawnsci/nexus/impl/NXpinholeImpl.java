@@ -11,14 +11,13 @@
 
 package org.eclipse.dawnsci.nexus.impl;
 
-import java.util.EnumSet;
 import java.util.Set;
-
+import java.util.EnumSet;
 import org.eclipse.dawnsci.analysis.api.tree.DataNode;
-import org.eclipse.dawnsci.nexus.NXobject;
-import org.eclipse.dawnsci.nexus.NXpinhole;
-import org.eclipse.dawnsci.nexus.NexusBaseClass;
+
 import org.eclipse.january.dataset.IDataset;
+
+import org.eclipse.dawnsci.nexus.*;
 
 /**
  * A simple pinhole.

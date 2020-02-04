@@ -11,17 +11,13 @@
 
 package org.eclipse.dawnsci.nexus.impl;
 
-import java.util.EnumSet;
 import java.util.Set;
-
+import java.util.EnumSet;
 import org.eclipse.dawnsci.analysis.api.tree.DataNode;
-import org.eclipse.dawnsci.nexus.NXgeometry;
-import org.eclipse.dawnsci.nexus.NXlog;
-import org.eclipse.dawnsci.nexus.NXobject;
-import org.eclipse.dawnsci.nexus.NXorientation;
-import org.eclipse.dawnsci.nexus.NXsensor;
-import org.eclipse.dawnsci.nexus.NexusBaseClass;
+
 import org.eclipse.january.dataset.IDataset;
+
+import org.eclipse.dawnsci.nexus.*;
 
 /**
  * A sensor used to monitor an external condition

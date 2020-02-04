@@ -180,8 +180,10 @@ dependencies {
     implementation group: 'tech.tablesaw', name: 'tablesaw-core', version: '0.37.3'
 	
 	// Command Line Parsing
-	implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
-	implementation  'commons-io:commons-io:2.6'
+	compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
+	
+	// Apache commons io
+	compile group: 'commons-io', name: 'commons-io', version: '2.6'
 	
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-configuration2
 	compile group: 'org.apache.commons', name: 'commons-configuration2', version: '2.6'
@@ -195,6 +197,9 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-csv
 	compile group: 'org.apache.commons', name: 'commons-csv', version: '1.7'
 	
+	// https://mvnrepository.com/artifact/javax.vecmath/vecmath
+	compile group: 'javax.vecmath', name: 'vecmath', version: '1.5.2'
+	
 	// https://mvnrepository.com/artifact/tec.units/indriya/1.0  Units  BSD License
 	implementation group: 'tec.units', name: 'indriya', version: '1.0'
 	
@@ -206,6 +211,14 @@ dependencies {
 	
 	// https://mvnrepository.com/artifact/gov.nist.math/jama
     implementation group: 'gov.nist.math', name: 'jama', version: '1.0.3'
+    
+    // http://ejml.org/wiki/index.php?title=Main_Page
+    // https://mvnrepository.com/artifact/org.ejml/core
+	implementation group: 'org.ejml', name: 'core', version: '0.27'
+	
+	// http://ddogleg.org/
+	// https://mvnrepository.com/artifact/org.ddogleg/ddogleg
+	compile group: 'org.ddogleg', name: 'ddogleg', version: '0.17'
 	
 	// https://mvnrepository.com/artifact/javax.media/jai-core
 	// The license of this code was the Java distribution license.

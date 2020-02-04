@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.dawnsci.nexus;
 
+import org.eclipse.dawnsci.nexus.INexusFileFactory;
 import org.eclipse.dawnsci.nexus.builder.NexusBuilderFactory;
 
 public class NexusTestServiceHolder {

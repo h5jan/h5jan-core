@@ -11,41 +11,15 @@
 
 package org.eclipse.dawnsci.nexus.impl;
 
+import java.util.Set;
 import java.util.EnumSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.dawnsci.analysis.api.tree.DataNode;
-import org.eclipse.dawnsci.nexus.NXaperture;
-import org.eclipse.dawnsci.nexus.NXattenuator;
-import org.eclipse.dawnsci.nexus.NXbeam;
-import org.eclipse.dawnsci.nexus.NXbeam_stop;
-import org.eclipse.dawnsci.nexus.NXbending_magnet;
-import org.eclipse.dawnsci.nexus.NXcapillary;
-import org.eclipse.dawnsci.nexus.NXcollection;
-import org.eclipse.dawnsci.nexus.NXcollimator;
-import org.eclipse.dawnsci.nexus.NXcrystal;
-import org.eclipse.dawnsci.nexus.NXdetector;
-import org.eclipse.dawnsci.nexus.NXdetector_group;
-import org.eclipse.dawnsci.nexus.NXdisk_chopper;
-import org.eclipse.dawnsci.nexus.NXevent_data;
-import org.eclipse.dawnsci.nexus.NXfermi_chopper;
-import org.eclipse.dawnsci.nexus.NXfilter;
-import org.eclipse.dawnsci.nexus.NXflipper;
-import org.eclipse.dawnsci.nexus.NXguide;
-import org.eclipse.dawnsci.nexus.NXinsertion_device;
-import org.eclipse.dawnsci.nexus.NXinstrument;
-import org.eclipse.dawnsci.nexus.NXmirror;
-import org.eclipse.dawnsci.nexus.NXmoderator;
-import org.eclipse.dawnsci.nexus.NXmonochromator;
-import org.eclipse.dawnsci.nexus.NXobject;
-import org.eclipse.dawnsci.nexus.NXpolarizer;
-import org.eclipse.dawnsci.nexus.NXpositioner;
-import org.eclipse.dawnsci.nexus.NXsource;
-import org.eclipse.dawnsci.nexus.NXvelocity_selector;
-import org.eclipse.dawnsci.nexus.NXxraylens;
-import org.eclipse.dawnsci.nexus.NexusBaseClass;
+
 import org.eclipse.january.dataset.IDataset;
+
+import org.eclipse.dawnsci.nexus.*;
 
 /**
  * Collection of the components of the instrument or beamline.
