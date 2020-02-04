@@ -27,7 +27,7 @@ public class Generic1DDatasetCreator {
 	static final double defaultArea = 25.0;
 	static final double maxFWHM = 40.0;
 	static final double maxArea = 50.0;
-	static final double delta = 0.51;
+	static final double delta = 1.01;
 	static final double lambda = 0.1;
 	
 	static final boolean backgroundDominated = true;
