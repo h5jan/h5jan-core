@@ -2,6 +2,7 @@
 
 ![](https://github.com/h5jan/h5jan-core/blob/master/eclipsesci.png) h5jan
 =====
+Maven
 ```xml
 
 	<dependency>
@@ -10,6 +11,11 @@
 		<version>0.7.0</version>
 	</dependency>
 ```
+Gradle
+```groovy
+	compile group: 'io.github.h5jan', name: 'h5jan-core', version: '0.7.0'	
+```
+
 ## What is it
 h5jan is a Java(TM) API for reading and writing [Eclipse January*](https://github.com/eclipse/january) datasets to HDF5.
 It writes the HDF5 to a self describing format
