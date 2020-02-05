@@ -10,8 +10,13 @@
  *******************************************************************************/
 package io.github.h5jan.core;
 
+import java.io.IOException;
+
+import org.eclipse.dawnsci.nexus.NexusException;
+import org.eclipse.january.DatasetException;
 import org.eclipse.january.IMonitor;
 import org.eclipse.january.dataset.IDataset;
+import org.eclipse.january.dataset.ILazyWriteableDataset;
 
 /**
  * An appender adds slices to a DataFrame
@@ -34,12 +39,48 @@ public interface Appender extends AutoCloseable {
 	
 	/**
 	 * Add slice to end of current writable dataset
-	 * @param name
-	 * @param slice
-	 * @throws Exception 
+	 * 
+	 * @param name - name of dataset we are appending.
+	 * @param slice - slice to append.
+	 * @throws DatasetException - if the dataset cannot be written.
+	 * @throws NexusException - if nexus cannot write the slice.
+	 * @throws IOException - if there is an IO error writing to the file.
 	 */
 	void append(String name, IDataset slice) throws Exception ;
 
+	/**
+	 * Append or record extra data. This data does not get saved as
+	 * data frame columns.
+	 * 
+	 * @param name - name of dataset we are appending.
+	 * @param slice - slice to append.
+	 * @throws DatasetException - if the dataset cannot be written.
+	 * @throws NexusException - if nexus cannot write the slice.
+	 * @throws IOException - if there is an IO error writing to the file.
+	 */
+	void record(String name, IDataset slice) throws Exception;
+	
+	/**
+	 * Append or record extra data. This data does not get saved as
+	 * data frame columns.
+	 * 
+	 * @param name - name of dataset we are appending.
+	 * @return true if record is a writable record.
+	 */
+	boolean containsRecord(String name);
+
+	/**
+	 * Allows the writer to create a writable dataset in addition
+	 * to the main one of the frame. This can be useful to store
+	 * derived data such as automated analysis results.
+	 * 
+	 * @param name - name of 
+	 * @param class - class of data type, for instance Double.class.
+	 * @return dataset to which we are writing. Use the record method to add slices to this by name.
+	 * @throws Exception if the dtype is not supported, for instance if you try BigDecimal.class.
+	 */
+	ILazyWriteableDataset create(String name, Class<?> dtype, int... sliceShape) throws Exception;
+	
 	/**
 	 * Called to provide an object to return progress about the writing.
 	 * @param monitor

@@ -13,7 +13,10 @@ package io.github.h5jan.core;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.dawnsci.nexus.NexusException;
 import org.eclipse.dawnsci.nexus.NexusFile;
@@ -43,6 +46,10 @@ class AppenderImpl implements Appender {
 	private Closeable 				closer;
 	private IMonitor 				monitor = new IMonitor.Stub();
 	
+	// Extra datasets which may be written, for instance
+	// if the data frame as derived data that you also want to store.
+	private Map<String, ILazyWriteableDataset> aux;
+
 	private int compression = NexusFile.COMPRESSION_NONE;
 
 	
@@ -71,19 +78,63 @@ class AppenderImpl implements Appender {
 		}
 	}
 	
-	public void append(String name, IDataset slice) throws DatasetException, NexusException, IOException {
+	@Override
+	public void append(String columnName, IDataset slice) throws DatasetException, NexusException, IOException {
 		
 		init();
-		names.add(name);
+		names.add(columnName);
 		
 		int i = names.size()-1; // The index we are on
+		append(data, slice, i);
+	}
+	
+	@Override
+	public void record(String name, IDataset slice) throws Exception {
+		
+		init();
+		
+		// Create stack for the slices, if it not there already
+		if (!containsRecord(name)) {
+			create(name, slice.getElementClass(), slice.getShape());
+		}
+
+		ILazyWriteableDataset data = aux.get(name);
+		int i = names.size()-1; // The index we are on
+		append(data, slice, i);
+	}
+	
+	@Override
+	public ILazyWriteableDataset create(String name, Class<?> dtype, int... sliceShape) throws Exception {
+		
+		ILazyWriteableDataset writer = FrameUtil.create(name, dtype, sliceShape);
+		if (aux==null) aux = Collections.synchronizedMap(new HashMap<>());
+		aux.put(name, writer);
+		this.hFile.createData(h5Path, writer, compression, true);
+		return writer;
+	}
+	
+	@Override
+	public boolean containsRecord(String name) {
+		if (aux!=null && aux.containsKey(name))         return true;
+		//if (data!=null && name.equals(data.getName()))  return true;
+		return false;
+	}
+	
+	private void append(ILazyWriteableDataset data, IDataset slice, int index) throws DatasetException {
 		
 		slice = FrameUtil.addDimension(slice);
-		data.setSlice(monitor, slice, FrameUtil.orient(data,i,slice.getShape()));
+		data.setSlice(monitor, slice, FrameUtil.orient(data,index,slice.getShape()));
+		
+		// Put it back to its smallest shape.
+		slice.squeeze(true);
 	}
 
 	@Override
 	public void close() throws Exception {
+		if (aux!=null) {
+			aux.clear();
+			aux = null;
+		}
 		try {
 			Util.setMetaAttributues(hFile, h5Path, frame, names);
 		} catch (Exception ne) {

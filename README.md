@@ -171,6 +171,57 @@ We write the HDF5 stack directly to a single file in a lazy way such that the wh
   }
 ```
 
+## Advanced
+Applying different operations to images using code from [DAWN Science](http://www.dawnsci.org)
+```java
+
+	// Example data 
+	Dataset data = Random.rand(256, 256);
+
+	// Image filters
+	Dataset sobel = Image.sobelFilter(data);
+	Dataset fano = Image.fanoFilter(data, 5, 5);
+	
+	// Downsample (nD)
+	Downsample ds = new Downsample(DownsampleMode.MAXIMUM, 4, 4);
+	Dataset smaller = ds.value(data).get(0);
+	
+	// Integration of user selected regions
+	RectangularROI rroi = new RectangularROI(new double[]{100,100}, new double[]{200,200});
+	Dataset[] xAndY = ROIProfile.box(data, rroi); // Integrate x and y
+	
+	SectorROI sroi = new SectorROI(100,100, 10, 50, 0, Math.PI);
+	Dataset[] radAndAzi = ROIProfile.sector(data, sroi); // Radial and azimuthal integration.
+```
+And we can write these transforms or analysis data as follows:
+
+```java
+
+	Function<Dataset,Dataset> imageTransform = ...  // See above
+	
+	// Example of writing the data in a DataFrame
+	// Make a writing frame
+	DataFrame frame = new DataFrame("data", Dataset.FLOAT32, new int[] { 256, 256 });
+		
+	// Save to HDF5, columns can be large, these are not it's a test
+	try (Appender app = frame.open_hdf("test-scratch/write_example/"+fileName, "/entry1/myData")) {
+			
+		// Add the columns incrementally without them all being in memory
+		for (int i = 0; i < 10; i++) {
+			Dataset data = Random.rand(256, 256); // Insert your real data here, it will be larger...
+				
+			// Apply the function and write that
+			Dataset toWrite = imageTransform.apply(data);
+			app.append(datasetName+i, toWrite); // Our data is transformed as we write it
+				
+			// Keeping raw data is a good idea
+			// It might not be in this frame but it will be useful.
+			app.record("raw", data);  // We append the raw data in a non-data frame record. 
+		}
+	}
+
+```
+
 ## Additional Examples
 The [other examples](https://github.com/h5jan/h5jan-core/tree/master/src/test/java/io/github/h5jan/core/examples) are run as part of the unit tests.
 [Eclipse January Examples](https://github.com/eclipse/january/tree/master/org.eclipse.january.examples/src/org/eclipse/january/examples/dataset)
