@@ -59,11 +59,41 @@ public class FrameUtil {
 	 */
 	public static ILazyWriteableDataset create(String name, int dtype, int[] columnShape, int sizeSlices) {
 		
+		int[] dshape = declaredShape(columnShape, sizeSlices);	
+		return new LazyWriteableDataset(name, dtype, dshape, null, null, null);
+	}
+
+	/**
+	 * Creates a writeable dataset using the shape of one column.
+	 * @param name
+	 * @param dtype
+	 * @param columnShape
+	 * @return writeable dataset
+	 */
+	public static ILazyWriteableDataset create(String name, Class<?>  dtype, int[] columnShape) {
+		
+		int[] dshape = declaredShape(columnShape, ILazyWriteableDataset.UNLIMITED);	
+		return new LazyWriteableDataset(name, dtype, dshape, null, null, null);
+	}
+
+	/**
+	 * Creates a writeable dataset using the shape of one column.
+	 * @param name
+	 * @param dtype
+	 * @param columnShape
+	 * @return writeable dataset
+	 */
+	public static ILazyWriteableDataset create(String name, Class<?> dtype, int[] columnShape, int sizeSlices) {
+		
+		int[] dshape = declaredShape(columnShape, sizeSlices);	
+		return new LazyWriteableDataset(name, dtype, dshape, null, null, null);
+	}
+
+	private static int[] declaredShape(int[] columnShape, int sizeSlices) {
 		int[] dshape = new int[columnShape.length+1];
 		System.arraycopy(columnShape, 0, dshape, 0, columnShape.length);
 		dshape[dshape.length-1] = sizeSlices;
-		
-		return new LazyWriteableDataset(name, dtype, dshape, null, null, null);
+		return dshape;
 	}
 
 	static final int[] getShape(List<ILazyDataset> data) {
