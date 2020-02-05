@@ -228,7 +228,7 @@ Maven
 <dependency>
 	<groupId>io.github.h5jan</groupId>
 	<artifactId>h5jan-core</artifactId>
-	<version>0.4.3</version>
+	<version>0.7.0</version>
 </dependency>
 ```
 
