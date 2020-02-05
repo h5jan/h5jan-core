@@ -4,7 +4,6 @@
 =====
 Maven
 ```xml
-
 	<dependency>
 		<groupId>io.github.h5jan</groupId>
 		<artifactId>h5jan-core</artifactId>
