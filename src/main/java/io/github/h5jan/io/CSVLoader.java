@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +53,7 @@ class CsvLoader extends AbstractStreamLoader implements IStreamLoader {
 		final Iterable<CSVRecord> records = CSVFormat.RFC4180.withFirstRecordAsHeader()
 													.parse( new InputStreamReader( stream, "UTF-8" ) );
 
-		Map<String, List<Number>> logsMap = readWellSamples(configuration.getFilterName(), records, mon );
+		Map<String, List<Object>> logsMap = readWellSamples(configuration.getFilterName(), records, mon );
 		List<Dataset> logs = logsMap.entrySet().stream().map( CsvLoader::exactLogSamplesToData ).collect( Collectors.toList() );
 
 		String name = configuration.getFileName();
@@ -63,12 +62,12 @@ class CsvLoader extends AbstractStreamLoader implements IStreamLoader {
 		return new DataFrame(frameName, AbstractDataset.FLOAT32, logs);
 	}
 
-	private Map<String, List<Number>> readWellSamples( String logNameFilter, Iterable<CSVRecord> records,
+	private Map<String, List<Object>> readWellSamples( String logNameFilter, Iterable<CSVRecord> records,
 			                                           final IMonitor mon ) throws IOException {
 
 
 		int count = 0;
-		Map<String, List<Number>> result = new HashMap<>();
+		Map<String, List<Object>> result = new HashMap<>();
 		RECORD_LOOP: for (CSVRecord csvRecord : records) {
 
 			count++;
@@ -85,8 +84,11 @@ class CsvLoader extends AbstractStreamLoader implements IStreamLoader {
 				if (isCancelled( mon )) {
 					throw new IOException( "The load job was cancelled" );
 				}
-				List<Number> wellSamples = result.getOrDefault( logName, new ArrayList<>() );
-				float flog = logValue!=null && !logValue.isEmpty() ? Float.parseFloat( logValue ) : Float.NaN;
+				List<Object> wellSamples = result.getOrDefault( logName, new ArrayList<>() );
+				
+				// We assume NaN is the best option but the later values may be string. TODO to reliably get type 
+				// if the data in the column is heterogeneous
+				Object flog = logValue!=null && !logValue.isEmpty() ? parse( logValue ) : Float.NaN;
 				wellSamples.add(flog);
 				result.put( logName, wellSamples );
 
@@ -95,25 +97,31 @@ class CsvLoader extends AbstractStreamLoader implements IStreamLoader {
 		return result;
 	}
 
+	private static final Pattern intPattern = Pattern.compile("\\d+");
+	private static final Pattern  floatPattern = Pattern.compile("([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)|(0\\.)");
+	
+	// Parses string to number if it can otherwise returns String
+	private Object parse(String logValue) {
+		
+		if (intPattern.matcher(logValue).matches()) {
+			return Integer.parseInt(logValue);
+		} else if (floatPattern.matcher(logValue).matches()) {
+			return Float.parseFloat(logValue);
+		}
+		return logValue;
+	}
+
 	/**
 	 * Used to process a Log when the SamplingMode is EXACT_DEPTH
 	 * 
 	 * @param log
 	 * @return non-null instance of WellData
 	 */
-	private static Dataset exactLogSamplesToData( Map.Entry<String, List<Number>> log ) {
+	private static Dataset exactLogSamplesToData( Map.Entry<String, List<Object>> log ) {
 		final String key = log.getKey();
 
-		final List<Number> logSamples = log.getValue();
-		final int nSamples = logSamples.size();
-
-		final float[] regularSamples = new float[nSamples];
-		Arrays.fill( regularSamples, 0 );
-		for (int i = 0; i < nSamples; i++) {
-			regularSamples[i] = logSamples.get( i ).floatValue();
-		}
-
-		Dataset ret = DatasetFactory.createFromObject( regularSamples );
+		final List<Object> logSamples = log.getValue();
+		Dataset ret = DatasetFactory.createFromObject( logSamples );
 		ret.setName(key);
 		return ret;
 	}

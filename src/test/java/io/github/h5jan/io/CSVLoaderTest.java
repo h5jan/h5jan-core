@@ -82,6 +82,17 @@ public class CSVLoaderTest extends AbstractReaderTest {
 		});
 	}
 	
+	@Test
+	public void csvStringData() throws Exception {
+		
+		Path path = JPaths.getTestResource("csv/131.csv");
+		DataFrame frame = reader.read(path, Configuration.createEmpty(), new IMonitor.Stub());
+		
+		assertNotNull(frame);
+		ILazyDataset depth = frame.find(DEPTH_REGEX);
+		assertNotNull(depth);
+	}
+
 	private void test(String frag, final Configuration conf, Consumer<DataFrame> consumer) throws Exception {
 		Path path = JPaths.getTestResource(frag);
 		if (Files.isDirectory(path)) {
