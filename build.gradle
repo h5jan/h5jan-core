@@ -9,7 +9,7 @@ Release process:
 2. ./gradlew publish -PmakeRelease=true
 3. Go to https://oss.sonatype.org/#stagingRepositories and manually hit save and close.
 	(https://central.sonatype.org/pages/releasing-the-deployment.html)
-
+NOTE Might have to delete some files with gradle 6: https://issues.sonatype.org/browse/OSSRH-53400
 **/
 plugins {
     id 'maven'
@@ -34,7 +34,7 @@ description = 'h5jan-core'
 defaultTasks 'compileJava', 'enunciate', 'check', 'compileTestJava', 'processTestResources', 'test', 'jar'
 
 ext {
-	baseVersion = "0.7.0"
+	baseVersion = "0.7.1"
     if (project.hasProperty('version')) {
 		baseVersionNum = version
     }
