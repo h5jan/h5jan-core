@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -67,7 +67,7 @@ class CsvLoader extends AbstractStreamLoader implements IStreamLoader {
 
 
 		int count = 0;
-		Map<String, List<Object>> result = new HashMap<>();
+		Map<String, List<Object>> result = new LinkedHashMap<>(); // Order must be kept
 		RECORD_LOOP: for (CSVRecord csvRecord : records) {
 
 			count++;
