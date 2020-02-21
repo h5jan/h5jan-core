@@ -50,15 +50,15 @@ public abstract class AbstractReaderTest {
 	}
 	
 	@FunctionalInterface
-	public interface FileLoad {
-		DataFrame load() throws Exception;
+	public interface FileLoad<T> {
+		T load() throws Exception;
 	}
 
-	public Tuple<DataFrame, Long> time(FileLoad function) throws Exception {
+	public <T> Tuple<T, Long> time(FileLoad<T> function) throws Exception {
 		long before = System.currentTimeMillis();
-		DataFrame frame = function.load();
+		T frame = function.load();
 		long after = System.currentTimeMillis();
-		Tuple<DataFrame, Long> ret = new Tuple<>();
+		Tuple<T, Long> ret = new Tuple<>();
 		ret.setLeft(frame);
 		ret.setRight(after-before);
 		return ret;
