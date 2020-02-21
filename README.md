@@ -4,7 +4,9 @@
 =====
 
 NOTE: Version 0.7.5 and above include an important fix to make the library work without setting LD_LIBRARY_PATH.
+
 Maven
+======
 ```xml
 	<dependency>
 		<groupId>io.github.h5jan</groupId>
@@ -12,7 +14,9 @@ Maven
 		<version>0.7.5</version>
 	</dependency>
 ```
+
 Gradle
+======
 ```groovy
 	compile group: 'io.github.h5jan', name: 'h5jan-core', version: '0.7.5'	
 ```
