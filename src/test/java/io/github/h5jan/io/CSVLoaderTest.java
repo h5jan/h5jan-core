@@ -12,6 +12,7 @@ package io.github.h5jan.io;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.nio.file.Files;
@@ -20,6 +21,7 @@ import java.nio.file.Path;
 import org.eclipse.january.DatasetException;
 import org.eclipse.january.IMonitor;
 import org.eclipse.january.dataset.ILazyDataset;
+import org.eclipse.january.dataset.StringDataset;
 import org.junit.Test;
 
 import io.github.h5jan.core.DataFrame;
@@ -82,6 +84,24 @@ public class CSVLoaderTest extends AbstractReaderTest {
 		});
 	}
 	
+	@Test
+	public void csvStringData() throws Exception {
+		
+		Path path = JPaths.getTestResource("csv/131.csv");
+		DataFrame frame = reader.read(path, Configuration.createEmpty(), new IMonitor.Stub());
+		
+		assertNotNull(frame);
+		ILazyDataset depth = frame.find(DEPTH_REGEX);
+		assertNotNull(depth);
+		
+		// Check order
+		assertEquals("DEPTH", frame.get(0).getName());
+		assertEquals("Prob_Badh", frame.get(8).getName());
+		assertEquals("Prob_Ankerite/Siderite", frame.get(24).getName());
+		assertEquals("Lithology", frame.get(26).getName());
+		assertTrue(frame.get(26)instanceof StringDataset);
+	}
+
 	private void test(String frag, final Configuration conf, Consumer<DataFrame> consumer) throws Exception {
 		Path path = JPaths.getTestResource(frag);
 		if (Files.isDirectory(path)) {
