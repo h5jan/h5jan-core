@@ -34,7 +34,7 @@ description = 'h5jan-core'
 defaultTasks 'compileJava', 'enunciate', 'check', 'compileTestJava', 'processTestResources', 'test', 'jar'
 
 ext {
-	baseVersion = "0.7.4"
+	baseVersion = "0.7.5"
     if (project.hasProperty('version')) {
 		baseVersionNum = version
     }
