@@ -479,7 +479,7 @@ public class H5 implements java.io.Serializable {
 	
 	private static List<File> extractNames(String osName, String nameFile) throws ConfigurationException {
     	
-		Configuration conf = getConfiguration("/lib/"+osName+"/"+nameFile);
+		Configuration conf = getConfiguration("lib/"+osName+"/"+nameFile);
     	List<String> names = Arrays.asList(conf.getString("names").split(","));
     	return extract(osName, names);
 	}
@@ -514,6 +514,9 @@ public class H5 implements java.io.Serializable {
 
 	private static InputStream getStream(String path) {
     	URL url  = H5.class.getResource(path);
+    	if (url==null) {
+    		url = H5.class.getResource("/"+path);
+    	}
     	try {
 	    	if (url!=null) {
 	    		return url.openStream();
@@ -530,6 +533,9 @@ public class H5 implements java.io.Serializable {
 		
 		Configurations configs = new Configurations();
     	URL url  = H5.class.getResource(path);
+    	if (url==null) {
+    		url = H5.class.getResource("/"+path);
+    	}
     	try {
 	    	if (url!=null) {
 	    		return configs.properties(url);
