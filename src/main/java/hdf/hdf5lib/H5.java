@@ -486,7 +486,7 @@ public class H5 implements java.io.Serializable {
 
 	private static List<File> extract(String osName, List<String> names) {
 		return names.stream()
-				.map(name->"/lib/"+osName+"/"+name.trim())
+				.map(name->"lib/"+osName+"/"+name.trim())
 				.map(path->H5.getFile(path))
 				.collect(Collectors.toList());
 	}
