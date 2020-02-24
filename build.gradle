@@ -65,8 +65,8 @@ jar {
     }    
 }
 
-sourceCompatibility = 10
-targetCompatibility = 10
+sourceCompatibility = 11
+targetCompatibility = 11
 
 javadoc {
 	failOnError = false
@@ -267,7 +267,7 @@ publishing {
             
             pom {
 			   name =  'h5jan-core'
-			   description = 'Read and write h5 files from Java, including Datasets, nD arrays and slicing.'
+			   description = 'Read and write h5 files from Java, including Dataset Frames (Pandas compatible), nD arrays (h5py/numpy) and slicing.'
 			   url = 'https://github.com/h5jan/h5jan-core'
 			   
 			   licenses {
