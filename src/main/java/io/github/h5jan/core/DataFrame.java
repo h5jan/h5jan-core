@@ -162,7 +162,6 @@ public class DataFrame extends LazyDatasetList {
 		frame.setMetadata(getMetadata());
 		
 		// Save to HDF5, columns can be large, these are not it's a test
-		//Files.deleteIfExists(writePath);
 		try (Appender app = frame.open_hdf(filePath, h5Path)) {
 			
 			if (compression>-1) { // -ve means leave as default.

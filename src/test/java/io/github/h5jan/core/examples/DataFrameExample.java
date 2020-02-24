@@ -19,9 +19,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.eclipse.dawnsci.analysis.api.downsample.DownsampleMode;
-import org.eclipse.dawnsci.analysis.dataset.function.Downsample;
-import org.eclipse.dawnsci.analysis.dataset.impl.Image;
 import org.eclipse.dawnsci.nexus.NexusFile;
 import org.eclipse.january.IMonitor;
 import org.eclipse.january.dataset.Dataset;
@@ -82,6 +79,7 @@ public class DataFrameExample extends AbstractH5JanTest {
 		frame.to_hdf("test-scratch/write_example/inmem_data_frame_inc.h5", "/entry1/myData");
 	}
 	
+	
 	/**
 	 * All data in memory, write it out.
 	 * 
@@ -106,7 +104,6 @@ public class DataFrameExample extends AbstractH5JanTest {
 		WellMetadata readMeta = (WellMetadata)read.getMetadata();
 		assertEquals(meta, readMeta);
 	}
-
 
 	/**
 	 * Data in slices
