@@ -2,17 +2,23 @@
 
 ![](https://github.com/h5jan/h5jan-core/blob/master/eclipsesci.png) h5jan
 =====
+
+NOTE: Version 0.7.5 and above include an important fix to make the library work without setting LD_LIBRARY_PATH.
+
 Maven
+======
 ```xml
 	<dependency>
 		<groupId>io.github.h5jan</groupId>
 		<artifactId>h5jan-core</artifactId>
-		<version>0.7.0</version>
+		<version>0.7.5</version>
 	</dependency>
 ```
+
 Gradle
+======
 ```groovy
-	compile group: 'io.github.h5jan', name: 'h5jan-core', version: '0.7.0'	
+	compile group: 'io.github.h5jan', name: 'h5jan-core', version: '0.7.5'	
 ```
 
 ## What is it
