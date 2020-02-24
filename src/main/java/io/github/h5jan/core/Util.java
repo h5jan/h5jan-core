@@ -10,6 +10,9 @@
  *******************************************************************************/
 package io.github.h5jan.core;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.dawnsci.analysis.tree.impl.AttributeImpl;
@@ -41,7 +44,7 @@ public class Util {
 	 * @throws JsonProcessingException 
 	 */
 	public static void setMetaAttributues(NxsFile hFile, String h5Path, DataFrame data) throws NexusException, JsonProcessingException {
-		Util.setMetaAttributues(hFile, h5Path, data, data.getColumnNames());
+		Util.setMetaAttributues(hFile, h5Path, data, data.getColumnNames(), data.keySet());
 	}
 
 
@@ -53,7 +56,7 @@ public class Util {
 	 * @throws NexusException
 	 * @throws JsonProcessingException 
 	 */
-	public static void setMetaAttributues(NxsFile hFile, String h5Path, DataFrame data, List<String> columnNames) throws NexusException, JsonProcessingException {
+	public static void setMetaAttributues(NxsFile hFile, String h5Path, DataFrame data, List<String> columnNames, Collection<String> auxNames) throws NexusException, JsonProcessingException {
 		
 		
 		if (data.getName() == null) {
@@ -65,6 +68,12 @@ public class Util {
 
 		hFile.addAttribute(h5Path, new AttributeImpl(Constants.NAME, data.getName()));
 		hFile.addAttribute(h5Path, new AttributeImpl(Constants.COL_NAMES, columnNames));
+		
+		List<String> lauxNames = auxNames!=null ? new ArrayList<String>(auxNames) : Collections.emptyList();
+		if (lauxNames!=null && lauxNames.size()>0) {
+			hFile.addAttribute(h5Path, new AttributeImpl(Constants.AUX, lauxNames));
+		}
+
 		if (data!=null) {
 			// Difficult to store all metadata because ILazyDataset only provides
 			// access by type and we do not know the type at the point of serialization to hdf5.

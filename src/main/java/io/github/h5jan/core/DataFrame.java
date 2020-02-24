@@ -15,10 +15,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.dawnsci.analysis.api.tree.Attribute;
 import org.eclipse.dawnsci.analysis.api.tree.GroupNode;
 import org.eclipse.dawnsci.nexus.NexusException;
-import org.eclipse.dawnsci.nexus.NexusFile;
 import org.eclipse.january.DatasetException;
+import org.eclipse.january.dataset.DTypeUtils;
 import org.eclipse.january.dataset.Dataset;
 import org.eclipse.january.dataset.IDataset;
 import org.eclipse.january.dataset.ILazyDataset;
@@ -46,7 +47,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * stored in hdf5-NeXus format which is a block of contiguous
  * data that may be sliced.
  */
-public class DataFrame extends LazyDatasetList {
+public class DataFrame extends AbstractDataFrame {
 		
 	private static final ObjectMapper mapper = new ObjectMapper();
 	private static final Logger       logger = LoggerFactory.getLogger(DataFrame.class);
@@ -154,12 +155,13 @@ public class DataFrame extends LazyDatasetList {
 	public DataFrame to_hdf(String filePath, String h5Path, int compression) throws Exception {
 		
 		checkString(filePath, "There is no file path!");
-		checkString(h5Path, "There is no h5 path!");
+		checkString(h5Path,   "There is no h5 path!");
 		check();
 		
 		// Make an empty frame to use as a lazy writer.
 		DataFrame frame = new DataFrame(getName(), getDtype(), getColumnShape());
 		frame.setMetadata(getMetadata());
+		frame.aux.putAll(this.aux);
 		
 		// Save to HDF5, columns can be large, these are not it's a test
 		try (Appender app = frame.open_hdf(filePath, h5Path)) {
@@ -229,9 +231,21 @@ public class DataFrame extends LazyDatasetList {
 			
 			// Assign fields of DataFrame that we know.
 			this.columnNames = new ArrayList<String>(Arrays.asList(snames));
-			this.data = unpack(nfile.getDataset(dataPath), this.columnNames);
+			ILazyDataset laz = nfile.getDataset(dataPath);
+			this.data = unpack(laz, this.columnNames);
+			this.dtype = DTypeUtils.getDType(laz);
 			this.columnShape = null; // When we reset the data the columns could now be different.
 			this.name = gdata.getAttribute(Constants.NAME).getValue().getString();
+			
+			Attribute attrib = gdata.getAttribute(Constants.AUX);
+			if (attrib!=null) {
+				IDataset anames = attrib.getValue();
+				String[] auxNames = (String[])((StringDatasetBase)anames).getBuffer();
+				for (String auxName : auxNames) {
+					ILazyDataset set = nfile.getDataset(path+"/"+auxName);
+					put(auxName, set);
+				}
+			}
 			
 			if (gdata.containsAttribute(Constants.META)) {
 				String smeta = gdata.getAttribute(Constants.META).getValue().getString();

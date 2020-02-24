@@ -16,6 +16,7 @@ class Constants {
 	public static final String COL_NAMES	= "columns";
 	public static final String PATH			= "path";
 	public static final String DATA_PATH	= "data";
+	public static final String AUX			= "aux_data";
 	public static final String META 		= "meta";
 	public static final String META_TYPE	= "meta_type";
 

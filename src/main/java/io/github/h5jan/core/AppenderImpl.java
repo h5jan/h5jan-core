@@ -15,14 +15,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.dawnsci.analysis.api.tree.GroupNode;
 import org.eclipse.dawnsci.nexus.NexusException;
 import org.eclipse.dawnsci.nexus.NexusFile;
 import org.eclipse.january.IMonitor;
 import org.eclipse.january.dataset.DTypeUtils;
 import org.eclipse.january.dataset.IDataset;
+import org.eclipse.january.dataset.ILazyDataset;
 import org.eclipse.january.dataset.ILazyWriteableDataset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +51,7 @@ class AppenderImpl implements Appender {
 	
 	// Extra datasets which may be written, for instance
 	// if the data frame as derived data that you also want to store.
-	private Map<String, ILazyWriteableDataset> aux;
+	private Map<String, ILazyDataset> aux;
 
 	private int compression = NexusFile.COMPRESSION_NONE;
 
@@ -68,13 +71,22 @@ class AppenderImpl implements Appender {
 	}
 	
 	@Override
-	public void init() throws NexusException, IOException {
+	public void init() throws Exception {
 		// We make the hdf5 file when the first slice comes in.
 		if (hFile==null) {
 			this.hFile 	= NxsFile.create(filePath);
 			this.hFile.createData(h5Path, data, compression, true);
 			
 			Util.setReferenceAttributes(hFile, h5Path, data.getName());
+			
+			if (!frame.keySet().isEmpty()) {
+				GroupNode node = hFile.getGroup(h5Path, true);
+				for (String name : frame.keySet()) {
+					this.hFile.createData(node, name, frame.get(name).getSlice());
+				}
+				if (this.aux==null) this.aux = new LinkedHashMap<String, ILazyDataset>();
+				this.aux.putAll(frame.getAuxData()); // Sets names when we close the file.
+			}
 		}
 	}
 	
@@ -98,9 +110,11 @@ class AppenderImpl implements Appender {
 			create(name, slice.getElementClass(), slice.getShape());
 		}
 
-		ILazyWriteableDataset data = aux.get(name);
-		int i = names.size()-1; // The index we are on
-		append(data, slice, i, false);
+		ILazyDataset data = aux.get(name);
+		if (data instanceof ILazyWriteableDataset) {
+			int i = names.size()-1; // The index we are on
+			append((ILazyWriteableDataset)data, slice, i, false);
+		}
 	}
 	
 	@Override
@@ -134,7 +148,8 @@ class AppenderImpl implements Appender {
 			// We do this because forcing the dataset in the above might lose information.
 			// For instance if shoehorning a RGB into a int type, it will be added but lost.
 			// We also do this if the type is not compatible at all.
-			record(slice.getName()+"_aux", slice);
+			record(slice.getName(), slice);
+			if (!compatible) names.remove(slice.getName());
 		}
 		
 	}
@@ -161,16 +176,16 @@ class AppenderImpl implements Appender {
 
 	@Override
 	public void close() throws Exception {
-		if (aux!=null) {
-			aux.clear();
-			aux = null;
-		}
 		try {
-			Util.setMetaAttributues(hFile, h5Path, frame, names);
+			Util.setMetaAttributues(hFile, h5Path, frame, names, aux!=null?aux.keySet():null);
 		} catch (Exception ne) {
 			logger.debug("Cannot write meta attributes", ne);
 			throw ne;
 		} finally {
+			if (aux!=null) {
+				aux.clear();
+				aux = null;
+			}
 			try {
 				if (this.hFile!=null) this.hFile.close();
 			} finally {

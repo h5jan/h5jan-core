@@ -14,6 +14,7 @@ import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite.SuiteClasses;
 
+import io.github.h5jan.core.HeterogeneousFrameTest;
 import io.github.h5jan.core.boundary.DataFrameTest;
 import io.github.h5jan.core.boundary.MetaTest;
 import io.github.h5jan.core.boundary.SaveTest;
@@ -32,6 +33,7 @@ import io.github.h5jan.io.ImageStitcherTest;
 @SuiteClasses({
 		
 		DataFrameTest.class,
+		HeterogeneousFrameTest.class,
 		MetaTest.class,
 		SaveTest.class,
 		TypeTest.class,
