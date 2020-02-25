@@ -26,10 +26,10 @@ import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
 
 import io.github.h5jan.core.AbstractH5JanTest;
 import io.github.h5jan.core.DataFrame;
-import io.github.h5jan.core.GenericMetadata;
 import io.github.h5jan.core.JPaths;
-import io.github.h5jan.core.NxsMetadata;
 import io.github.h5jan.core.WellMetadata;
+import io.github.h5jan.io.h5.GenericMetadata;
+import io.github.h5jan.io.h5.NxsMetadata;
 
 public class MetaTest extends AbstractH5JanTest {
 

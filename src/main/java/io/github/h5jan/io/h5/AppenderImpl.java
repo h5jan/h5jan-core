@@ -8,7 +8,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  *******************************************************************************/
-package io.github.h5jan.core;
+package io.github.h5jan.io.h5;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -29,6 +29,9 @@ import org.eclipse.january.dataset.ILazyDataset;
 import org.eclipse.january.dataset.ILazyWriteableDataset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.github.h5jan.core.DataFrame;
+import io.github.h5jan.core.FrameUtil;
 
 /**
  * Class to append data during a slice writing operation.

@@ -16,9 +16,9 @@ import org.eclipse.january.dataset.IDataset;
 import org.junit.Before;
 import org.junit.Test;
 
-import io.github.h5jan.core.Appender;
 import io.github.h5jan.core.DataFrame;
 import io.github.h5jan.core.JPaths;
+import io.github.h5jan.io.h5.Appender;
 
 public class LoadSizeTest extends AbstractReaderTest {
 	

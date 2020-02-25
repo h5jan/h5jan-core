@@ -23,7 +23,7 @@ import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 
-import io.github.h5jan.core.NxsFile;
+import io.github.h5jan.io.h5.NxsFile;
 
 /**
  * Test which aggregates the raw read operations possible to and

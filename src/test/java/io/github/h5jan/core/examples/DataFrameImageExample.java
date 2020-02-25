@@ -19,8 +19,8 @@ import org.eclipse.january.dataset.Dataset;
 import org.eclipse.january.dataset.Random;
 import org.junit.Test;
 
-import io.github.h5jan.core.Appender;
 import io.github.h5jan.core.DataFrame;
+import io.github.h5jan.io.h5.Appender;
 import uk.ac.diamond.scisoft.analysis.roi.ROIProfile;
 
 /**

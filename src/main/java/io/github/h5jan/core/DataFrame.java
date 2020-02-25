@@ -32,6 +32,11 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.github.h5jan.io.h5.Appender;
+import io.github.h5jan.io.h5.GenericMetadata;
+import io.github.h5jan.io.h5.NxsFile;
+import io.github.h5jan.io.h5.NxsMetadata;
+
 /**
  * A data frame of January datasets which
  * can be written and read from HDF5.
@@ -208,7 +213,7 @@ public class DataFrame extends AbstractDataFrame {
 		} else {
 			throw new IllegalArgumentException("There is not enough data in the frame to create a LazyWriteableDataset!");
 		}
-		return new AppenderImpl(filePath, h5Path, writer, this, ()->this.open=false);
+		return Appender.instance(filePath, h5Path, writer, this, ()->this.open=false);
 	}
 
 	/**

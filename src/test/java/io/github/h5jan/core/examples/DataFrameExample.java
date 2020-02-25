@@ -30,12 +30,12 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import io.github.h5jan.core.AbstractH5JanTest;
-import io.github.h5jan.core.Appender;
 import io.github.h5jan.core.DataFrame;
 import io.github.h5jan.core.JPaths;
 import io.github.h5jan.core.WellMetadata;
 import io.github.h5jan.io.Configuration;
 import io.github.h5jan.io.DataFrameReader;
+import io.github.h5jan.io.h5.Appender;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) // We write some files then futher test them.
 public class DataFrameExample extends AbstractH5JanTest {

@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import io.github.h5jan.core.NxsMetadata;
+import io.github.h5jan.io.h5.NxsMetadata;
 
 /**
  * Well metadata which contains the las metadata as a map

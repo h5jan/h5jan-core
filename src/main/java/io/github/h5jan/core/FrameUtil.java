@@ -134,7 +134,14 @@ public class FrameUtil {
 		return shape;
 	}
 	
-	static SliceND orient(ILazyDataset data, int i, int[]shape) {
+	/**
+	 * Orient the data in the frame to be written.
+	 * @param data
+	 * @param i
+	 * @param shape
+	 * @return
+	 */
+	public static SliceND orient(ILazyDataset data, int i, int[]shape) {
 		
 		if (shape==null) {
 			shape = data.getShape();
@@ -154,7 +161,13 @@ public class FrameUtil {
 		return ret;
 	}
 
-	static IDataset addDimension(ILazyDataset slice) throws DatasetException {
+	/**
+	 * Add a dimension to the slice
+	 * @param slice
+	 * @return
+	 * @throws DatasetException
+	 */
+	public static IDataset addDimension(ILazyDataset slice) throws DatasetException {
 		int [] shape = new int[slice.getShape().length+1];
 		System.arraycopy(slice.getShape(), 0, shape, 0, slice.getShape().length);
 		shape[shape.length-1] = 1;

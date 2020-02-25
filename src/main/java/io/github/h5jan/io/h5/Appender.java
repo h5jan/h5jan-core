@@ -8,8 +8,9 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  *******************************************************************************/
-package io.github.h5jan.core;
+package io.github.h5jan.io.h5;
 
+import java.io.Closeable;
 import java.io.IOException;
 
 import org.eclipse.dawnsci.nexus.NexusException;
@@ -17,6 +18,8 @@ import org.eclipse.january.DatasetException;
 import org.eclipse.january.IMonitor;
 import org.eclipse.january.dataset.IDataset;
 import org.eclipse.january.dataset.ILazyWriteableDataset;
+
+import io.github.h5jan.core.DataFrame;
 
 /**
  * An appender adds slices to a DataFrame
@@ -26,6 +29,21 @@ import org.eclipse.january.dataset.ILazyWriteableDataset;
  *
  */
 public interface Appender extends AutoCloseable {
+	
+	/**
+	 * Create a Appender
+	 * @param filePath
+	 * @param h5Path
+	 * @param data
+	 * @param frame
+	 * @param closer
+	 * @return
+	 * @throws IOException 
+	 * @throws NexusException 
+	 */
+	public static Appender instance(String filePath, String h5Path, ILazyWriteableDataset data, DataFrame frame, Closeable closer) throws NexusException, IOException {
+		return new AppenderImpl(filePath, h5Path, data, frame, closer);
+	}
 
 	/**
 	 * Add slice to end of current writable dataset

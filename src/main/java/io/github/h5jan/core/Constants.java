@@ -10,7 +10,7 @@
  *******************************************************************************/
 package io.github.h5jan.core;
 
-class Constants {
+public class Constants {
 
 	public static final String NAME 		= "name";
 	public static final String COL_NAMES	= "columns";

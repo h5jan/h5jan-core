@@ -89,7 +89,11 @@ public class AbstractDataFrame extends LazyDatasetList {
 		return aux.keySet();
 	}
 
-	Map<String, ILazyDataset> getAuxData() {
+	/**
+	 * Data not in the frame but still saved to HDF5
+	 * @return
+	 */
+	public Map<String, ILazyDataset> getAuxData() {
 		return aux;
 	}
 }

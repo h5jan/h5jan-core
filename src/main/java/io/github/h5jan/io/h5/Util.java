@@ -8,7 +8,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  *******************************************************************************/
-package io.github.h5jan.core;
+package io.github.h5jan.io.h5;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,6 +21,9 @@ import org.eclipse.dawnsci.nexus.NexusException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.github.h5jan.core.Constants;
+import io.github.h5jan.core.DataFrame;
 
 public class Util {
 	

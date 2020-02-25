@@ -21,8 +21,8 @@ import org.eclipse.january.dataset.Dataset;
 import org.eclipse.january.dataset.DatasetUtils;
 import org.junit.Before;
 
-import io.github.h5jan.core.Appender;
 import io.github.h5jan.core.DataFrame;
+import io.github.h5jan.io.h5.Appender;
 
 public abstract class AbstractReaderTest {
 	

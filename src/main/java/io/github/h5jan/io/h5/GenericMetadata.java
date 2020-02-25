@@ -8,7 +8,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  *******************************************************************************/
-package io.github.h5jan.core;
+package io.github.h5jan.io.h5;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
