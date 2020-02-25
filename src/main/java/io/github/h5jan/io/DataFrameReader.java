@@ -61,6 +61,10 @@ public class DataFrameReader {
 		loaders.put("hdf5",		H5Loader.class);
 		loaders.put("nxs",		H5Loader.class);
 		
+		// Arrow files.
+		loaders.put("arw",		ArrowLoader.class);
+		loaders.put("parquet",	ArrowLoader.class); // Not sure if right
+
 		// Composite loaders
 		loaders.put("gz",		GZipLoader.class);
 		loaders.put("zip",		ZipLoader.class);

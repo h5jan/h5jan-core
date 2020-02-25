@@ -73,6 +73,11 @@ public interface Configuration extends Map<String, Object> {
 									"asUnsigned", asUnsigned);
 	}
 	
+
+	public static Configuration arrow() {
+		return new ConfigurationImpl("fileType", "arw");
+	}
+
 	/**
 	 * Align from file.
 	 * @param file - file 

@@ -24,7 +24,7 @@ import io.github.h5jan.core.DataFrame;
  * This interface specifies the methods required to allow the ScanFileHolder to load in data from a file of some
  * description
  */
-public interface IStreamLoader extends MonitorableManager {
+public interface IStreamLoader<T extends InputStream> extends MonitorableManager {
 
 	/**
 	 * This function is called when the ScanFileHolder needs to load data from a particular source
@@ -37,7 +37,7 @@ public interface IStreamLoader extends MonitorableManager {
 	 * @throws IOException - if cannot read stream
 	 * @throws DatasetException - if cannot process datasets.
 	 */
-	DataFrame load(InputStream stream, Configuration configuration, IMonitor mon) throws IOException, DatasetException;
+	DataFrame load(T stream, Configuration configuration, IMonitor mon) throws IOException, DatasetException;
 
 	/**
 	 * If this loader supports asynchronous loading

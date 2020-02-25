@@ -13,7 +13,9 @@ package io.github.h5jan.core;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.dawnsci.analysis.api.tree.Attribute;
 import org.eclipse.dawnsci.analysis.api.tree.GroupNode;
@@ -21,6 +23,8 @@ import org.eclipse.dawnsci.nexus.NexusException;
 import org.eclipse.january.DatasetException;
 import org.eclipse.january.dataset.DTypeUtils;
 import org.eclipse.january.dataset.Dataset;
+import org.eclipse.january.dataset.DatasetFactory;
+import org.eclipse.january.dataset.DatasetUtils;
 import org.eclipse.january.dataset.IDataset;
 import org.eclipse.january.dataset.ILazyDataset;
 import org.eclipse.january.dataset.ILazyWriteableDataset;
@@ -282,6 +286,25 @@ public class DataFrame extends AbstractDataFrame {
 			}
 		}
 		return this;
+	}
+	
+	/**
+	 * Loads raw data to primitive 1D primitive arrays.
+	 * An nD column will return the raw buffer backed in January.
+	 * This is really only useful for writing certain data types.
+	 * 
+	 * WARNING: This action loads all the data into memory!
+	 * 
+	 * @return map of raw data.
+	 * @throws DatasetException 
+	 */
+	public Map<String, Object> raw() throws DatasetException {
+		Map<String,Object> raw = new LinkedHashMap<>();
+		for (String name : columnNames) {
+			Dataset s = DatasetUtils.convertToDataset(get(name).getSlice());
+			raw.put(name, s.getBuffer());
+		}
+		return raw;
 	}
 
 	public String getName() {

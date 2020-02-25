@@ -15,6 +15,7 @@ package io.github.h5jan.io;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.eclipse.january.DatasetException;
 import org.eclipse.january.IMonitor;
 
 import io.github.h5jan.core.DataFrame;
@@ -23,7 +24,7 @@ import io.github.h5jan.core.DataFrame;
  * This interface specifies the methods required to allow the ScanFileHolder to save data to a file of some
  * description
  */
-public interface IStreamSaver {
+public interface IStreamSaver<T extends OutputStream> {
 
 	/**
 	 * This function is called when the ScanFileHolder needs to save data from a particular source.
@@ -41,6 +42,7 @@ public interface IStreamSaver {
 	 * @return true if saved.
 	 * 
 	 * @throws IOException - if cannot write to stream.
+	 * @throws DatasetException - if data is not applicable for this type of writer.
 	 */
-	boolean save(OutputStream output, Configuration conf, DataFrame holder, IMonitor monitor) throws IOException;
+	boolean save(T output, Configuration conf, DataFrame holder, IMonitor monitor) throws IOException, DatasetException;
 }

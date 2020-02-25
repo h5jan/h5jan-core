@@ -103,6 +103,9 @@ class CsvLoader extends AbstractStreamLoader implements IStreamLoader {
 	// Parses string to number if it can otherwise returns String
 	private Object parse(String logValue) {
 		
+		if (logValue==null || "".equals(logValue)) {
+			return logValue;
+		}
 		if (intPattern.matcher(logValue).matches()) {
 			return Integer.parseInt(logValue);
 		} else if (floatPattern.matcher(logValue).matches()) {

@@ -293,6 +293,18 @@ class LazyDatasetList implements List<ILazyDataset> {
 			return false;
 		return true;
 	}
+
+	/**
+	 * Get the column of this name.
+	 * @param index - index of column
+	 * @return column
+	 * @throws DatasetException - If cannot get slice for column
+	 */
+	public ILazyDataset get(int index) {
+		if (data == null|| data.isEmpty()) throw new IllegalArgumentException("Incomplete data frame, no data!");
+		if (index<0 || index>=data.size()) throw new IllegalArgumentException("No such column "+index);
+		return data.get(index);
+	}
 	
 	/**
 	 * Get the column of this name.
@@ -339,18 +351,6 @@ class LazyDatasetList implements List<ILazyDataset> {
 		}
 		if (index<0) throw new DatasetException("The regex '"+regExName+"' could not be matched! Available names are: "+columnNames);
 		return get(index);
-	}
-
-	/**
-	 * Get the column of this name.
-	 * @param index - index of column
-	 * @return column
-	 * @throws DatasetException - If cannot get slice for column
-	 */
-	public ILazyDataset get(int index) {
-		if (data == null|| data.isEmpty()) throw new IllegalArgumentException("Incomplete data frame, no data!");
-		if (index<0 || index>=data.size()) throw new IllegalArgumentException("No such column "+index);
-		return data.get(index);
 	}
 
 	/**

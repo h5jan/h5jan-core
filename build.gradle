@@ -172,6 +172,12 @@ test {
 
 dependencies {
 
+	// https://mvnrepository.com/artifact/org.apache.arrow/arrow-vector
+	compile group: 'org.apache.arrow', name: 'arrow-vector', version: '0.16.0'
+	
+	// https://mvnrepository.com/artifact/org.apache.arrow/arrow-memory
+	compile group: 'org.apache.arrow', name: 'arrow-memory', version: '0.16.0'
+
     // Datasets
     implementation 'org.eclipse.january:org.eclipse.january:2.3.0'
     implementation 'org.eclipse.january:org.eclipse.january.asserts:2.3.0'
