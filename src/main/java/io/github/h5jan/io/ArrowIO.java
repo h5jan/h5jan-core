@@ -120,7 +120,7 @@ public class ArrowIO {
 					if (!columns.containsKey(fv.getName())) columns.put(fv.getName(), new ArrayList<>(89));
 					read(fv, columns.get(fv.getName()), offset); // Copy data into array
 				}
-				offset+=getBatchSize();
+				offset+=vectors.get(0).getValueCount();
 			}
 			
 			List<Dataset> data = convert(root.getSchema().getFields(), columns);
