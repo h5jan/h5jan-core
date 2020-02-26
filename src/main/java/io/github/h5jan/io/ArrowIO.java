@@ -172,36 +172,50 @@ public class ArrowIO {
 		return result;
 	}
 	
-	private void read(FieldVector field, Object arr, int offset) throws UnsupportedEncodingException, DatasetException {
-		for (int i = 0; i <  field.getValueCount(); i++) {
-			read(field, arr, offset, i);
-		}
-	}
-
-	private void read(FieldVector fv, Object arr, int offset, int i) throws UnsupportedEncodingException, DatasetException {
+	private void read(FieldVector fv, Object arr, int offset) throws UnsupportedEncodingException, DatasetException {
 		int dtype = Integer.parseInt(fv.getField().getMetadata().get("dtype"));
 		switch(dtype) {
 		
+		// We do it this funny way to give the compiler the best chance
+		// at optimizing the copy.
 		// TODO Others!
 		case Dataset.INT16:
-			Array.setShort(arr, offset+i, ((SmallIntVector)fv).get(i));
+			short[] sdata = (short[])arr;
+			for (int i = 0; i <  fv.getValueCount(); i++) {
+				sdata[offset+i] = ((SmallIntVector)fv).get(i);
+			}
 			return;
 		case Dataset.INT32:
-			Array.setInt(arr, offset+i, ((IntVector)fv).get(i));
+			int[] idata = (int[])arr;
+			for (int i = 0; i <  fv.getValueCount(); i++) {
+				idata[offset+i] = ((IntVector)fv).get(i);
+			}
 			return;
 		case Dataset.INT64:
-			Array.setLong(arr, offset+i, ((BigIntVector)fv).get(i));
+			long[] ldata = (long[])arr;
+			for (int i = 0; i <  fv.getValueCount(); i++) {
+				ldata[offset+i] = ((BigIntVector)fv).get(i);
+			}
 			return;
 		case Dataset.FLOAT32:
-			Array.setFloat(arr, offset+i, ((Float4Vector)fv).get(i));
+			float[] fdata = (float[])arr;
+			for (int i = 0; i <  fv.getValueCount(); i++) {
+				fdata[offset+i] = ((Float4Vector)fv).get(i);
+			}
 			return;
 		case Dataset.FLOAT64:
-			Array.setDouble(arr, offset+i, ((Float8Vector)fv).get(i));
+			double[] ddata = (double[])arr;
+			for (int i = 0; i <  fv.getValueCount(); i++) {
+				ddata[offset+i] = ((Float8Vector)fv).get(i);
+			}
 			return;
 		case Dataset.STRING:
-			VarBinaryVector binVect = (VarBinaryVector)fv;
-			String value = new String(binVect.get(i), "UTF-8");
-			Array.set(arr, offset+i, value);
+			String[] tdata = (String[])arr;
+			for (int i = 0; i <  fv.getValueCount(); i++) {
+				VarBinaryVector binVect = (VarBinaryVector)fv;
+				String value = new String(binVect.get(i), "UTF-8");
+				tdata[offset+i] = value;
+			}
 			return;
 		}
 		throw new DatasetException("Cannot read primitive information from data frame metadata!");
@@ -317,6 +331,7 @@ public class ArrowIO {
 	                FieldVector vector = root.getVector(field.getName());
 	                Object array = raw.get(field.getName());
 	                switch (vector.getMinorType()) {
+	                // TODO Others
 	                    case SMALLINT:
 	                        writeFieldShort(vector, i, toProcessItems, array);
 	                        break;
