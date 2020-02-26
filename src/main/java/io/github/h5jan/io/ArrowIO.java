@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
+import java.nio.channels.SeekableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ import org.apache.arrow.vector.dictionary.DictionaryProvider;
 import org.apache.arrow.vector.ipc.ArrowFileReader;
 import org.apache.arrow.vector.ipc.ArrowFileWriter;
 import org.apache.arrow.vector.ipc.SeekableReadChannel;
+import org.apache.arrow.vector.ipc.message.ArrowBlock;
 import org.apache.arrow.vector.types.FloatingPointPrecision;
 import org.apache.arrow.vector.types.pojo.ArrowType;
 import org.apache.arrow.vector.types.pojo.Field;
@@ -76,20 +78,39 @@ class ArrowIO {
 	 * @throws Exception - if something goes wrong.
 	 */
 	public DataFrame read(FileInputStream input) throws IOException, DatasetException {
-		
-		SeekableReadChannel seekableReadChannel = new SeekableReadChannel(input.getChannel());
+		return read(input.getChannel());
+	}
+	
+	/**
+	 * Read a prediction from proto
+	 * @param input - to read. This channel can be from hadoop
+	 * @return LithologyPrediction
+	 * @throws Exception - if something goes wrong.
+	 */
+	public DataFrame read(SeekableByteChannel input) throws IOException, DatasetException {
+
+		SeekableReadChannel seekableReadChannel = new SeekableReadChannel(input);
 		try (ArrowFileReader arrowFileReader = new ArrowFileReader(seekableReadChannel, new RootAllocator(Integer.MAX_VALUE))) {
 			VectorSchemaRoot root  = arrowFileReader.getVectorSchemaRoot(); // get root 
 			
 			// Load all into memory... (this might not be doable)
-			Map<String, List<Object>> columns = new LinkedHashMap<>(); 
-			while(arrowFileReader.loadNextBatch()) { // load the batch 		
-				
+			Map<String, Object> columns = new LinkedHashMap<>(); 
+			// Make the primitive arrays
+			for (FieldVector fv : root.getFieldVectors()) {
+				columns.put(fv.getField().getName(), getPrimitiveArray(fv.getField()));
+			}
+			
+			int offset = 0;
+			List<ArrowBlock> blocks = arrowFileReader.getRecordBlocks();
+			for (ArrowBlock arrowBlock : blocks) {
+				arrowFileReader.loadRecordBatch(arrowBlock);
+	
 				List<FieldVector> vectors = root.getFieldVectors();
 				for (FieldVector fv : vectors) {
 					if (!columns.containsKey(fv.getName())) columns.put(fv.getName(), new ArrayList<>(89));
-					columns.get(fv.getName()).addAll(read(fv));
+					read(fv, columns.get(fv.getName()), offset); // Copy data into array
 				}
+				offset+=getBatchSize();
 			}
 			
 			List<Dataset> data = convert(root.getSchema().getFields(), columns);
@@ -97,13 +118,35 @@ class ArrowIO {
 		}
 	}
 
-	private List<Dataset> convert(List<Field> fields, Map<String, List<Object>> columns) {
+	private Object getPrimitiveArray(Field field) throws DatasetException {
+		int size = Integer.parseInt(field.getMetadata().get("size"));
+		int dtype = Integer.parseInt(field.getMetadata().get("dtype"));
+		switch(dtype) {
+		
+		// TODO Others!
+		case Dataset.INT16:
+			return new short[size];
+		case Dataset.INT32:
+			return new int[size];
+		case Dataset.INT64:
+			return new long[size];
+		case Dataset.FLOAT32:
+			return new float[size];
+		case Dataset.FLOAT64:
+			return new double[size];
+		case Dataset.STRING:
+			return new String[size];
+		}
+		throw new DatasetException("Cannot read primitive information from data frame metadata!");
+	}
+
+	private List<Dataset> convert(List<Field> fields, Map<String, Object> columns) {
 		List<Dataset> ret = new ArrayList<Dataset>();
 		for (Field field : fields) {
-			List<Object> values = columns.get(field.getName());
+			Object values = columns.get(field.getName());
 			int[] shape = fromString(field.getMetadata().get("shape"));
 			Dataset set = DatasetFactory.createFromObject(values);
-			set.setShape(shape);
+			if (shape.length>1 ) set.setShape(shape); // Can be an expensive operation!
 			set.setName(field.getName());
 			ret.add(set);
 		}
@@ -119,16 +162,39 @@ class ArrowIO {
 		return result;
 	}
 	
-	private List<Object> read(FieldVector field) throws UnsupportedEncodingException {
-		List<Object> vals = new ArrayList<>(field.getValueCount());
+	private void read(FieldVector field, Object arr, int offset) throws UnsupportedEncodingException, DatasetException {
 		for (int i = 0; i <  field.getValueCount(); i++) {
-			Object value = field.getObject(i);
-			if (value instanceof byte[]) {
-				value = new String((byte[])value, "UTF-8");
-			}
-			vals.add(value);
+			read(field, arr, offset, i);
 		}
-		return vals;
+	}
+
+	private void read(FieldVector fv, Object arr, int offset, int i) throws UnsupportedEncodingException, DatasetException {
+		int dtype = Integer.parseInt(fv.getField().getMetadata().get("dtype"));
+		switch(dtype) {
+		
+		// TODO Others!
+		case Dataset.INT16:
+			Array.setShort(arr, offset+i, ((SmallIntVector)fv).get(i));
+			return;
+		case Dataset.INT32:
+			Array.setInt(arr, offset+i, ((IntVector)fv).get(i));
+			return;
+		case Dataset.INT64:
+			Array.setLong(arr, offset+i, ((BigIntVector)fv).get(i));
+			return;
+		case Dataset.FLOAT32:
+			Array.setFloat(arr, offset+i, ((Float4Vector)fv).get(i));
+			return;
+		case Dataset.FLOAT64:
+			Array.setDouble(arr, offset+i, ((Float8Vector)fv).get(i));
+			return;
+		case Dataset.STRING:
+			VarBinaryVector binVect = (VarBinaryVector)fv;
+			String value = new String(binVect.get(i), "UTF-8");
+			Array.set(arr, offset+i, value);
+			return;
+		}
+		throw new DatasetException("Cannot read primitive information from data frame metadata!");
 	}
 
 	/**
@@ -197,6 +263,8 @@ class ArrowIO {
 		Map<String, String> meta = new HashMap<String, String>();
 		meta.put("shape", Arrays.toString(lz.getShape()));
 		meta.put("dtype", String.valueOf(DTypeUtils.getDType(lz)));
+		meta.put("dname", String.valueOf(lz.getName()));
+		meta.put("size", String.valueOf(lz.getSize()));
 		return meta;
 	}
 

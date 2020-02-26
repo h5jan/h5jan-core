@@ -99,7 +99,15 @@ public class CSVLoaderTest extends AbstractReaderTest {
 		assertEquals("Prob_Badh", frame.get(8).getName());
 		assertEquals("Prob_Ankerite/Siderite", frame.get(24).getName());
 		assertEquals("Lithology", frame.get(26).getName());
-		assertTrue(frame.get(26)instanceof StringDataset);
+		assertTrue(frame.get(26) instanceof StringDataset);
+	}
+	
+	@Test
+	public void notNaNString() throws Exception {
+		DataFrame csv = reader.read(JPaths.getTestResource("csv/131.csv"), Configuration.createEmpty(), new IMonitor.Stub());
+		ILazyDataset lith = csv.get("Lithology");
+		assertNotNull(lith);
+		assertEquals("The Lithology dataset should start with empty string but it is "+lith.getSlice().getString(0)+".", "", lith.getSlice().getString(0));
 	}
 
 	private void test(String frag, final Configuration conf, Consumer<DataFrame> consumer) throws Exception {
