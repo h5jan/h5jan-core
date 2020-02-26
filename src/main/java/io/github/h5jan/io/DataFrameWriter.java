@@ -43,6 +43,11 @@ public class DataFrameWriter {
 		writers.put("gif",		JavaImageSaver.class);
 		writers.put("jpg",		JavaImageSaver.class);
 		writers.put("jpeg",		JavaImageSaver.class);
+		
+		// Arrow files.
+		writers.put("arw",		ArrowSaver.class);
+		writers.put("parquet",	ArrowSaver.class); // Not sure if right
+
 	}
 	
 	/**
@@ -75,13 +80,29 @@ public class DataFrameWriter {
 	public boolean save(File path, Configuration configuration, DataFrame data, IMonitor monitor) throws IOException, DatasetException, InstantiationException, IllegalAccessException {
 		
 		if (path==null) throw new IOException("File is null.");
-		if (!path.exists()) throw new IOException("File "+path.getName()+" does not exist.");
-		
+		if (!path.getParentFile().exists()) throw new IOException("File "+path.getParentFile().getName()+" does not exist.");
+
 		if (path.isDirectory()) {
+			if (!path.exists()) throw new IOException("File "+path.getName()+" does not exist.");
 			return saveToDirectory(path, configuration, data, monitor);
+		} else if (path.isFile()) {
+			return saveToFile(path, configuration, data, monitor);
 		} else {
-			throw new IOException("Only directories can be written to!");
+			throw new IOException("Cannot write to this type of File!");
 		}
+	}
+
+	private boolean saveToFile(File path, Configuration configuration, DataFrame data, IMonitor monitor) throws InstantiationException, IllegalAccessException, IOException, DatasetException {
+		String fileType = configuration.getFileType();
+		if (fileType==null) throw new IllegalArgumentException("Please provide the file type to save in the configuration!");
+		if (!hasSaver(fileType)) throw new IllegalArgumentException("No saver for type '"+fileType+"'!");
+		
+		IStreamSaver saver = getSaver(fileType);
+		
+		if (path.exists()) path.delete();
+		path.createNewFile();
+
+		return saver.save(new FileOutputStream(path), configuration, data, monitor);
 	}
 
 	private boolean saveToDirectory(File dir, Configuration configuration, DataFrame data, IMonitor monitor) throws InstantiationException, IllegalAccessException, IOException, DatasetException {

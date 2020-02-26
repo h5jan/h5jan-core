@@ -34,6 +34,7 @@ import org.eclipse.january.dataset.AbstractDataset;
 import org.eclipse.january.dataset.Dataset;
 import org.eclipse.january.dataset.DatasetFactory;
 import org.eclipse.january.dataset.Maths;
+import org.eclipse.january.dataset.StringDataset;
 
 import io.github.h5jan.core.DataFrame;
 
@@ -84,14 +85,12 @@ class CsvLoader extends AbstractStreamLoader implements IStreamLoader {
 				if (isCancelled( mon )) {
 					throw new IOException( "The load job was cancelled" );
 				}
-				List<Object> wellSamples = result.getOrDefault( logName, new ArrayList<>() );
-				
-				// We assume NaN is the best option but the later values may be string. TODO to reliably get type 
-				// if the data in the column is heterogeneous
-				Object flog = logValue!=null && !logValue.isEmpty() ? parse( logValue ) : Float.NaN;
-				wellSamples.add(flog);
-				result.put( logName, wellSamples );
-
+				List<Object> wellSamples = result.get( logName );
+				if (wellSamples==null) {
+					wellSamples = new ArrayList<>();
+					result.put( logName, wellSamples );
+				}
+				wellSamples.add(parse(logValue));
 			}
 		}
 		return result;
@@ -103,6 +102,9 @@ class CsvLoader extends AbstractStreamLoader implements IStreamLoader {
 	// Parses string to number if it can otherwise returns String
 	private Object parse(String logValue) {
 		
+		if (logValue==null || "".equals(logValue.trim())) {
+			return Float.NaN; // TODO This puts "NaN" in strings that have to be cleaned later
+		}
 		if (intPattern.matcher(logValue).matches()) {
 			return Integer.parseInt(logValue);
 		} else if (floatPattern.matcher(logValue).matches()) {
@@ -123,6 +125,21 @@ class CsvLoader extends AbstractStreamLoader implements IStreamLoader {
 		final List<Object> logSamples = log.getValue();
 		Dataset ret = DatasetFactory.createFromObject( logSamples );
 		ret.setName(key);
+		
+		// We have to clean NaNs from string datasets. This does mean that the String
+		// value "NaN" would get replaced with null which is not ideal however it also
+		// means that you don't have to parse data twice, once to find type, once to allocate values.
+		// In the context of this loader, this HACK is warranted. NaN's are not allowed in 
+		// StringDatasets therefore.
+		if (ret instanceof StringDataset) {
+			String[] buf = (String[])ret.getBuffer();
+			for (int i = 0; i < buf.length; i++) {
+				if (String.valueOf(Float.NaN).equals(buf[i])) {
+					buf[i] = "";
+				}
+			}
+		}
+		
 		return ret;
 	}
 	
