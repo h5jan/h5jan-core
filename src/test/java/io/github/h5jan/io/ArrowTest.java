@@ -52,6 +52,7 @@ public class ArrowTest {
 		DataFrame csv = reader.read(JPaths.getTestResource("csv/131.csv"), Configuration.createEmpty(), new IMonitor.Stub());
 		File farw = new File("test-scratch/arrow/lith.arw");
 		farw.getParentFile().mkdirs();
+		if (!farw.exists()) farw.createNewFile();
 		writer.save(farw, Configuration.arrow(), csv, new IMonitor.Stub());
 		
 		DataFrame arw = reader.read(farw, Configuration.createEmpty(), new IMonitor.Stub());
@@ -168,6 +169,7 @@ public class ArrowTest {
 		Path aPath = Paths.get("test-scratch/arrow/").resolve(name+".arw");
 		File farw = aPath.toFile();
 		farw.getParentFile().mkdirs();
+		if (!farw.exists()) farw.createNewFile();
 		try (FileOutputStream output = new FileOutputStream(farw)){
 			arrowIO.write(timed.getLeft(), output);
 			output.flush();
