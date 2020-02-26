@@ -97,6 +97,10 @@ public class DataFrameWriter {
 		if (!hasSaver(fileType)) throw new IllegalArgumentException("No saver for type '"+fileType+"'!");
 		
 		IStreamSaver saver = getSaver(fileType);
+		
+		if (path.exists()) path.delete();
+		path.createNewFile();
+
 		return saver.save(new FileOutputStream(path), configuration, data, monitor);
 	}
 
