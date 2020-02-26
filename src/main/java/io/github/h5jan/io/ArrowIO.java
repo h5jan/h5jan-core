@@ -51,7 +51,7 @@ import io.github.h5jan.core.DataFrame;
  * @author Matthew Gerring
  *
  */
-class ArrowIO {
+public class ArrowIO {
 	
 	static {
 		// See https://issues.apache.org/jira/browse/ARROW-5412
