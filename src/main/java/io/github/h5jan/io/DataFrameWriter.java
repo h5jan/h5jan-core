@@ -80,9 +80,10 @@ public class DataFrameWriter {
 	public boolean save(File path, Configuration configuration, DataFrame data, IMonitor monitor) throws IOException, DatasetException, InstantiationException, IllegalAccessException {
 		
 		if (path==null) throw new IOException("File is null.");
-		if (!path.exists()) throw new IOException("File "+path.getName()+" does not exist.");
-		
+		if (!path.getParentFile().exists()) throw new IOException("File "+path.getParentFile().getName()+" does not exist.");
+
 		if (path.isDirectory()) {
+			if (!path.exists()) throw new IOException("File "+path.getName()+" does not exist.");
 			return saveToDirectory(path, configuration, data, monitor);
 		} else if (path.isFile()) {
 			return saveToFile(path, configuration, data, monitor);

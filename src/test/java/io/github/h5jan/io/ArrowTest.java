@@ -165,7 +165,7 @@ public class ArrowTest {
 		
 		String name = cur.getFileName().toString();
 		name = name.substring(0, name.indexOf('.'));
-		Path aPath = cur.getParent().resolve(name+".arw");
+		Path aPath = Paths.get("test-scratch/arrow/").resolve(name+".arw");
 		File farw = aPath.toFile();
 		farw.getParentFile().mkdirs();
 		try (FileOutputStream output = new FileOutputStream(farw)){
