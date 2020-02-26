@@ -3,7 +3,6 @@
 ![](https://github.com/h5jan/h5jan-core/blob/master/eclipsesci.png) h5jan
 =====
 
-NOTE: Version 0.7.5 and above include an important fix to make the library work without setting LD_LIBRARY_PATH.
 
 Maven
 ======
@@ -11,14 +10,14 @@ Maven
 	<dependency>
 		<groupId>io.github.h5jan</groupId>
 		<artifactId>h5jan-core</artifactId>
-		<version>0.7.5</version>
+		<version>0.8.0</version>
 	</dependency>
 ```
 
 Gradle
 ======
 ```groovy
-	compile group: 'io.github.h5jan', name: 'h5jan-core', version: '0.7.5'	
+	compile group: 'io.github.h5jan', name: 'h5jan-core', version: '0.8.0'	
 ```
 
 ## What is it
@@ -190,6 +189,7 @@ We write the HDF5 stack directly to a single file in a lazy way such that the wh
 ```
 
 ## Advanced
+### Filters
 Applying different operations to images using code from [DAWN Science](http://www.dawnsci.org)
 ```java
 
@@ -237,6 +237,38 @@ And we can write these transforms or analysis data as follows:
 			app.record("raw", data);  // We append the raw data in a non-data frame record. 
 		}
 	}
+
+```
+### Arrow
+[Apache Arrow](https://arrow.apache.org/) is a data format popularly used in data science. The test [ArrowTest](https://github.com/h5jan/h5jan-core/blob/master/src/test/java/io/github/h5jan/io/ArrowTest.java) shows it performance compared to HDF5. Because homogeneous data frames are fast to write in HDF5, it can be made very fast to read data which is useful for data analysis.
+
+```java
+
+	// Example of writing the data in a DataFrame
+	// Make a writing frame
+	DataFrame frame = ... // A data frame we want to write to arrow.
+		
+	ArrowIO	arrowIO= new ArrowIO();
+	
+	try (FileOutputStream output = new FileOutputStream(new File("/tmp/mydata.arw")){
+		// The channel could also be a Hadoop File System writable channel.
+		// We use a File here just out of example.
+		WritableByteChannel channel = output.getChannel();
+		
+		arrowIO.write(frame, output);
+		output.flush();
+	}	
+	
+	// Now lets read it!
+	try(FileInputStream input = new FileInputStream(new File("/tmp/mydata.arw"))) {
+		DataFrame readBackIn = arrowIO.read(input);
+	}
+
+	// Reading from python: You have to use pyarrow directly this format
+	// is not guaranteed compatible with Pandas DataFrame. However reading the frame
+	// is easy because nD arrays are stored as 1D and the shape stored in the metadata.
+	// So a numpy array can be made using pyarrow and reshaped to the shape in the metadata "shape" field.
+	// Unfortunately arrow supports string metadate so the shape has to be parsed from a string.
 
 ```
 

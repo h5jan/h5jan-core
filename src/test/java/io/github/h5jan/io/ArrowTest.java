@@ -188,7 +188,7 @@ public class ArrowTest {
 		if (print) System.out.println("File '"+aPath.getFileName()+"' is "+Files.size(aPath)+" b");
 
 		try(FileInputStream input = new FileInputStream(farw)) {
-			Tuple<DataFrame,Long> arw = time(()->arrowIO.read(new FileInputStream(farw)));
+			Tuple<DataFrame,Long> arw = time(()->arrowIO.read(input));
 			if (print) System.out.println("Full load '"+aPath.getFileName()+"' in "+arw.getRight()+" ms");
 			assertFrameEquals(timed.getLeft(), arw.getLeft());
 		}
